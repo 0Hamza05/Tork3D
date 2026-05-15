@@ -4,12 +4,12 @@
 
 @layer base {
   :root {
-    --background: 8, 8, 9;
-    --foreground: 240, 240, 240;
-    --grid-color: rgba(56, 189, 248, 0.05); /* Subtle blue grid */
-    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-    --glass-shadow-hover: 0 8px 40px rgba(59, 130, 246, 0.2), inset 0 1px 0 rgba(255,255,255,0.1);
-    --secondary-bg: 15, 15, 16;
+    --background: 255, 255, 255;
+    --foreground: 15, 23, 42;
+    --grid-color: rgba(15, 23, 42, 0.03); /* Subtle slate grid */
+    --glass-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --glass-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --secondary-bg: 248, 250, 252;
   }
 
   body {
@@ -19,13 +19,13 @@
   }
   
 
-
   body::before {
     content: '';
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     z-index: -1;
     pointer-events: none;
+    background-image: radial-gradient(circle at 50% 50%, rgba(249, 115, 22, 0.03) 0%, transparent 50%);
   }
 
 
@@ -39,14 +39,14 @@
 }
 
 .glass-card {
-  @apply relative bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden transition-all duration-500;
+  @apply relative bg-white border border-slate-200 rounded-2xl overflow-hidden transition-all duration-500;
   box-shadow: var(--glass-shadow);
 }
 
 .glass-card:hover {
-  @apply border-accent-blue/30;
+  @apply border-orange-200;
   box-shadow: var(--glass-shadow-hover);
-  transform: translateY(-2px);
+  transform: translateY(-4px);
 }
 
 .glow-btn {

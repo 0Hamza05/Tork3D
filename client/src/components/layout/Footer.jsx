@@ -4,23 +4,23 @@ import { Hexagon, Instagram, Mail, Phone } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 dark:bg-[#1a1a1a] border-t border-black/5 dark:border-white/10 pt-16 pb-8">
+    <footer className="bg-slate-50 border-t border-slate-200 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
 
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2">
               <Hexagon className="h-6 w-6 text-accent-orange" />
-              <span className="text-xl font-bold tracking-tight text-foreground">Tork<span className="text-accent-orange">3D</span></span>
+              <span className="text-xl font-bold tracking-tight text-slate-900">Tork<span className="text-accent-orange">3D</span></span>
             </Link>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <p className="text-slate-600 text-sm">
               Premium custom 3D printing, rapid prototyping, and engineering solutions tailored for modern businesses and creators.
             </p>
           </div>
 
           <div>
-            <h3 className="text-foreground font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <h3 className="text-slate-900 font-semibold mb-4">Quick Links</h3>
+            <ul className="space-y-2 text-sm text-slate-600">
               <li><Link to="/shop" className="hover:text-accent-blue transition-colors">Shop Products</Link></li>
               <li><Link to="/custom" className="hover:text-accent-blue transition-colors">Custom Order</Link></li>
               <li><Link to="/gallery" className="hover:text-accent-blue transition-colors">Gallery</Link></li>
@@ -29,8 +29,8 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-foreground font-semibold mb-4">Services</h3>
-            <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+            <h3 className="text-slate-900 font-semibold mb-4">Services</h3>
+            <ul className="space-y-2 text-sm text-slate-600">
               <li>Rapid Prototyping</li>
               <li>CAD Engineering</li>
               <li>Custom Production Runs</li>
@@ -39,8 +39,8 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-foreground font-semibold mb-4">Contact</h3>
-            <ul className="space-y-4 text-sm text-gray-600 dark:text-gray-400">
+            <h3 className="text-slate-900 font-semibold mb-4">Contact</h3>
+            <ul className="space-y-4 text-sm text-slate-600">
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
                 <span>tork3d.design@gmail.com</span>
@@ -65,7 +65,7 @@ export default function Footer() {
 
         </div>
 
-        <div className="mt-12 pt-8 border-t border-black/5 dark:border-white/10 text-center text-sm text-gray-500">
+        <div className="mt-12 pt-8 border-t border-slate-200 text-center text-sm text-slate-500">
           <p>&copy; {new Date().getFullYear()} Tork3D Fabrication. All rights reserved.</p>
         </div>
       </div>

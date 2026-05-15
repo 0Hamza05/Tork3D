@@ -26,8 +26,8 @@ export default function Shop() {
     <div className="pt-24 min-h-screen">
       <SectionWrapper>
         <motion.div variants={fadeIn} className="mb-12">
-          <h1 className="text-5xl font-bold mb-4 text-foreground">Tork3D Shop</h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400">High-quality 3D printed parts, ready to ship.</p>
+          <h1 className="text-5xl font-bold mb-4 text-slate-900">Tork3D Shop</h1>
+          <p className="text-xl text-slate-600">High-quality 3D printed parts, ready to ship.</p>
         </motion.div>
 
         {/* Filters and Search */}
@@ -37,7 +37,7 @@ export default function Shop() {
             <input 
               type="text" 
               placeholder="Search products..."
-              className="w-full bg-white dark:bg-[#121212] border border-black/5 dark:border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-foreground focus:outline-none focus:border-accent-orange transition-colors"
+              className="w-full bg-white border border-slate-200 rounded-lg pl-10 pr-4 py-2.5 text-slate-900 focus:outline-none focus:border-accent-orange transition-colors"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -45,11 +45,11 @@ export default function Shop() {
           
           <div className="w-full lg:w-48 flex-shrink-0">
             <select 
-              className="w-full bg-white dark:bg-[#121212] border border-black/5 dark:border-white/10 rounded-lg px-4 py-2.5 text-foreground focus:outline-none focus:border-accent-orange appearance-none"
+              className="w-full bg-white border border-slate-200 rounded-lg px-4 py-2.5 text-slate-900 focus:outline-none focus:border-accent-orange appearance-none"
               value={activeSort}
               onChange={(e) => setActiveSort(e.target.value)}
             >
-              {SORTS.map(sort => <option key={sort} className="bg-white text-gray-900 dark:bg-[#121212] dark:text-white">{sort}</option>)}
+              {SORTS.map(sort => <option key={sort} className="bg-white text-slate-900">{sort}</option>)}
             </select>
           </div>
         </motion.div>
@@ -57,7 +57,7 @@ export default function Shop() {
         {/* Product Grid */}
         {filteredProducts.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-gray-400 text-lg">No products found for your search.</p>
+            <p className="text-slate-500 text-lg">No products found for your search.</p>
             <Button className="mt-4" onClick={() => setSearchQuery('')}>
               Clear Filters
             </Button>

@@ -41,8 +41,8 @@ export default function Contact() {
     <div className="pt-24 min-h-screen">
       <SectionWrapper>
         <motion.div variants={fadeIn} className="mb-12 text-center max-w-3xl mx-auto">
-          <h1 className="text-5xl font-bold mb-4 text-foreground">Get in Touch</h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400">Have a question or want to discuss a large project? We're here to help.</p>
+          <h1 className="text-5xl font-bold mb-4 text-slate-900">Get in Touch</h1>
+          <p className="text-xl text-slate-600">Have a question or want to discuss a large project? We're here to help.</p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-5xl mx-auto">
@@ -54,8 +54,8 @@ export default function Contact() {
                   <MapPin className="w-6 h-6 text-accent-orange" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-1 text-foreground">Location</h3>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                  <h3 className="text-xl font-bold mb-1 text-slate-900">Location</h3>
+                  <p className="text-slate-600 leading-relaxed">
                     Mandke Advantage Homes, Lullanagar,<br />
                     Pune, Maharashtra, India 411040
                   </p>
@@ -67,9 +67,9 @@ export default function Contact() {
                   <Mail className="w-6 h-6 text-accent-orange" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-1 text-foreground">Email Us</h3>
-                  <p className="text-gray-600 dark:text-gray-400">tork3d.design@gmail.com</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">We typically reply within 24 hours</p>
+                  <h3 className="text-xl font-bold mb-1 text-slate-900">Email Us</h3>
+                  <p className="text-slate-600">tork3d.design@gmail.com</p>
+                  <p className="text-sm text-slate-500 mt-1">We typically reply within 24 hours</p>
                 </div>
               </div>
 
@@ -78,8 +78,8 @@ export default function Contact() {
                   <Phone className="w-6 h-6 text-accent-orange" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-1 text-foreground">Call Us</h3>
-                  <p className="text-gray-600 dark:text-gray-400">+91 99003 90390 / 70730 85538</p>
+                  <h3 className="text-xl font-bold mb-1 text-slate-900">Call Us</h3>
+                  <p className="text-slate-600">+91 99003 90390 / 70730 85538</p>
                 </div>
               </div>
 
@@ -88,19 +88,19 @@ export default function Contact() {
                   <Instagram className="w-6 h-6 text-accent-orange" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold mb-1 text-foreground">Follow Us</h3>
+                  <h3 className="text-xl font-bold mb-1 text-slate-900">Follow Us</h3>
                   <a href="https://www.instagram.com/tork3d_/" target="_blank" rel="noreferrer"
-                    className="text-gray-600 dark:text-gray-400 hover:text-accent-orange transition-colors">
+                    className="text-slate-600 hover:text-accent-orange transition-colors">
                     @tork3d_
                   </a>
-                  <p className="text-sm text-gray-500 mt-1">See our latest 3D prints &amp; projects</p>
+                  <p className="text-sm text-slate-500 mt-1">See our latest 3D prints &amp; projects</p>
                 </div>
               </div>
             </div>
 
             <div className="glass-card p-8 flex flex-col items-center justify-center text-center">
-              <h3 className="text-xl font-bold mb-2 text-foreground">Need an instant reply?</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm">Message us directly on WhatsApp for real-time support.</p>
+              <h3 className="text-xl font-bold mb-2 text-slate-900">Need an instant reply?</h3>
+              <p className="text-slate-600 mb-6 text-sm">Message us directly on WhatsApp for real-time support.</p>
               <Button size="lg" className="w-full bg-[#25D366] hover:bg-[#25D366]/90 text-white shadow-none" asChild>
                 <a href="https://wa.me/919900390390" target="_blank" rel="noreferrer" className="flex items-center">
                   <MessageCircle className="w-5 h-5 mr-2" /> Chat on WhatsApp
@@ -111,13 +111,13 @@ export default function Contact() {
 
           {/* Contact Form */}
           <motion.div variants={fadeIn} className="glass-card p-8">
-            <h2 className="text-2xl font-bold mb-6 text-foreground">Send a Message</h2>
+            <h2 className="text-2xl font-bold mb-6 text-slate-900">Send a Message</h2>
 
             {success ? (
               <div className="flex flex-col items-center justify-center text-center py-16 space-y-4">
                 <CheckCircle2 className="w-16 h-16 text-green-500" />
-                <h3 className="text-xl font-bold text-foreground">Message Sent!</h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm max-w-xs">
+                <h3 className="text-xl font-bold text-slate-900">Message Sent!</h3>
+                <p className="text-slate-500 text-sm max-w-xs">
                   We've received your message and will get back to you within 24 hours.
                 </p>
                 <button onClick={() => setSuccess(false)} className="text-sm text-accent-orange hover:underline mt-2">
@@ -127,29 +127,29 @@ export default function Contact() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name *</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Name *</label>
                   <input name="name" type="text" required value={form.name} onChange={handleChange}
-                    className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-foreground" />
+                    className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email *</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Email *</label>
                   <input name="email" type="email" required value={form.email} onChange={handleChange}
-                    className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-foreground" />
+                    className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mobile Number</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Mobile Number</label>
                   <input name="phone" type="tel" pattern="\d{10}" title="Please enter a valid 10-digit phone number." value={form.phone} onChange={handleChange}
-                    className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-foreground" />
+                    className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Subject</label>
                   <input name="subject" type="text" value={form.subject} onChange={handleChange}
-                    className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-foreground" />
+                    className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Message *</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Message *</label>
                   <textarea name="message" rows="5" required value={form.message} onChange={handleChange}
-                    className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue resize-none text-foreground" />
+                    className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue resize-none text-slate-900" />
                 </div>
 
                 {error && <p className="text-sm text-red-500">{error}</p>}

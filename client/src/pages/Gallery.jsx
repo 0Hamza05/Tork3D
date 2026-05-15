@@ -3,9 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ZoomIn } from 'lucide-react';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 
-// Automatically load all images from the public/gallery folder
-const imageModules = import.meta.glob('/public/gallery/*.{jpg,jpeg,png,webp,gif}', { eager: true });
-const GALLERY = Object.keys(imageModules).map(path => path.replace('/public', ''));
+// Automatically load all images from the src/assets/gallery folder
+const imageModules = import.meta.glob('../assets/gallery/*.{jpg,jpeg,png,webp,gif}', { eager: true });
+const GALLERY = Object.values(imageModules).map(module => module.default);
 
 export default function Gallery() {
   const [selectedImg, setSelectedImg] = useState(null);
@@ -14,8 +14,8 @@ export default function Gallery() {
     <div className="pt-24 min-h-screen">
       <SectionWrapper>
         <motion.div variants={fadeIn} className="mb-12 text-center max-w-3xl mx-auto">
-          <h1 className="text-5xl font-bold mb-4 text-foreground">Our Work</h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400">A showcase of custom parts, prototypes, and prints made by Tork3D.</p>
+          <h1 className="text-5xl font-bold mb-4 text-slate-900">Our Work</h1>
+          <p className="text-xl text-slate-600">A showcase of custom parts, prototypes, and prints made by Tork3D.</p>
         </motion.div>
 
         {/* Masonry-style Grid */}

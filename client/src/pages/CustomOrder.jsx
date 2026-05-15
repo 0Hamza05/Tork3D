@@ -64,8 +64,8 @@ export default function CustomOrder() {
     <div className="pt-24 min-h-screen">
       <SectionWrapper>
         <motion.div variants={fadeIn} className="mb-12 text-center max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-foreground">Print Your Own Model</h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400">Upload your STL file, select your specifications, and we'll handle the fabrication.</p>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-slate-900">Print Your Own Model</h1>
+          <p className="text-xl text-slate-600">Upload your STL file, select your specifications, and we'll handle the fabrication.</p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -74,8 +74,8 @@ export default function CustomOrder() {
             {isSubmitted ? (
               <div className="text-center py-12">
                 <CheckCircle2 className="w-16 h-16 text-green-500 mx-auto mb-6" />
-                <h2 className="text-3xl font-bold text-foreground mb-4">Request Submitted Successfully!</h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+                <h2 className="text-3xl font-bold text-slate-900 mb-4">Request Submitted Successfully!</h2>
+                <p className="text-slate-600 mb-8 max-w-md mx-auto">
                   We've received your project details. Please send us your 3D model files via WhatsApp so we can provide an accurate quote.
                 </p>
                 <a
@@ -95,32 +95,32 @@ export default function CustomOrder() {
                 {/* Specifications */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Material</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Material</label>
                     <select
-                      className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-foreground"
+                      className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900"
                       value={formData.material} onChange={(e) => setFormData({ ...formData, material: e.target.value })}
                     >
                       <option>PLA</option><option>PETG</option><option>TPU</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Color</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Color</label>
                     <select
-                      className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-foreground"
+                      className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900"
                       value={formData.color} onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                     >
                       <option>Black</option><option>White</option><option>Grey</option><option>Red</option><option>Blue</option><option>Custom (Specify below)</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Quantity: {formData.quantity}</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Quantity: {formData.quantity}</label>
                     <input type="number" min="1" max="1000"
-                      className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-foreground"
+                      className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900"
                       value={formData.quantity} onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) })}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Infill Percentage: {formData.infill}%</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Infill Percentage: {formData.infill}%</label>
                     <input type="range" min="0" max="100" step="5"
                       className="w-full accent-accent-orange py-3"
                       value={formData.infill} onChange={(e) => setFormData({ ...formData, infill: parseInt(e.target.value) })}
@@ -131,34 +131,34 @@ export default function CustomOrder() {
                 {/* Contact Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Full Name</label>
                     <input type="text" required
-                      className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-foreground"
+                      className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900"
                       value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
                     <input type="email" required
-                      className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-foreground"
+                      className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900"
                       value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mobile Number</label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Mobile Number</label>
                     <input type="tel" required
                       pattern="\d{10}"
                       title="Please enter a valid 10-digit phone number."
-                      className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-foreground"
+                      className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900"
                       value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Project Description</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">Project Description</label>
                   <textarea rows="4"
-                    className="w-full bg-[rgb(var(--secondary-bg))] border border-black/10 dark:border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-foreground"
+                    className="w-full bg-[rgb(var(--secondary-bg))] border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900"
                     placeholder="Special instructions, tolerances, intended use..."
                     value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   />
@@ -174,7 +174,7 @@ export default function CustomOrder() {
           {/* Sidebar / Workflow */}
           <motion.div variants={fadeIn} className="space-y-8">
             <div className="glass-card p-8">
-              <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-foreground">
+              <h3 className="text-xl font-bold mb-6 flex items-center gap-2 text-slate-900">
                 <Factory className="text-accent-orange" />
                 Our Workflow
               </h3>
@@ -182,14 +182,14 @@ export default function CustomOrder() {
                 {WORKFLOW.map((step, i) => (
                   <div key={i} className="flex gap-4">
                     <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 border border-black/5 dark:border-white/10 flex items-center justify-center mb-2">
+                      <div className="w-10 h-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center mb-2">
                         <step.icon className="w-5 h-5 text-accent-orange" />
                       </div>
-                      {i < WORKFLOW.length - 1 && <div className="w-0.5 h-10 bg-black/5 dark:bg-white/10" />}
+                      {i < WORKFLOW.length - 1 && <div className="w-0.5 h-10 bg-slate-200" />}
                     </div>
                     <div className="pt-2">
-                      <h4 className="font-semibold text-foreground">{step.title}</h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{step.desc}</p>
+                      <h4 className="font-semibold text-slate-900">{step.title}</h4>
+                      <p className="text-sm text-slate-600">{step.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -198,8 +198,8 @@ export default function CustomOrder() {
 
             <div className="bg-gradient-to-br from-accent-blue/20 to-accent-orange/20 border border-white/10 p-8 rounded-2xl relative overflow-hidden">
               <div className="relative z-10">
-                <h3 className="text-xl font-bold mb-2">Need Bulk Production?</h3>
-                <p className="text-sm text-gray-300 mb-6">We offer print farm scaling for runs of 100+ units. Chat with us on WhatsApp for wholesale pricing.</p>
+                <h3 className="text-xl font-bold mb-2 text-slate-900">Need Bulk Production?</h3>
+                <p className="text-sm text-slate-700 mb-6">We offer print farm scaling for runs of 100+ units. Chat with us on WhatsApp for wholesale pricing.</p>
                 <a
                   href="https://wa.me/919900390390"
                   target="_blank"

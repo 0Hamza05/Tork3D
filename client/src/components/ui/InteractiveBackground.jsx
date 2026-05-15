@@ -79,10 +79,10 @@ export default function InteractiveBackground() {
         }
         ctx.closePath();
 
-        // More subtle lines
-        const alpha = 0.05 + this.brightness * 0.25; 
-        ctx.strokeStyle = `rgba(56, 189, 248, ${alpha})`;
-        ctx.lineWidth = 1.2;
+        // More subtle lines for light mode
+        const alpha = 0.02 + this.brightness * 0.1; 
+        ctx.strokeStyle = `rgba(15, 23, 42, ${alpha})`;
+        ctx.lineWidth = 1;
         ctx.stroke();
 
         // Softer glow fill without expensive shadowBlur

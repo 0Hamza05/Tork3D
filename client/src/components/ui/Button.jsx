@@ -13,10 +13,10 @@ export function Button({
   const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
   
   const variants = {
-    primary: "bg-accent-blue text-white hover:bg-accent-blue/90 glow-btn",
-    secondary: "bg-gray-100 dark:bg-[#1a1a1a] text-foreground border border-black/5 dark:border-white/10 hover:border-black/10 dark:hover:border-white/20 hover:bg-black/5 dark:hover:bg-white/5",
-    outline: "border-2 border-accent-blue text-accent-blue hover:bg-accent-blue/10",
-    ghost: "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+    primary: "bg-accent-orange text-white hover:bg-accent-orange/90 shadow-lg shadow-orange-500/20",
+    secondary: "bg-slate-50 text-slate-900 border border-slate-200 hover:border-slate-300 hover:bg-slate-100",
+    outline: "border-2 border-accent-blue text-accent-blue hover:bg-accent-blue/5",
+    ghost: "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
   };
 
   const sizes = {
