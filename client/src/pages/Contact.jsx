@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Mail, Phone, MessageCircle, Instagram, Loader2, CheckCircle2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { API_BASE_URL } from '../config';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
@@ -17,7 +18,7 @@ export default function Contact() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:5000/api/contact', {
+      const res = await fetch(`${API_BASE_URL}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)

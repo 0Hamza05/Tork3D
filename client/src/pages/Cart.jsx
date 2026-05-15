@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { API_BASE_URL } from '../config';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, subtotal, clearCart } = useCart();
@@ -55,7 +56,7 @@ export default function Cart() {
         const codAmount = paymentType === 'cod' ? subtotal : 0;
         const itemsParam = encodeURIComponent(JSON.stringify(cart.map(i => ({ id: i.id, quantity: i.quantity }))));
         const res = await fetch(
-          `http://localhost:5000/api/shipping-rate?pincode=${pincode}&pt=${pt}&codAmount=${codAmount}&items=${itemsParam}`
+          `${API_BASE_URL}/api/shipping-rate?pincode=${pincode}&pt=${pt}&codAmount=${codAmount}&items=${itemsParam}`
         );
         const data = await res.json();
         if (data.success) {
@@ -107,7 +108,7 @@ export default function Cart() {
     if (!validateForm()) return;
     setIsProcessing(true);
     try {
-      const res = await fetch('http://localhost:5000/api/create-cod-order', {
+      const res = await fetch(`${API_BASE_URL}/api/create-cod-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderData: buildOrderData() })
@@ -132,7 +133,7 @@ export default function Cart() {
     setIsProcessing(true);
     try {
       const orderData = buildOrderData();
-      const res = await fetch('http://localhost:5000/api/create-order', {
+      const res = await fetch(`${API_BASE_URL}/api/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderData })
@@ -150,7 +151,7 @@ export default function Cart() {
         prefill: { name: customerInfo.name, email: customerInfo.email, contact: customerInfo.phone },
         handler: async function (response) {
           try {
-            const verifyRes = await fetch('http://localhost:5000/api/verify-payment', {
+            const verifyRes = await fetch(`${API_BASE_URL}/api/verify-payment`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({

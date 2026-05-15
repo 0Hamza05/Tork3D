@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { UploadCloud, CheckCircle2, Factory, Printer, Truck } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { API_BASE_URL } from '../config';
 
 const WORKFLOW = [
   { icon: CheckCircle2, title: 'Get Quote', desc: 'Instant pricing and timeline' },
@@ -37,7 +38,7 @@ export default function CustomOrder() {
       };
 
       // Send to backend/database as a quote request
-      const res = await fetch('http://localhost:5000/api/create-quote', {
+      const res = await fetch(`${API_BASE_URL}/api/create-quote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(quoteData)

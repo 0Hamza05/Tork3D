@@ -7,7 +7,7 @@ import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
-import { products } from '../src/data/products.js';
+import { products } from './data/products.js';
 
 dotenv.config();
 
