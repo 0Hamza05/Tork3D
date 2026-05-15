@@ -21,7 +21,7 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
@@ -42,8 +42,8 @@ export default function Navbar() {
                     className={cn(
                       "px-3 py-2 rounded-md text-sm font-medium transition-colors",
                       isActive 
-                        ? "text-accent-blue bg-slate-50" 
-                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                        ? "text-accent-blue bg-slate-50 dark:bg-slate-800" 
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800"
                     )}
                   >
                     {link.name}
@@ -56,7 +56,7 @@ export default function Navbar() {
 
             <Link 
               to="/cart" 
-              className="relative p-2 text-slate-500 hover:text-slate-900 transition-colors"
+              className="relative p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
             >
               <ShoppingCart className="h-6 w-6" />
               {totalItems > 0 && (
@@ -65,13 +65,21 @@ export default function Navbar() {
                 </span>
               )}
             </Link>
+
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-md text-slate-500 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+            >
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </button>
           </div>
+
           
           <div className="md:hidden flex items-center gap-2">
 
             <Link 
               to="/cart" 
-              className="relative p-2 text-slate-500 hover:text-slate-900 transition-colors"
+              className="relative p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
             >
               <ShoppingCart className="h-6 w-6" />
               {totalItems > 0 && (
@@ -81,12 +89,19 @@ export default function Navbar() {
               )}
             </Link>
             <button
+              onClick={toggleTheme}
+              className="p-2 rounded-md text-slate-500 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 transition-colors"
+            >
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </button>
+            <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-slate-500 hover:text-slate-900 hover:bg-slate-50 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-slate-500 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 focus:outline-none"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
+
         </div>
       </div>
 
@@ -96,7 +111,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden overflow-hidden bg-white border-b border-slate-200"
+            className="md:hidden overflow-hidden bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800"
           >
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
               {navLinks.map((link) => {
@@ -109,8 +124,8 @@ export default function Navbar() {
                     className={cn(
                       "block px-3 py-2 rounded-md text-base font-medium",
                       isActive
-                        ? "text-accent-blue bg-black/5 dark:bg-white/5"
-                        : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5"
+                        ? "text-accent-blue bg-slate-50 dark:bg-slate-800"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 dark:text-slate-300 dark:hover:text-white dark:hover:bg-slate-800"
                     )}
                   >
                     {link.name}

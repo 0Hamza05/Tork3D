@@ -14,8 +14,8 @@ export default function Gallery() {
     <div className="pt-24 min-h-screen">
       <SectionWrapper>
         <motion.div variants={fadeIn} className="mb-12 text-center max-w-3xl mx-auto">
-          <h1 className="text-5xl font-bold mb-4 text-slate-900">Our Work</h1>
-          <p className="text-xl text-slate-600">A showcase of custom parts, prototypes, and prints made by Tork3D.</p>
+          <h1 className="text-5xl font-bold mb-4 text-slate-900 dark:text-white">Our Work</h1>
+          <p className="text-xl text-slate-600 dark:text-slate-300">A showcase of custom parts, prototypes, and prints made by Tork3D.</p>
         </motion.div>
 
         {/* Masonry-style Grid */}

@@ -10,13 +10,26 @@
     --glass-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
     --glass-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     --secondary-bg: 248, 250, 252;
+    --body-bg: #f8fafc;
+    --body-text: #0f172a;
+  }
+
+
+  .dark {
+    --glass-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+    --glass-shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    --secondary-bg: 15, 23, 42;
+    --body-bg: #0a0a0a;
+    --body-text: #ffffff;
   }
 
   body {
-    background-color: rgb(var(--background));
-    color: rgb(var(--foreground));
+    background-color: var(--body-bg);
+    color: var(--body-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
     @apply relative overflow-x-hidden antialiased;
   }
+
   
 
   body::before {
@@ -39,9 +52,10 @@
 }
 
 .glass-card {
-  @apply relative bg-white border border-slate-200 rounded-2xl overflow-hidden transition-all duration-500;
+  @apply relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden transition-all duration-500;
   box-shadow: var(--glass-shadow);
 }
+
 
 .glass-card:hover {
   @apply border-orange-200;

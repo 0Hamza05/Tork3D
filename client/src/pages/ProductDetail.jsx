@@ -44,14 +44,14 @@ export default function ProductDetail() {
   return (
     <div className="pt-24 min-h-screen">
       <SectionWrapper>
-        <Link to="/shop" className="inline-flex items-center text-slate-600 hover:text-accent-blue mb-8 transition-colors">
+        <Link to="/shop" className="inline-flex items-center text-slate-600 dark:text-slate-300 hover:text-accent-blue mb-8 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-2" /> Back to Shop
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Gallery */}
           <motion.div variants={fadeIn} className="space-y-4">
-            <div className="relative aspect-square rounded-2xl overflow-hidden glass-card border-none bg-[rgb(var(--secondary-bg))] group">
+            <div className="relative aspect-square rounded-2xl overflow-hidden glass-card border-none bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 group">
               <img src={product.images[activeImg]} alt={product.name} className="w-full h-full object-cover" />
               
               {product.images.length > 1 && (
@@ -87,22 +87,22 @@ export default function ProductDetail() {
           {/* Details */}
           <motion.div variants={fadeIn} className="flex flex-col">
             <div className="text-sm text-accent-blue font-medium mb-2 uppercase tracking-wider">{product.category}</div>
-            <h1 className="text-4xl font-bold mb-4 text-slate-900">{product.name}</h1>
-            <div className="text-3xl font-light mb-6 text-slate-900">₹{product.price}</div>
+            <h1 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">{product.name}</h1>
+            <div className="text-3xl font-light mb-6 text-slate-900 dark:text-white">₹{product.price}</div>
 
-            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-300 text-lg mb-8 leading-relaxed">
               {product.description}
             </p>
 
             <div className="space-y-4 mb-8">
-              <div className="flex items-center gap-3 text-sm text-slate-600">
+              <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
                 <Check className="w-5 h-5 text-green-600" /> In stock (Made to order)
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-600">
-                <Truck className="w-5 h-5 text-slate-500" /> Ships via Priority Mail
+              <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                <Truck className="w-5 h-5 text-slate-500 dark:text-slate-400" /> Ships via Priority Mail
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-600">
-                <Shield className="w-5 h-5 text-slate-500" /> Quality Guarantee
+              <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                <Shield className="w-5 h-5 text-slate-500 dark:text-slate-400" /> Quality Guarantee
               </div>
             </div>
 
@@ -119,11 +119,11 @@ export default function ProductDetail() {
 
             {/* Highlights */}
             {product.highlights && product.highlights.length > 0 && (
-              <div className="border-t border-slate-200 pt-8 mb-8">
-                <h3 className="text-lg font-bold mb-4 text-slate-900">What's great about it</h3>
+              <div className="border-t border-slate-200 dark:border-slate-800 pt-8 mb-8">
+                <h3 className="text-lg font-bold mb-4 text-slate-900 dark:text-white">What's great about it</h3>
                 <ul className="space-y-3">
                   {product.highlights.map((point, i) => (
-                    <li key={i} className="flex items-start gap-3 text-slate-600 text-sm leading-relaxed">
+                    <li key={i} className="flex items-start gap-3 text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
                       <Check className="w-4 h-4 text-accent-orange mt-0.5 flex-shrink-0" />
                       {point}
                     </li>
@@ -136,9 +136,9 @@ export default function ProductDetail() {
             {Object.keys(product.specs).length > 0 && (
               <div className="flex flex-wrap gap-4">
                 {Object.entries(product.specs).map(([key, value]) => (
-                  <div key={key} className="bg-[rgb(var(--secondary-bg))] rounded-xl px-5 py-3 border border-slate-200 text-center">
-                    <div className="text-xs text-slate-500 mb-1 uppercase tracking-wider">{key}</div>
-                    <div className="font-semibold text-slate-900 text-sm">{value}</div>
+                  <div key={key} className="bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 rounded-xl px-5 py-3 border border-slate-200 dark:border-slate-800 text-center">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{key}</div>
+                    <div className="font-semibold text-slate-900 dark:text-white text-sm">{value}</div>
                   </div>
                 ))}
               </div>

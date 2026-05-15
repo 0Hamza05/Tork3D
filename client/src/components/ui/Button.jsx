@@ -14,9 +14,9 @@ export function Button({
   
   const variants = {
     primary: "bg-accent-orange text-white hover:bg-accent-orange/90 shadow-lg shadow-orange-500/20",
-    secondary: "bg-slate-50 text-slate-900 border border-slate-200 hover:border-slate-300 hover:bg-slate-100",
+    secondary: "bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:bg-slate-800",
     outline: "border-2 border-accent-blue text-accent-blue hover:bg-accent-blue/5",
-    ghost: "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+    ghost: "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:text-white hover:bg-slate-50 dark:bg-slate-800"
   };
 
   const sizes = {
