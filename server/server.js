@@ -385,60 +385,7 @@ app.post('/api/webhook', async (req, res) => {
           }
         }
 
-        // Trigger Live Delhivery API
-        if (orderRecord.order_type === 'cart' && orderRecord.order_details?.shippingAddress) {
-          console.log('\n📦 --- INITIATING DELHIVERY SHIPMENT --- 📦');
-          try {
-            const payload = {
-              format: 'json',
-              data: JSON.stringify({
-                shipments: [{
-                  name: orderRecord.customer_name,
-                  add: orderRecord.order_details.shippingAddress.address1,
-                  pin: orderRecord.order_details.shippingAddress.pincode,
-                  city: orderRecord.order_details.shippingAddress.city,
-                  state: orderRecord.order_details.shippingAddress.state,
-                  country: 'India',
-                  phone: orderRecord.order_details.customerPhone,
-                  order: razorpay_order_id,
-                  payment_mode: 'Pre-paid',
-                  products_desc: '3D Printed Parts',
-                  total_amount: orderRecord.total_amount,
-                  quantity: '1',
-                }],
-                pickup_location: {
-                  name: process.env.DELHIVERY_PICKUP_LOCATION || 'Tork3D_HQ'
-                }
-              })
-            };
-
-            const delhiveryRes = await fetch('https://track.delhivery.com/api/cmu/create.json', {
-              method: 'POST',
-              headers: {
-                'Authorization': `Token ${process.env.DELHIVERY_TOKEN}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(payload)
-            });
-
-            const delhiveryData = await delhiveryRes.json();
-
-            if (delhiveryData.success && delhiveryData.packages && delhiveryData.packages.length > 0) {
-              const waybill = delhiveryData.packages[0].waybill;
-              console.log(`✅ Delhivery Waybill Created: ${waybill}`);
-
-              // Save waybill to Supabase
-              await supabase
-                .from('tork3d_orders')
-                .update({ shipping_waybill: waybill })
-                .eq('razorpay_order_id', razorpay_order_id);
-            } else {
-              console.error('❌ Delhivery API Error:', delhiveryData);
-            }
-          } catch (delhiveryError) {
-            console.error('❌ Delhivery Request Failed:', delhiveryError);
-          }
-        }
+        // Waybills are now generated manually from the Supabase dashboard.
       }
     }
 
