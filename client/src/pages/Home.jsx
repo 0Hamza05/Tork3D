@@ -55,7 +55,7 @@ export default function Home() {
                 className="text-5xl md:text-7xl font-extrabold tracking-tight pb-2 text-slate-900 dark:text-white"
                 initial={{ clipPath: "inset(100% 0 0 0)" }}
                 animate={{ clipPath: "inset(0% 0 0 0)" }}
-                transition={{ duration: 1.5, ease: "linear", delay: 0.5 }}
+                transition={{ duration: 0.8, ease: "linear", delay: 0.2 }}
               >
                 Custom 3D Printing & <br className="hidden md:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-blue to-accent-orange pb-2">
@@ -73,9 +73,9 @@ export default function Home() {
                   scaleX: [0.8, 1, 1, 0.8] 
                 }}
                 transition={{ 
-                  top: { duration: 1.5, ease: "linear", delay: 0.5 },
-                  opacity: { duration: 1.7, times: [0, 0.1, 0.9, 1], ease: "linear", delay: 0.4 },
-                  scaleX: { duration: 1.5, ease: "linear", delay: 0.5 }
+                  top: { duration: 0.8, ease: "linear", delay: 0.2 },
+                  opacity: { duration: 1.0, times: [0, 0.1, 0.9, 1], ease: "linear", delay: 0.1 },
+                  scaleX: { duration: 0.8, ease: "linear", delay: 0.2 }
                 }}
               />
             </div>
@@ -83,22 +83,26 @@ export default function Home() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut", delay: 3.2 }}
+              transition={{ duration: 0.6, ease: "easeOut", delay: 1.2 }}
             >
               <p className="mt-4 max-w-2xl text-xl text-slate-600 dark:text-slate-300 mx-auto mb-10">
                 Bring your ideas to life with industrial-grade materials, precision engineering, and lightning-fast turnaround times.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg" className="group">
-                  <Link to="/custom" className="flex items-center whitespace-nowrap">
-                    Request Custom Print
-                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </Button>
-                <Button asChild variant="secondary" size="lg">
-                  <Link to="/shop">Shop Products</Link>
-                </Button>
+                <Link to="/custom">
+                  <Button size="lg" className="group w-full h-full">
+                    <span className="flex items-center whitespace-nowrap">
+                      Request Custom Print
+                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </Button>
+                </Link>
+                <Link to="/shop">
+                  <Button variant="secondary" size="lg" className="w-full h-full">
+                    Shop Products
+                  </Button>
+                </Link>
               </div>
             </motion.div>
           </div>
@@ -138,12 +142,14 @@ export default function Home() {
             <p className="text-xl text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto">
               Upload your STL file, get an instant quote, and let our farm handle the rest.
             </p>
-            <Button size="lg" asChild className="group text-lg px-8 py-6">
-              <Link to="/custom" className="flex items-center whitespace-nowrap"  >
-                Get a Quote Now
-                <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
+            <Link to="/custom">
+              <Button size="lg" className="group text-lg px-8 py-6">
+                <span className="flex items-center whitespace-nowrap">
+                  Get a Quote Now
+                  <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </Button>
+            </Link>
           </div>
         </motion.div>
       </SectionWrapper>

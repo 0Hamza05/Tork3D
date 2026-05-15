@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { UploadCloud, CheckCircle2, Factory, Printer, Truck } from 'lucide-react';
+import { UploadCloud, CheckCircle2, Factory, Printer, Truck, ChevronDown } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { API_BASE_URL } from '../config';
@@ -96,21 +96,27 @@ export default function CustomOrder() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Material</label>
-                    <select
-                      className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
-                      value={formData.material} onChange={(e) => setFormData({ ...formData, material: e.target.value })}
-                    >
-                      <option>PLA</option><option>PETG</option><option>TPU</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-4 pr-10 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white appearance-none cursor-pointer"
+                        value={formData.material} onChange={(e) => setFormData({ ...formData, material: e.target.value })}
+                      >
+                        <option>PLA</option><option>PETG</option><option>TPU</option>
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 pointer-events-none" />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Color</label>
-                    <select
-                      className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
-                      value={formData.color} onChange={(e) => setFormData({ ...formData, color: e.target.value })}
-                    >
-                      <option>Black</option><option>White</option><option>Grey</option><option>Red</option><option>Blue</option><option>Custom (Specify below)</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-4 pr-10 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white appearance-none cursor-pointer"
+                        value={formData.color} onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                      >
+                        <option>Black</option><option>White</option><option>Grey</option><option>Red</option><option>Blue</option><option>Custom (Specify below)</option>
+                      </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 pointer-events-none" />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Quantity: {formData.quantity}</label>
