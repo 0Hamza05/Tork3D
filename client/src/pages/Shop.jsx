@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Search, Filter } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { ProductCard } from '../components/ui/ProductCard';
@@ -40,7 +41,7 @@ export default function Shop() {
             We are working hard to stock our shelves with premium, ready-to-ship 3D printed parts and engineering components. Check back soon!
           </p>
           <Button asChild size="lg">
-            <a href="/custom">Request a Custom Print Instead</a>
+            <Link to="/custom">Request a Custom Print Instead</Link>
           </Button>
         </motion.div>
 
