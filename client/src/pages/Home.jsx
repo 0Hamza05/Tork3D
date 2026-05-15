@@ -105,28 +105,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Products */}
-      <SectionWrapper>
-        <div className="flex justify-between items-end mb-12 flex-wrap gap-4">
-          <motion.div variants={fadeIn}>
-            <h2 className="text-4xl font-bold mb-2 text-slate-900 dark:text-white">Featured Prints</h2>
-            <p className="text-slate-600 dark:text-slate-300">Our best-selling ready-to-ship models.</p>
-          </motion.div>
-          <motion.div variants={fadeIn}>
-            <Button variant="outline" asChild>
-              <Link to="/shop">View All Products</Link>
-            </Button>
-          </motion.div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {products.slice(0, 3).map((prod, i) => (
-            <motion.div key={prod.id} variants={fadeIn}>
-              <ProductCard product={prod} />
-            </motion.div>
-          ))}
-        </div>
-      </SectionWrapper>
+      {/* Featured Products Temporarily Hidden for Launch */}
 
       {/* Why Choose Us */}
       <SectionWrapper className="bg-[rgb(var(--secondary-bg))] dark:bg-slate-800">
