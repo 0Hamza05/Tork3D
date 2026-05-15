@@ -187,7 +187,7 @@ export default function Cart() {
             <CheckCircle2 className="w-20 h-20 text-green-500" />
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Order Placed!</h1>
             <p className="text-slate-600 dark:text-slate-300">Your Cash on Delivery order has been confirmed. We'll contact you once it's ready to ship.</p>
-            <Link to="/shop"><Button size="lg" className="w-full h-full">Continue Shopping</Button></Link>
+            <Link to="/shop" className="inline-block"><Button size="lg" className="w-full">Continue Shopping</Button></Link>
           </div>
         </SectionWrapper>
       </div>
@@ -204,7 +204,7 @@ export default function Cart() {
             </div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Your cart is empty</h1>
             <p className="text-slate-600 dark:text-slate-300 max-w-sm mx-auto">Looks like you haven't added any industrial-grade prints yet.</p>
-            <Link to="/shop"><Button size="lg" className="w-full h-full">Browse Products</Button></Link>
+            <Link to="/shop" className="inline-block"><Button size="lg" className="w-full">Browse Products</Button></Link>
           </div>
         </SectionWrapper>
       </div>

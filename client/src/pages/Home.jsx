@@ -90,16 +90,16 @@ export default function Home() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/custom">
-                  <Button size="lg" className="group w-full h-full">
-                    <span className="flex items-center whitespace-nowrap">
+                <Link to="/custom" className="w-full sm:w-auto">
+                  <Button size="lg" className="group w-full">
+                    <span className="flex items-center justify-center whitespace-nowrap">
                       Request Custom Print
                       <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </span>
                   </Button>
                 </Link>
-                <Link to="/shop">
-                  <Button variant="secondary" size="lg" className="w-full h-full">
+                <Link to="/shop" className="w-full sm:w-auto">
+                  <Button variant="secondary" size="lg" className="w-full">
                     Shop Products
                   </Button>
                 </Link>
@@ -142,9 +142,9 @@ export default function Home() {
             <p className="text-xl text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto">
               Upload your STL file, get an instant quote, and let our farm handle the rest.
             </p>
-            <Link to="/custom">
+            <Link to="/custom" className="inline-block">
               <Button size="lg" className="group text-lg px-8 py-6">
-                <span className="flex items-center whitespace-nowrap">
+                <span className="flex items-center justify-center whitespace-nowrap">
                   Get a Quote Now
                   <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
                 </span>

@@ -40,8 +40,8 @@ export default function Shop() {
           <p className="text-slate-600 dark:text-slate-300 max-w-lg mx-auto mb-8">
             We are working hard to stock our shelves with premium, ready-to-ship 3D printed parts and engineering components. Check back soon!
           </p>
-          <Link to="/custom">
-            <Button size="lg" className="w-full h-full">
+          <Link to="/custom" className="inline-block">
+            <Button size="lg" className="w-full">
               Request a Custom Print Instead
             </Button>
           </Link>
