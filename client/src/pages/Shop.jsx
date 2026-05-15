@@ -31,19 +31,47 @@ export default function Shop() {
           <p className="text-xl text-slate-600 dark:text-slate-300">High-quality 3D printed parts, ready to ship.</p>
         </motion.div>
 
-        {/* Coming Soon State */}
-        <motion.div variants={fadeIn} className="flex flex-col items-center justify-center text-center py-20 px-4 glass-card mt-8">
-          <div className="w-20 h-20 bg-accent-orange/10 rounded-full flex items-center justify-center mb-6">
-            <span className="text-4xl">🚀</span>
+        {/* Filters and Search */}
+        <motion.div variants={fadeIn} className="flex flex-col lg:flex-row gap-6 mb-12 items-center justify-between glass-card p-4 rounded-xl">
+          <div className="relative w-full lg:w-96 flex-shrink-0">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input 
+              type="text" 
+              placeholder="Search products..."
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-accent-orange transition-colors"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
-          <h2 className="text-3xl font-bold mb-4 text-slate-900 dark:text-white">Our Shop is Launching Soon!</h2>
-          <p className="text-slate-600 dark:text-slate-300 max-w-lg mx-auto mb-8">
-            We are working hard to stock our shelves with premium, ready-to-ship 3D printed parts and engineering components. Check back soon!
-          </p>
-          <Button asChild size="lg">
-            <Link to="/custom">Request a Custom Print Instead</Link>
-          </Button>
+          
+          <div className="w-full lg:w-48 flex-shrink-0">
+            <select 
+              className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-accent-orange appearance-none"
+              value={activeSort}
+              onChange={(e) => setActiveSort(e.target.value)}
+            >
+              {SORTS.map(sort => <option key={sort} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">{sort}</option>)}
+            </select>
+          </div>
         </motion.div>
+
+        {/* Product Grid */}
+        {filteredProducts.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-slate-500 dark:text-slate-400 text-lg">No products found for your search.</p>
+            <Button className="mt-4" onClick={() => setSearchQuery('')}>
+              Clear Filters
+            </Button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filteredProducts.map(product => (
+              <motion.div key={product.id} variants={fadeIn}>
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </div>
+        )}
 
       </SectionWrapper>
     </div>
