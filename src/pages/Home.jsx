@@ -1,0 +1,173 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Settings, Clock, Layers, ShieldCheck, PenTool, Cpu } from 'lucide-react';
+import { Button } from '../components/ui/Button';
+import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { ProductCard } from '../components/ui/ProductCard';
+
+import { products } from '../data/products';
+
+const FEATURES = [
+  { icon: Settings, title: 'Precision', desc: 'Down to 0.08mm layer height' },
+  { icon: Clock, title: 'Fast Turnaround', desc: 'As quick as 24 hours' },
+  { icon: Layers, title: 'CAD Support', desc: 'Dedicated engineering team' },
+  { icon: ShieldCheck, title: 'Reliability', desc: 'Quality control on every print' },
+  { icon: Cpu, title: 'Engineered Materials', desc: 'PLA, PETG, and TPU' },
+  { icon: PenTool, title: 'Customization', desc: 'From idea to final product' },
+];
+
+export default function Home() {
+  return (
+    <div className="flex flex-col w-full">
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-24">
+        {/* Abstract Background */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-accent-blue/10 rounded-full filter blur-[120px] animate-blob" />
+          <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent-orange/10 rounded-full filter blur-[120px] animate-blob animation-delay-2000" />
+          <div className="absolute -bottom-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-accent-blue/5 rounded-full filter blur-[150px] animate-blob animation-delay-4000" />
+          
+          {/* Decorative Blueprint Markers */}
+          <div className="absolute top-20 left-20 w-32 h-32 border-l border-t border-white/10" />
+          <div className="absolute bottom-20 right-20 w-32 h-32 border-r border-b border-white/10" />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+          <div className="relative">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="flex justify-center"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 dark:bg-white/5 border border-black/5 dark:border-white/10 text-accent-orange mb-8 backdrop-blur-sm shadow-sm dark:shadow-none">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-orange opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-accent-orange"></span>
+                </span>
+                <span className="text-sm font-medium">Now accepting custom orders</span>
+              </div>
+            </motion.div>
+
+            <div className="relative inline-block mb-6">
+              <motion.h1 
+                className="text-5xl md:text-7xl font-extrabold tracking-tight pb-2 text-foreground"
+                initial={{ clipPath: "inset(100% 0 0 0)" }}
+                animate={{ clipPath: "inset(0% 0 0 0)" }}
+                transition={{ duration: 1.5, ease: "linear", delay: 0.5 }}
+              >
+                Custom 3D Printing & <br className="hidden md:block" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-blue to-accent-orange pb-2">
+                  Engineering Solutions
+                </span>
+              </motion.h1>
+              
+              {/* Laser / Extruder Line */}
+              <motion.div
+                className="absolute left-[-5%] right-[-5%] h-[3px] bg-accent-blue shadow-[0_0_20px_rgba(56,189,248,1),0_0_40px_rgba(56,189,248,0.8)] rounded-full z-20 pointer-events-none"
+                initial={{ top: "100%", opacity: 0 }}
+                animate={{ 
+                  top: "0%", 
+                  opacity: [0, 1, 1, 0],
+                  scaleX: [0.8, 1, 1, 0.8] 
+                }}
+                transition={{ 
+                  top: { duration: 1.5, ease: "linear", delay: 0.5 },
+                  opacity: { duration: 1.7, times: [0, 0.1, 0.9, 1], ease: "linear", delay: 0.4 },
+                  scaleX: { duration: 1.5, ease: "linear", delay: 0.5 }
+                }}
+              />
+            </div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut", delay: 3.2 }}
+            >
+              <p className="mt-4 max-w-2xl text-xl text-gray-600 dark:text-gray-400 mx-auto mb-10">
+                Bring your ideas to life with industrial-grade materials, precision engineering, and lightning-fast turnaround times.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg" className="group">
+                  <Link to="/custom" className="flex items-center whitespace-nowrap">
+                    Request Custom Print
+                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+                <Button asChild variant="secondary" size="lg">
+                  <Link to="/shop">Shop Products</Link>
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <SectionWrapper>
+        <div className="flex justify-between items-end mb-12 flex-wrap gap-4">
+          <motion.div variants={fadeIn}>
+            <h2 className="text-4xl font-bold mb-2 text-foreground">Featured Prints</h2>
+            <p className="text-gray-600 dark:text-gray-400">Our best-selling ready-to-ship models.</p>
+          </motion.div>
+          <motion.div variants={fadeIn}>
+            <Button variant="outline" asChild>
+              <Link to="/shop">View All Products</Link>
+            </Button>
+          </motion.div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {products.slice(0, 3).map((prod, i) => (
+            <motion.div key={prod.id} variants={fadeIn}>
+              <ProductCard product={prod} />
+            </motion.div>
+          ))}
+        </div>
+      </SectionWrapper>
+
+      {/* Why Choose Us */}
+      <SectionWrapper className="bg-[rgb(var(--secondary-bg))]">
+        <motion.div variants={fadeIn} className="text-center mb-16">
+          <h2 className="text-4xl font-bold mb-4 text-foreground">Why Tork3D</h2>
+          <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">We combine top-tier technology with engineering expertise.</p>
+        </motion.div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {FEATURES.map((feature, i) => {
+            const Icon = feature.icon;
+            return (
+              <motion.div key={feature.title} variants={fadeIn} className="glass-card p-8 group">
+                <div className="w-14 h-14 rounded-xl bg-white/5 flex items-center justify-center mb-6 group-hover:bg-accent-orange/20 transition-colors duration-300">
+                  <Icon className="w-7 h-7 text-accent-orange" />
+                </div>
+                <h3 className="text-xl font-bold mb-2 text-foreground">{feature.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{feature.desc}</p>
+              </motion.div>
+            )
+          })}
+        </div>
+      </SectionWrapper>
+
+      {/* CTA Section */}
+      <SectionWrapper>
+        <motion.div variants={fadeIn} className="relative rounded-3xl overflow-hidden glass-card p-12 md:p-20 text-center">
+          <div className="absolute inset-0 bg-gradient-to-r from-accent-blue/20 to-accent-orange/20 opacity-50 mix-blend-overlay" />
+          <div className="relative z-10">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">Ready to print your idea?</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto">
+              Upload your STL file, get an instant quote, and let our farm handle the rest.
+            </p>
+            <Button size="lg" asChild className="group text-lg px-8 py-6">
+              <Link to="/custom" className="flex items-center whitespace-nowrap"  >
+                Get a Quote Now
+                <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </Button>
+          </div>
+        </motion.div>
+      </SectionWrapper>
+    </div>
+  );
+}
