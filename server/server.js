@@ -69,6 +69,7 @@ const razorpay = new Razorpay({
 
 // Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY || 'dummy');
+const SENDER_EMAIL = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
 // (multer removed — no file upload routes in current flow)
 
@@ -205,7 +206,7 @@ app.post('/api/verify-payment', orderLimiter, async (req, res) => {
                 : '—';
 
           await resend.emails.send({
-            from: 'Tork3D Orders <onboarding@resend.dev>',
+            from: `Tork3D Orders <${SENDER_EMAIL}>`,
             to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
             subject: `💰 NEW PAID ORDER — ${orderRecord.customer_name} (₹${orderRecord.total_amount})`,
             html: `
@@ -335,7 +336,7 @@ app.post('/api/webhook', async (req, res) => {
               : 'No address provided';
 
             await resend.emails.send({
-              from: 'Tork3D Orders <onboarding@resend.dev>',
+              from: `Tork3D Orders <${SENDER_EMAIL}>`,
               to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
               subject: `💰 NEW PAID ORDER — ${orderRecord.customer_name} (₹${orderRecord.total_amount})`,
               html: `
@@ -620,7 +621,7 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
         : '';
 
       await resend.emails.send({
-        from: 'Tork3D Orders <onboarding@resend.dev>',
+        from: `Tork3D Orders <${SENDER_EMAIL}>`,
         to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
         subject: `📦 NEW COD ORDER — ${escHtml(orderData.customerName)} (₹${totalAmount})`,
         html: `
@@ -681,7 +682,7 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
     }
 
     const { data, error } = await resend.emails.send({
-      from: 'Tork3D Contact <onboarding@resend.dev>',
+      from: `Tork3D Contact <${SENDER_EMAIL}>`,
       to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
       reply_to: email,
       subject: `📩 New Message — ${escHtml(subject || 'No Subject')} (from ${escHtml(name)})`,
@@ -737,7 +738,7 @@ app.post('/api/create-quote', orderLimiter, async (req, res) => {
 
     // Send email via Resend
     const { data, error: resendError } = await resend.emails.send({
-      from: 'Tork3D <onboarding@resend.dev>', // Use onboarding@resend.dev for testing without verified domain
+      from: `Tork3D <${SENDER_EMAIL}>`, 
       to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
       subject: `🚨 NEW QUOTE REQUEST: ${quoteData.customerName}`,
       html: `
