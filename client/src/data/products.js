@@ -26,33 +26,7 @@ export const products = [
       'Lead Time': '3–5 Business Days',
     }
   },
-  {
-    id: 2,
-    name: 'Custom RC Chassis',
-    price: 120,
-    weight: 600,
-    packageType: 'box',
-    packageDimensions: { l: 42, w: 22, h: 8 },
-    category: 'Automotive',
-    material: 'PETG',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583eb92d232?w=800&q=80',
-    description: 'A high-strength, impact-resistant RC chassis built for serious hobbyists. Designed with modular mounting points so you can swap components without reprinting the whole frame.',
-    highlights: [
-      'High-impact PETG for crash durability',
-      'Modular motor and servo mount points',
-      'Compatible with most 1/10 scale hardware',
-      'Custom sizing available on request',
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1581092335397-9583eb92d232?w=800&q=80',
-      'https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&q=80',
-    ],
-    specs: {
-      'Dimensions': '400 × 200 × 50 mm',
-      'Weight': '600 g',
-      'Lead Time': '5–7 Business Days',
-    }
-  },
+
 
 ];
 
