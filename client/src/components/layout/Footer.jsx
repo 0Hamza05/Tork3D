@@ -29,12 +29,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-slate-900 dark:text-white font-semibold mb-4">Services</h3>
+            <h3 className="text-slate-900 dark:text-white font-semibold mb-4">Legal</h3>
             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-              <li>Rapid Prototyping</li>
-              <li>CAD Engineering</li>
-              <li>Custom Production Runs</li>
-              <li>Material Consultation</li>
+              <li><Link to="/policies" className="hover:text-accent-blue transition-colors">Terms & Conditions</Link></li>
+              <li><Link to="/policies" className="hover:text-accent-blue transition-colors">Return & Refund Policy</Link></li>
             </ul>
           </div>
 

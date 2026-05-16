@@ -8,6 +8,7 @@ import ProductDetail from './pages/ProductDetail';
 import CustomOrder from './pages/CustomOrder';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
+import Policies from './pages/Policies';
 import ScrollToTop from './components/ScrollToTop';
 
 import { CartProvider } from './context/CartContext';
@@ -33,6 +34,7 @@ function App() {
               <Route path="/custom" element={<CustomOrder />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/policies" element={<Policies />} />
             </Routes>
           </main>
           <Footer />
