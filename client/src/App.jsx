@@ -9,7 +9,9 @@ import CustomOrder from './pages/CustomOrder';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Policies from './pages/Policies';
+import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
+import WhatsAppWidget from './components/ui/WhatsAppWidget';
 
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -35,8 +37,10 @@ function App() {
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/policies" element={<Policies />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
+          <WhatsAppWidget />
           <Footer />
         </div>
       </Router>
