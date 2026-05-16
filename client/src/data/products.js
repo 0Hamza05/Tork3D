@@ -2,7 +2,7 @@ export const products = [
   {
     id: 1,
     name: 'Pagoda Mini Tea Light Lantern',
-    price: 500,
+    price: 1,
     weight: 85,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 10, h: 10 }, // packed dims in cm
