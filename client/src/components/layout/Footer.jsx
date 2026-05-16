@@ -43,7 +43,9 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-slate-600 dark:text-slate-300">
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <span>tork3d.design@gmail.com</span>
+                <a href="mailto:tork3d.design@gmail.com" className="hover:text-accent-blue transition-colors">
+                  tork3d.design@gmail.com
+                </a>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
