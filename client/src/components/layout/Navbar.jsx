@@ -19,6 +19,18 @@ export default function Navbar() {
   const location = useLocation();
   const { totalItems } = useCart();
   const { theme, toggleTheme } = useTheme();
+  
+  // Bounce animation state
+  const [isBouncing, setIsBouncing] = useState(false);
+  const prevTotalItems = React.useRef(totalItems);
+
+  React.useEffect(() => {
+    if (totalItems > prevTotalItems.current) {
+      setIsBouncing(true);
+      setTimeout(() => setIsBouncing(false), 300);
+    }
+    prevTotalItems.current = totalItems;
+  }, [totalItems]);
 
   const handleLogoClick = () => {
     if (location.pathname === '/') {
@@ -64,7 +76,9 @@ export default function Navbar() {
               to="/cart" 
               className="relative p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
             >
-              <ShoppingCart className="h-6 w-6" />
+              <motion.div animate={isBouncing ? { scale: [1, 1.2, 1] } : {}} transition={{ duration: 0.3 }}>
+                <ShoppingCart className="h-6 w-6" />
+              </motion.div>
               {totalItems > 0 && (
                 <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-accent-blue rounded-full">
                   {totalItems}
@@ -87,7 +101,9 @@ export default function Navbar() {
               to="/cart" 
               className="relative p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
             >
-              <ShoppingCart className="h-6 w-6" />
+              <motion.div animate={isBouncing ? { scale: [1, 1.2, 1] } : {}} transition={{ duration: 0.3 }}>
+                <ShoppingCart className="h-6 w-6" />
+              </motion.div>
               {totalItems > 0 && (
                 <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-accent-blue rounded-full">
                   {totalItems}

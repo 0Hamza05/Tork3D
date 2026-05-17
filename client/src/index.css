@@ -30,6 +30,16 @@
     @apply relative overflow-x-hidden antialiased;
   }
 
+  /* Custom Brand Text Selection Highlight */
+  ::selection {
+    background-color: rgba(249, 115, 22, 0.3); /* Tork3D Accent Orange with transparency */
+    color: inherit;
+  }
+  ::-moz-selection {
+    background-color: rgba(249, 115, 22, 0.3);
+    color: inherit;
+  }
+
   
 
   body::before {
