@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { API_BASE_URL } from '../config';
+import toast from 'react-hot-toast';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, subtotal, clearCart } = useCart();
@@ -93,13 +94,13 @@ export default function Cart() {
 
   const validateForm = () => {
     if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
-      alert('Please fill in your name, email and phone.'); return false;
+      toast.error('Please fill in your name, email and phone.'); return false;
     }
     if (fulfillment === 'delivery' && (!customerInfo.address1 || !customerInfo.city || !customerInfo.state || !customerInfo.pincode)) {
-      alert('Please fill in your delivery address.'); return false;
+      toast.error('Please fill in your delivery address.'); return false;
     }
     if (fulfillment === 'delivery' && !selectedMode) {
-      alert('Please wait for shipping rates to load.'); return false;
+      toast.error('Please wait for shipping rates to load.'); return false;
     }
     return true;
   };
@@ -119,10 +120,10 @@ export default function Cart() {
         setShowModal(false);
         setCodSuccess(true);
       } else {
-        alert('Failed to place order: ' + data.message);
+        toast.error('Failed to place order: ' + data.message);
       }
     } catch {
-      alert('Could not reach server. Please try again.');
+      toast.error('Could not reach server. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -162,15 +163,15 @@ export default function Cart() {
               })
             });
             const verifyData = await verifyRes.json();
-            if (verifyData.success) { clearCart(); alert('Payment Successful! Your order has been placed.'); navigate('/shop'); }
-            else alert('Payment verification failed: ' + verifyData.message);
-          } catch { alert('Could not reach the server for verification.'); }
+            if (verifyData.success) { clearCart(); toast.success('Payment Successful! Your order has been placed.'); navigate('/shop'); }
+            else toast.error('Payment verification failed: ' + verifyData.message);
+          } catch { toast.error('Could not reach the server for verification.'); }
         },
         theme: { color: '#F97316' }
       };
       new window.Razorpay(options).open();
     } catch (error) {
-      console.error(error); alert('Error initiating checkout.');
+      console.error(error); toast.error('Error initiating checkout.');
     } finally {
       setIsProcessing(false);
     }

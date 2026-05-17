@@ -15,6 +15,7 @@ import WhatsAppWidget from './components/ui/WhatsAppWidget';
 
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { Toaster } from 'react-hot-toast';
 import Cart from './pages/Cart';
 import InteractiveBackground from './components/ui/InteractiveBackground';
 
@@ -23,8 +24,15 @@ function App() {
     <ThemeProvider>
       <CartProvider>
         <Router>
-        <ScrollToTop />
-        <div className="flex flex-col min-h-screen">
+          <ScrollToTop />
+          <Toaster 
+            position="top-right"
+            toastOptions={{
+              className: 'dark:bg-slate-800 dark:text-white',
+              duration: 3000,
+            }} 
+          />
+          <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
           <InteractiveBackground />
           <Navbar />
           <main className="flex-grow pt-16">

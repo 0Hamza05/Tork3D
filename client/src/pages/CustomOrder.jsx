@@ -4,6 +4,7 @@ import { UploadCloud, CheckCircle2, Factory, Printer, Truck, ChevronDown } from 
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { API_BASE_URL } from '../config';
+import toast from 'react-hot-toast';
 
 const WORKFLOW = [
   { icon: CheckCircle2, title: 'Get Quote', desc: 'Instant pricing and timeline' },
@@ -20,12 +21,12 @@ export default function CustomOrder() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.phone) {
-      alert("Please fill in your name, email, and phone number.");
+      toast.error("Please fill in your name, email, and phone number.");
       return;
     }
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(formData.phone)) {
-      alert("Please enter a valid 10-digit phone number.");
+      toast.error("Please enter a valid 10-digit phone number.");
       return;
     }
 
@@ -54,7 +55,7 @@ export default function CustomOrder() {
 
     } catch (error) {
       console.error(error);
-      alert('Your quote request was saved locally, but we couldn\'t reach the server. Please contact us directly at tork3d.design@gmail.com.');
+      toast.error('Your quote request was saved locally, but we couldn\'t reach the server. Please contact us directly at tork3d.design@gmail.com.');
     }
   };
 

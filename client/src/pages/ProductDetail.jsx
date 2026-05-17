@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import toast from 'react-hot-toast';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -33,7 +34,7 @@ export default function ProductDetail() {
 
   const handleAddToCart = () => {
     addToCart(product);
-    alert(`${product.name} added to cart!`);
+    toast.success(`${product.name} added to cart!`);
   };
 
   const handleBuyNow = () => {
