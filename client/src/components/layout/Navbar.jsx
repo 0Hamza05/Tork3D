@@ -20,12 +20,18 @@ export default function Navbar() {
   const { totalItems } = useCart();
   const { theme, toggleTheme } = useTheme();
 
+  const handleLogoClick = () => {
+    if (location.pathname === '/') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2 group">
+            <Link to="/" onClick={handleLogoClick} className="flex items-center gap-2 group">
               <Hexagon className="h-8 w-8 text-accent-orange group-hover:text-accent-blue transition-colors duration-300" />
               <span className="text-xl font-bold tracking-tight">Tork<span className="text-accent-orange group-hover:text-accent-blue transition-colors duration-300">3D</span></span>
             </Link>
