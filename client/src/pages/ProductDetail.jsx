@@ -14,6 +14,12 @@ export default function ProductDetail() {
   const { addToCart } = useCart();
   const product = products.find(p => p.id === parseInt(id));
   const [activeImg, setActiveImg] = React.useState(0);
+  const [isLoaded, setIsLoaded] = React.useState(false);
+
+  // Reset loading state when active image changes
+  React.useEffect(() => {
+    setIsLoaded(false);
+  }, [activeImg]);
 
   const nextImg = () => {
     if (product?.images) setActiveImg(prev => (prev + 1) % product.images.length);
@@ -45,15 +51,28 @@ export default function ProductDetail() {
   return (
     <div className="pt-24 min-h-screen">
       <SectionWrapper>
-        <Link to="/shop" className="inline-flex items-center text-slate-600 dark:text-slate-300 hover:text-accent-blue mb-8 transition-colors">
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Shop
-        </Link>
+        {/* Breadcrumbs Navigation */}
+        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-8 font-medium flex-wrap">
+          <Link to="/" className="hover:text-accent-blue transition-colors">Home</Link>
+          <ChevronRight className="w-4 h-4 opacity-50" />
+          <Link to="/shop" className="hover:text-accent-blue transition-colors">Shop</Link>
+          <ChevronRight className="w-4 h-4 opacity-50" />
+          <span className="text-slate-900 dark:text-white truncate max-w-[200px] sm:max-w-xs">{product.name}</span>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Gallery */}
           <motion.div variants={fadeIn} className="space-y-4">
             <div className="relative aspect-square rounded-2xl overflow-hidden glass-card border-none bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 group">
-              <img src={product.images[activeImg]} alt={product.name} className="w-full h-full object-cover" />
+              {!isLoaded && (
+                <div className="absolute inset-0 animate-pulse bg-slate-200 dark:bg-slate-700" />
+              )}
+              <img 
+                src={product.images[activeImg]} 
+                alt={product.name} 
+                onLoad={() => setIsLoaded(true)}
+                className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
+              />
               
               {product.images.length > 1 && (
                 <>

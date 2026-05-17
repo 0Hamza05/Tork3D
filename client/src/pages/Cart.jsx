@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, ShieldCheck, Truck, Loader2, CheckCircle2, AlertCircle, Zap, CreditCard, Banknote } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, ChevronRight, ShieldCheck, Truck, Loader2, CheckCircle2, AlertCircle, Zap, CreditCard, Banknote } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Button } from '../components/ui/Button';
@@ -382,9 +382,14 @@ export default function Cart() {
 
       <SectionWrapper>
         <div className="mb-12">
-          <Link to="/shop" className="inline-flex items-center text-slate-600 dark:text-slate-300 hover:text-accent-blue transition-colors mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Shop
-          </Link>
+          {/* Breadcrumbs Navigation */}
+          <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6 font-medium flex-wrap">
+            <Link to="/" className="hover:text-accent-blue transition-colors">Home</Link>
+            <ChevronRight className="w-4 h-4 opacity-50" />
+            <Link to="/shop" className="hover:text-accent-blue transition-colors">Shop</Link>
+            <ChevronRight className="w-4 h-4 opacity-50" />
+            <span className="text-slate-900 dark:text-white">Shopping Cart</span>
+          </div>
           <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Shopping Cart</h1>
         </div>
 

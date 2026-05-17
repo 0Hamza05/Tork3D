@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { UploadCloud, CheckCircle2, Factory, Printer, Truck, ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { UploadCloud, CheckCircle2, Factory, Printer, Truck, ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { API_BASE_URL } from '../config';
@@ -64,6 +65,12 @@ export default function CustomOrder() {
   return (
     <div className="pt-24 min-h-screen">
       <SectionWrapper>
+        <div className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6 font-medium">
+          <Link to="/" className="hover:text-accent-blue transition-colors">Home</Link>
+          <ChevronRight className="w-4 h-4 opacity-50" />
+          <span className="text-slate-900 dark:text-white">Custom Order</span>
+        </div>
+
         <motion.div variants={fadeIn} className="mb-12 text-center max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 text-slate-900 dark:text-white">Print Your Own Model</h1>
           <p className="text-xl text-slate-600 dark:text-slate-300">Upload your STL file, select your specifications, and we'll handle the fabrication.</p>
