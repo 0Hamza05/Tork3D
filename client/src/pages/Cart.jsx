@@ -218,8 +218,9 @@ export default function Cart() {
       {/* Checkout Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 w-full max-w-md rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold mb-2 placeholder-slate-400 text-slate-900 dark:text-white">Checkout Details</h2>
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-2xl shadow-2xl max-h-[90vh] flex flex-col py-4">
+            <div className="px-6 overflow-y-auto flex-1 custom-scrollbar">
+              <h2 className="text-2xl font-bold mb-2 placeholder-slate-400 text-slate-900 dark:text-white">Checkout Details</h2>
             <p className="text-slate-600 dark:text-slate-300 text-sm mb-6">Enter your information to complete the order.</p>
 
             <div className="space-y-4">
@@ -375,6 +376,7 @@ export default function Cart() {
                   {isProcessing ? 'Processing…' : `Pay ₹${totalPrice}`}
                 </Button>
               )}
+            </div>
             </div>
           </div>
         </div>
