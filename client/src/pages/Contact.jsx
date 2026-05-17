@@ -137,8 +137,8 @@ export default function Contact() {
                     className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Mobile Number</label>
-                  <input name="phone" type="tel" pattern="\d{10}" title="Please enter a valid 10-digit phone number." value={form.phone} onChange={handleChange}
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Mobile Number *</label>
+                  <input name="phone" type="tel" required pattern="\d{10}" title="Please enter a valid 10-digit phone number." value={form.phone} onChange={handleChange}
                     className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white" />
                 </div>
                 <div>

@@ -145,21 +145,21 @@ export default function CustomOrder() {
                 {/* Contact Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Full Name</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Full Name *</label>
                     <input type="text" required
                       className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
                       value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Email Address</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Email Address *</label>
                     <input type="email" required
                       className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
                       value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Mobile Number</label>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Mobile Number *</label>
                     <input type="tel" required
                       pattern="\d{10}"
                       title="Please enter a valid 10-digit phone number."
