@@ -38,21 +38,47 @@ export default function Shop() {
           <p className="text-xl text-slate-600 dark:text-slate-300">High-quality 3D printed parts, ready to ship.</p>
         </motion.div>
 
-        {/* Coming Soon State */}
-        <motion.div variants={fadeIn} className="flex flex-col items-center justify-center text-center py-20 px-4 glass-card mt-8">
-          <div className="w-20 h-20 bg-accent-orange/10 rounded-full flex items-center justify-center mb-6">
-            <span className="text-4xl">🚀</span>
+        {/* Search & Sort Toolbar */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-12">
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-12 pr-4 py-3 bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white"
+            />
           </div>
-          <h2 className="text-3xl font-bold mb-4 text-slate-900 dark:text-white">Our Shop is Launching Soon!</h2>
-          <p className="text-slate-600 dark:text-slate-300 max-w-lg mx-auto mb-8">
-            We are working hard to stock our shelves with premium, ready-to-ship 3D printed parts and engineering components. Check back soon!
-          </p>
-          <Link to="/custom" className="inline-block">
-            <Button size="lg" className="w-full">
-              Request a Custom Print Instead
-            </Button>
-          </Link>
-        </motion.div>
+          
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <Filter className="w-5 h-5 text-slate-500" />
+            <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+              {SORTS.map(sort => (
+                <button
+                  key={sort}
+                  onClick={() => setActiveSort(sort)}
+                  className={`whitespace-nowrap px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeSort === sort ? 'bg-accent-blue text-white' : 'bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700'}`}
+                >
+                  {sort}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Product Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {filteredProducts.map(product => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+        
+        {filteredProducts.length === 0 && (
+          <div className="text-center py-20">
+            <h3 className="text-xl text-slate-500 dark:text-slate-400">No products found matching "{searchQuery}"</h3>
+          </div>
+        )}
 
       </SectionWrapper>
     </div>

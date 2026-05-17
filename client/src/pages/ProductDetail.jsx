@@ -127,8 +127,8 @@ export default function ProductDetail() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Button size="lg" className="flex-1" onClick={handleAddToCart}>Add to Cart</Button>
-              <Button size="lg" variant="secondary" className="flex-1" onClick={handleBuyNow}>Buy Now</Button>
+              <Button size="lg" className="flex-1" onClick={handleBuyNow}>Buy Now</Button>
+              <Button size="lg" variant="secondary" className="flex-1" onClick={handleAddToCart}>Add to Cart</Button>
               <Button variant="outline" size="lg" asChild>
                 <a href="https://wa.me/+919900390390" target="_blank" rel="noreferrer" className="flex items-center gap-2">
                   <MessageCircle className="w-5 h-5 text-[#25D366]" />

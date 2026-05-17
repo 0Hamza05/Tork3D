@@ -436,7 +436,8 @@ app.get('/api/shipping-rate', shippingLimiter, async (req, res) => {
       const dbProduct = products.find(p => p.id === parseInt(productId));
       if (!dbProduct) return res.status(404).json({ success: false, message: 'Product not found' });
 
-      const cgm = Math.ceil((dbProduct.weight || 200) / 10) * 10;
+      let cgm = Math.ceil((dbProduct.weight || 200) / 10) * 10;
+      if (cgm < 50) cgm = 50; // Delhivery minimum is 50g
       const d = dbProduct.packageDimensions;
       const extraParams = d ? { l: d.l, b: d.w, h: d.h } : {};
 
@@ -451,36 +452,35 @@ app.get('/api/shipping-rate', shippingLimiter, async (req, res) => {
       if (surface) surfaceTotal += surface;
 
     } else if (items) {
-      // Cart order — separate API call per unique item to offload volumetric calculation to Delhivery
+      // Cart order — Combine all items into a single package
       try {
         const parsedItems = JSON.parse(items);
-        const itemPromises = parsedItems.map(async (item) => {
+        let totalCgm = 0;
+        let totalCodAmount = 0;
+
+        parsedItems.forEach(item => {
           const dbProduct = products.find(p => p.id === item.id);
-          if (!dbProduct) return;
-
-          // Pass raw dead weight rounded to 10g, along with dimensions
-          const cgm = Math.ceil((dbProduct.weight || 200) / 10) * 10;
-          const d = dbProduct.packageDimensions;
-          const extraParams = d ? { l: d.l, b: d.w, h: d.h } : {};
-
-          totalWeight += cgm * item.quantity;
-
-          // If COD, pass the value of THIS single package to Delhivery
-          const itemCodAmount = pt === 'COD' ? (dbProduct.price || 0) : '0';
-
-          // Fetch exact rate (including COD surcharge if applicable) for ONE unit of this item
-          const [express, surface] = await Promise.all([
-            makeRateCall('E', cgm, pt, itemCodAmount, extraParams),
-            makeRateCall('S', cgm, pt, itemCodAmount, extraParams)
-          ]);
-
-          if (express || surface) anyValid = true;
-          // Multiply the base rate + per-package COD fee by quantity
-          if (express) expressTotal += (express * item.quantity);
-          if (surface) surfaceTotal += (surface * item.quantity);
+          if (dbProduct) {
+            totalCgm += (dbProduct.weight || 200) * item.quantity;
+            if (pt === 'COD') {
+              totalCodAmount += (dbProduct.price || 0) * item.quantity;
+            }
+          }
         });
 
-        await Promise.all(itemPromises);
+        let cgm = Math.ceil(totalCgm / 10) * 10;
+        if (cgm < 50) cgm = 50; // Delhivery minimum is 50g
+        totalWeight = cgm;
+
+        // Fetch exact rate (including total COD surcharge if applicable) for the combined package
+        const [express, surface] = await Promise.all([
+          makeRateCall('E', cgm, pt, pt === 'COD' ? totalCodAmount.toString() : '0'),
+          makeRateCall('S', cgm, pt, pt === 'COD' ? totalCodAmount.toString() : '0')
+        ]);
+
+        if (express || surface) anyValid = true;
+        if (express) expressTotal = express;
+        if (surface) surfaceTotal = surface;
 
       } catch (err) {
         console.error(err);

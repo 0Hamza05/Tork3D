@@ -26,7 +26,7 @@ function App() {
         <Router>
           <ScrollToTop />
           <Toaster 
-            position="top-right"
+            position="bottom-right"
             toastOptions={{
               className: 'dark:bg-slate-800 dark:text-white',
               duration: 3000,

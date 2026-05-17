@@ -24,13 +24,13 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-24">
         {/* Abstract Background */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-accent-blue/5 rounded-full filter blur-[120px] animate-blob" />
-          <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent-orange/5 rounded-full filter blur-[120px] animate-blob animation-delay-2000" />
-          <div className="absolute -bottom-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-accent-blue/5 rounded-full filter blur-[150px] animate-blob animation-delay-4000" />
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-accent-blue/15 dark:bg-accent-blue/20 rounded-full filter blur-[100px] animate-blob" />
+          <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent-orange/15 dark:bg-accent-orange/20 rounded-full filter blur-[100px] animate-blob animation-delay-2000" />
+          <div className="absolute -bottom-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-accent-blue/15 dark:bg-accent-blue/20 rounded-full filter blur-[120px] animate-blob animation-delay-4000" />
           
           {/* Decorative Blueprint Markers */}
-          <div className="absolute top-20 left-20 w-32 h-32 border-l border-t border-slate-200 dark:border-slate-800" />
-          <div className="absolute bottom-20 right-20 w-32 h-32 border-r border-b border-slate-200 dark:border-slate-800" />
+          <div className="absolute top-20 left-20 w-32 h-32 border-l-2 border-t-2 border-slate-300 dark:border-slate-700" />
+          <div className="absolute bottom-20 right-20 w-32 h-32 border-r-2 border-b-2 border-slate-300 dark:border-slate-700" />
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
@@ -109,7 +109,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Featured Products Temporarily Hidden for Launch */}
+      {/* Featured Products */}
+      <SectionWrapper>
+        <div className="flex justify-between items-end mb-12">
+          <motion.div variants={fadeIn}>
+            <h2 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">Featured Products</h2>
+            <p className="text-slate-600 dark:text-slate-300">Hand-picked selections from our catalog.</p>
+          </motion.div>
+          <Link to="/shop" className="hidden sm:flex items-center text-accent-blue font-semibold hover:text-accent-blue/80 transition-colors">
+            View all <ArrowRight className="ml-2 w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {products.slice(0, 4).map(product => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+        
+        <Link to="/shop" className="sm:hidden mt-8 flex justify-center items-center text-accent-blue font-semibold hover:text-accent-blue/80 transition-colors">
+          View all products <ArrowRight className="ml-2 w-4 h-4" />
+        </Link>
+      </SectionWrapper>
 
       {/* Why Choose Us */}
       <SectionWrapper className="bg-[rgb(var(--secondary-bg))] dark:bg-slate-800">

@@ -62,7 +62,7 @@ export default function Cart() {
         const data = await res.json();
         if (data.success) {
           setShippingRates(data);
-          setSelectedMode(data.express ? 'express' : 'surface');
+          setSelectedMode(data.surface ? 'surface' : 'express');
         } else {
           setShippingError(data.message || 'Pincode not serviceable');
         }
