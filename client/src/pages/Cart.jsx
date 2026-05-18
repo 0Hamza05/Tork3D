@@ -29,6 +29,11 @@ export default function Cart() {
   const [selectedMode, setSelectedMode] = useState(null);
   const debounceRef = useRef(null);
 
+  // Terms and Conditions states
+  const [showTcModal, setShowTcModal] = useState(false);
+  const [agreedTc, setAgreedTc] = useState(false);
+  const [pendingCheckoutType, setPendingCheckoutType] = useState(null); // 'online' | 'cod'
+
   // Display weight = simple sum of dead weights across all cart items
   const totalWeightGrams = cart.reduce((sum, item) => sum + ((item.weight || 200) * item.quantity), 0);
 
@@ -105,8 +110,7 @@ export default function Cart() {
     return true;
   };
 
-  const handleCodCheckout = async () => {
-    if (!validateForm()) return;
+  const executeCodCheckout = async () => {
     setIsProcessing(true);
     try {
       const res = await fetch(`${API_BASE_URL}/api/create-cod-order`, {
@@ -129,8 +133,7 @@ export default function Cart() {
     }
   };
 
-  const handleOnlineCheckout = async () => {
-    if (!validateForm()) return;
+  const executeOnlineCheckout = async () => {
     setIsProcessing(true);
     try {
       const orderData = buildOrderData();
@@ -175,6 +178,20 @@ export default function Cart() {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleCodCheckout = () => {
+    if (!validateForm()) return;
+    setPendingCheckoutType('cod');
+    setAgreedTc(false);
+    setShowTcModal(true);
+  };
+
+  const handleOnlineCheckout = () => {
+    if (!validateForm()) return;
+    setPendingCheckoutType('online');
+    setAgreedTc(false);
+    setShowTcModal(true);
   };
 
   const canProceed = !isProcessing && !shippingLoading &&
@@ -377,6 +394,74 @@ export default function Cart() {
                 </Button>
               )}
             </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Terms & Conditions Modal */}
+      {showTcModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md rounded-2xl shadow-2xl max-h-[85vh] flex flex-col py-4">
+            <div className="px-6 overflow-y-auto flex-1 custom-scrollbar">
+              <h2 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Terms & Conditions</h2>
+              <p className="text-slate-500 dark:text-slate-400 text-xs mb-4">Please review and agree to our policies to proceed with your order.</p>
+
+              <div className="space-y-3 text-[11px] leading-relaxed text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-100 dark:border-slate-800 max-h-[35vh] overflow-y-auto custom-scrollbar mb-4">
+                <p className="font-semibold text-slate-900 dark:text-white">
+                  By accessing this website and placing an order with Tork3D, you agree to the following terms and conditions:
+                </p>
+                <ul className="list-disc pl-4 space-y-2">
+                  <li>Please review all product descriptions, specifications, dimensions, and details carefully before placing an order.</li>
+                  <li>Returns, refunds, replacements, and cancellations are governed strictly by our Return & Refund Policy.</li>
+                  <li><strong>An unboxing video is mandatory</strong> for any claim related to damaged products, missing items, wrong products, refunds, or replacements. The video must be recorded clearly from the beginning of opening the package without cuts or edits.</li>
+                  <li>Claims raised without a valid unboxing video will not be accepted.</li>
+                  <li>Customized, personalized, made-to-order, or commissioned products are non-cancellable, non-returnable, and non-refundable unless received damaged or defective.</li>
+                  <li>Slight variations in color, finish, texture, dimensions, or appearance may occur due to lighting conditions, screen settings, material properties, and the nature of the 3D printing process.</li>
+                  <li>Minor layer lines, support marks, dimensional tolerances, or surface imperfections inherent to the 3D printing process shall not be considered manufacturing defects.</li>
+                  <li>Orders once shipped cannot be cancelled.</li>
+                  <li>Delivery timelines are estimates only and may vary due to courier delays, operational issues, weather conditions, or unforeseen circumstances.</li>
+                  <li>Customers are responsible for providing accurate shipping and contact details. Orders returned due to incorrect or incomplete information may incur additional reshipping charges.</li>
+                  <li>We reserve the right to cancel, refuse, or limit any order at our sole discretion.</li>
+                  <li>Our liability is limited strictly to the purchase value of the ordered product.</li>
+                  <li>We reserve the right to update or modify these terms and policies at any time without prior notice.</li>
+                </ul>
+              </div>
+
+              <label className="flex items-start gap-3 cursor-pointer select-none mb-4 mt-2">
+                <input 
+                  type="checkbox" 
+                  checked={agreedTc} 
+                  onChange={(e) => setAgreedTc(e.target.checked)} 
+                  className="w-4 h-4 rounded border-slate-300 dark:border-slate-700 text-accent-orange focus:ring-accent-orange mt-0.5 cursor-pointer accent-orange-600" 
+                />
+                <span className="text-xs text-slate-700 dark:text-slate-300 font-medium leading-relaxed">
+                  I have read, understood, and agree to the Terms & Conditions.
+                </span>
+              </label>
+
+              <div className="flex gap-3 mt-6">
+                <button 
+                  onClick={() => setShowTcModal(false)} 
+                  className="flex-1 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-sm font-medium"
+                >
+                  Go Back
+                </button>
+                <Button 
+                  className="flex-1 text-sm animate-pulse" 
+                  disabled={!agreedTc || isProcessing} 
+                  onClick={async () => {
+                    setShowTcModal(false);
+                    if (pendingCheckoutType === 'cod') {
+                      await executeCodCheckout();
+                    } else {
+                      await executeOnlineCheckout();
+                    }
+                  }}
+                >
+                  {isProcessing ? 'Processing…' : pendingCheckoutType === 'cod' ? 'Agree & Place Order' : 'Agree & Pay'}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
