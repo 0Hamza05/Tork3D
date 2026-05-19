@@ -83,6 +83,96 @@ export const products = [
       'Weight': '30 g',
       'Lead Time': '3–5 Business Days',
     }
+  },
+  {
+    id: 4,
+    name: 'Pokedex Magnetic Fidget',
+    price: 199,
+    weight: 25,                         // dead weight in grams
+    packageType: 'flyer',                 // 'box' | 'flyer'
+    packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
+    category: 'Fidgets',
+    material: 'PLA',
+    image: '/Product Photos/Pokedex Fidget/Pokedex fidget - 1.jpeg',
+    description: 'Satisfy your fidgeting needs with this Pokédex-themed magnetic fidget slider. Featuring smooth sliding feedback, tactile clicks, and strong neodymium magnets, it is the ultimate EDC pocket toy for Pokémon fans and fidget lovers alike.',
+    highlights: [
+      'Highly tactile magnetic sliding mechanism',
+      'Pocket-sized and portable Everyday Carry (EDC)',
+      'Iconic Pokédex-inspired red and white design',
+      'Premium quality construction with strong neodymium magnets',
+    ],
+    images: [
+      '/Product Photos/Pokedex Fidget/Pokedex fidget - 1.jpeg',
+      '/Product Photos/Pokedex Fidget/Pokedex fidget - 2.jpeg',
+      '/Product Photos/Pokedex Fidget/Pokedex fidget - 3.jpeg',
+      '/Product Photos/Pokedex Fidget/Pokedex fidget - 4.jpeg',
+    ],
+    specs: {
+      'Dimensions': '45 x 35 x 15 mm',
+      'Weight': '25 g',
+      'Material': 'PLA, Neodymium Magnets',
+      'Lead Time': '2–4 Business Days',
+    }
+  },
+  {
+    id: 5,
+    name: 'Batman Magnetic Fidget',
+    price: 199,
+    weight: 25,                         // dead weight in grams
+    packageType: 'flyer',                 // 'box' | 'flyer'
+    packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
+    category: 'Fidgets',
+    material: 'PLA',
+    image: '/Product Photos/Batman Fidget/Batman fidget - 1.jpeg',
+    description: 'Channel your inner dark knight with this Batman-themed magnetic fidget toy. Designed with a sleek bat logo shape, this tactile magnetic slider provides deeply satisfying haptic feedback to keep your hands busy and mind focused.',
+    highlights: [
+      'Sleek Dark Knight Bat-themed aesthetic',
+      'Tactile haptic clicks and smooth slide action',
+      'Durable PLA design with secure magnet placement',
+      'Great stress-relieving tool for work or study',
+    ],
+    images: [
+      '/Product Photos/Batman Fidget/Batman fidget - 1.jpeg',
+      '/Product Photos/Batman Fidget/Batman fidget - 2.jpeg',
+      '/Product Photos/Batman Fidget/Batman fidget - 3.jpeg',
+      '/Product Photos/Batman Fidget/Batman fidget - 4.mp4',
+    ],
+    specs: {
+      'Dimensions': '45 x 35 x 15 mm',
+      'Weight': '25 g',
+      'Material': 'PLA, Neodymium Magnets',
+      'Lead Time': '2–4 Business Days',
+    }
+  },
+  {
+    id: 6,
+    name: 'Spiderman Magnetic Fidget',
+    price: 199,
+    weight: 25,                         // dead weight in grams
+    packageType: 'flyer',                 // 'box' | 'flyer'
+    packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
+    category: 'Fidgets',
+    material: 'PLA',
+    image: '/Product Photos/Spiderman Fidget/Spiderman fidget - 1.jpeg',
+    description: 'Bring the web-slinger along on your daily routine with this Spiderman-themed magnetic fidget slider. Combining a sleek web-patterned red and black design with deeply tactile and responsive magnetic clicks, this is the perfect desk toy.',
+    highlights: [
+      'Spiderman web-patterned red and black styling',
+      'Extremely satisfying magnetic feedback and slide',
+      'Sturdy and lightweight pocket-friendly EDC',
+      'Includes premium neodymium magnets for strong haptic feel',
+    ],
+    images: [
+      '/Product Photos/Spiderman Fidget/Spiderman fidget - 1.jpeg',
+      '/Product Photos/Spiderman Fidget/Spiderman fidget - 2.jpeg',
+      '/Product Photos/Spiderman Fidget/Spiderman fidget - 3.jpeg',
+      '/Product Photos/Spiderman Fidget/Spiderman fidget - 4.mp4',
+    ],
+    specs: {
+      'Dimensions': '45 x 35 x 15 mm',
+      'Weight': '25 g',
+      'Material': 'PLA, Neodymium Magnets',
+      'Lead Time': '2–4 Business Days',
+    }
   }
 ];
 

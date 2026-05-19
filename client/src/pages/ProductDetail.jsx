@@ -67,40 +67,70 @@ export default function ProductDetail() {
               {!isLoaded && (
                 <div className="absolute inset-0 animate-pulse bg-slate-200 dark:bg-slate-700" />
               )}
-              <img 
-                src={product.images[activeImg]} 
-                alt={product.name} 
-                onLoad={() => setIsLoaded(true)}
-                className={`w-full h-full object-cover transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
-              />
+              {product.images[activeImg]?.toLowerCase().endsWith('.mp4') ? (
+                <video 
+                  src={product.images[activeImg]} 
+                  controls
+                  playsInline
+                  autoPlay
+                  loop
+                  onCanPlay={() => setIsLoaded(true)}
+                  className={`w-full h-full object-contain transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+                />
+              ) : (
+                <img 
+                  src={product.images[activeImg]} 
+                  alt={product.name} 
+                  onLoad={() => setIsLoaded(true)}
+                  className={`w-full h-full object-contain transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
+                />
+              )}
               
               {product.images.length > 1 && (
                 <>
                   <button 
                     onClick={prevImg}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/80 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/80 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm z-10"
                   >
                     <ChevronLeft className="w-6 h-6 -ml-0.5" />
                   </button>
                   <button 
                     onClick={nextImg}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/80 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/80 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm z-10"
                   >
                     <ChevronRight className="w-6 h-6 ml-0.5" />
                   </button>
                 </>
               )}
             </div>
-            <div className="grid grid-cols-3 gap-4">
-              {product.images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImg(i)}
-                  className={`aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all ${activeImg === i ? 'border-accent-blue opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
-                >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
+            <div className={`grid gap-4 ${
+              product.images.length <= 3 ? `grid-cols-${product.images.length}` : 'grid-cols-4'
+            }`}>
+              {product.images.map((img, i) => {
+                const isVid = img.toLowerCase().endsWith('.mp4');
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImg(i)}
+                    className={`aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all relative ${
+                      activeImg === i ? 'border-accent-blue opacity-100' : 'border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    {isVid ? (
+                      <div className="w-full h-full bg-slate-900 flex items-center justify-center relative">
+                        <video src={img} muted className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                          <svg className="w-6 h-6 text-white drop-shadow" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                        </div>
+                      </div>
+                    ) : (
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </motion.div>
 
