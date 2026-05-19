@@ -11,8 +11,9 @@ import toast from 'react-hot-toast';
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useCart();
+  const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
   const product = products.find(p => p.id === parseInt(id));
+  const cartItem = cart.find(item => item.id === product?.id);
   const [activeImg, setActiveImg] = React.useState(0);
   const [isLoaded, setIsLoaded] = React.useState(false);
 
@@ -156,16 +157,67 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Button size="lg" className="flex-1" onClick={handleBuyNow}>Buy Now</Button>
-              <Button size="lg" variant="secondary" className="flex-1" onClick={handleAddToCart}>Add to Cart</Button>
-              <Button variant="outline" size="lg" asChild>
-                <a href="https://wa.me/+919900390390" target="_blank" rel="noreferrer" className="flex items-center gap-2">
-                  <MessageCircle className="w-5 h-5 text-[#25D366]" />
-                  WhatsApp
-                </a>
-              </Button>
-            </div>
+            {cartItem ? (
+              <div className="space-y-4 mb-12">
+                <div className="flex items-center gap-4 bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-3 w-fit">
+                  <span className="text-slate-650 dark:text-slate-350 text-sm font-semibold">Quantity in Cart:</span>
+                  <div className="flex items-center gap-3">
+                    <button 
+                      onClick={() => {
+                        if (cartItem.quantity > 1) {
+                          updateQuantity(product.id, cartItem.quantity - 1);
+                        } else {
+                          removeFromCart(product.id);
+                          toast.success(`${product.name} removed from cart.`);
+                        }
+                      }}
+                      className="w-9 h-9 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center font-bold text-slate-800 dark:text-white transition-colors text-lg"
+                    >
+                      -
+                    </button>
+                    <span className="font-bold text-slate-900 dark:text-white w-8 text-center text-lg">{cartItem.quantity}</span>
+                    <button 
+                      onClick={() => updateQuantity(product.id, cartItem.quantity + 1)}
+                      className="w-9 h-9 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center font-bold text-slate-800 dark:text-white transition-colors text-lg"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      removeFromCart(product.id);
+                      toast.success(`${product.name} removed from cart.`);
+                    }}
+                    className="text-xs text-red-500 hover:text-red-650 ml-4 font-semibold hover:underline"
+                  >
+                    Remove
+                  </button>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button size="lg" className="flex-1" onClick={() => navigate('/cart')}>
+                    Go to Cart
+                  </Button>
+                  <Button variant="outline" size="lg" asChild className="flex-1 sm:flex-none">
+                    <a href="https://wa.me/+919900390390" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2">
+                      <MessageCircle className="w-5 h-5 text-[#25D366]" />
+                      WhatsApp
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                <Button size="lg" className="flex-1" onClick={handleBuyNow}>Buy Now</Button>
+                <Button size="lg" variant="secondary" className="flex-1" onClick={handleAddToCart}>Add to Cart</Button>
+                <Button variant="outline" size="lg" asChild>
+                  <a href="https://wa.me/+919900390390" target="_blank" rel="noreferrer" className="flex items-center gap-2">
+                    <MessageCircle className="w-5 h-5 text-[#25D366]" />
+                    WhatsApp
+                  </a>
+                </Button>
+              </div>
+            )}
 
             {/* Highlights */}
             {product.highlights && product.highlights.length > 0 && (
