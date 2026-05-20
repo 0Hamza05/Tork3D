@@ -22,7 +22,7 @@ export function Button({
   const sizes = {
     sm: "h-9 px-3 text-sm",
     md: "h-11 px-6 text-base",
-    lg: "h-14 px-8 text-lg"
+    lg: "py-4 px-8 text-base md:text-lg font-bold"
   };
 
   const Comp = asChild ? motion.a : motion.button;

@@ -101,10 +101,17 @@ export default function Contact() {
             <div className="glass-card p-8 flex flex-col items-center justify-center text-center">
               <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Need an instant reply?</h3>
               <p className="text-slate-600 dark:text-slate-300 mb-6 text-sm">Message us directly on WhatsApp for real-time support.</p>
-              <Button size="lg" className="w-full bg-[#25D366] hover:bg-[#25D366]/90 text-white shadow-none" asChild>
-                <a href="https://wa.me/919900390390" target="_blank" rel="noreferrer" className="flex items-center">
+              <Button 
+                size="lg" 
+                className="w-full bg-[#25D366] hover:bg-[#25D366]/90 text-white shadow-none flex items-center justify-center" 
+                asChild
+                href="https://wa.me/919900390390" 
+                target="_blank" 
+                rel="noreferrer"
+              >
+                <span className="flex items-center justify-center">
                   <MessageCircle className="w-5 h-5 mr-2" /> Chat on WhatsApp
-                </a>
+                </span>
               </Button>
             </div>
           </motion.div>

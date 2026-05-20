@@ -198,11 +198,17 @@ export default function ProductDetail() {
                   <Button size="lg" className="flex-1" onClick={() => navigate('/cart')}>
                     Go to Cart
                   </Button>
-                  <Button variant="outline" size="lg" asChild className="flex-1 sm:flex-none">
-                    <a href="https://wa.me/+919900390390" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2">
-                      <MessageCircle className="w-5 h-5 text-[#25D366]" />
-                      WhatsApp
-                    </a>
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    asChild 
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2"
+                    href="https://wa.me/+919900390390" 
+                    target="_blank" 
+                    rel="noreferrer"
+                  >
+                    <MessageCircle className="w-5 h-5 text-[#25D366]" />
+                    WhatsApp
                   </Button>
                 </div>
               </div>
@@ -210,11 +216,17 @@ export default function ProductDetail() {
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
                 <Button size="lg" className="flex-1" onClick={handleBuyNow}>Buy Now</Button>
                 <Button size="lg" variant="secondary" className="flex-1" onClick={handleAddToCart}>Add to Cart</Button>
-                <Button variant="outline" size="lg" asChild>
-                  <a href="https://wa.me/+919900390390" target="_blank" rel="noreferrer" className="flex items-center gap-2">
-                    <MessageCircle className="w-5 h-5 text-[#25D366]" />
-                    WhatsApp
-                  </a>
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  asChild
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2"
+                  href="https://wa.me/+919900390390" 
+                  target="_blank" 
+                  rel="noreferrer"
+                >
+                  <MessageCircle className="w-5 h-5 text-[#25D366]" />
+                  WhatsApp
                 </Button>
               </div>
             )}
