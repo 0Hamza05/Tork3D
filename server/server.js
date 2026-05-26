@@ -125,7 +125,7 @@ app.post('/api/create-order', orderLimiter, async (req, res) => {
         customer_email: orderData.customerEmail,
         total_amount: amountInPaise / 100, // convert back to INR
         order_type: orderData.type,
-        order_details: orderData.type === 'cart' ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone } : (orderData.specs || {}),
+        order_details: orderData.type === 'cart' ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy } : (orderData.specs || {}),
         status: 'payment_pending'
       }]);
 
@@ -532,21 +532,25 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
     // Save to Supabase
     const { error: dbError } = await supabase
       .from('tork3d_orders')
-      .insert([{
-        customer_name: orderData.customerName,
-        customer_email: orderData.customerEmail,
-        total_amount: totalAmount,
-        order_type: orderData.type,
-        order_details: {
-          items: orderData.items,
-          shippingMode: orderData.shippingMode,
-          shippingCost,
-          paymentType: 'COD',
-          shippingAddress: orderData.shippingAddress || null,
-          customerPhone: orderData.customerPhone
-        },
-        status: 'cod_pending'
-      }]);
+        .insert([
+          {
+            customer_name: orderData.customerName,
+            customer_email: orderData.customerEmail,
+            total_amount: totalAmount,
+            order_type: orderData.type,
+            order_details: {
+              items: orderData.items,
+              shippingMode: orderData.shippingMode,
+              shippingCost,
+              paymentType: 'COD',
+              shippingAddress: orderData.shippingAddress || null,
+              customerPhone: orderData.customerPhone,
+              referredBy: orderData.referredBy
+            },
+            status: 'cod_pending'
+          }
+        ]);
+
 
     if (dbError) {
       console.error('COD order Supabase error:', dbError);
