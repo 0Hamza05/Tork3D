@@ -379,7 +379,7 @@ const getCookie = (name) => {
                               <p className="text-base font-extrabold text-slate-900 dark:text-white">₹{shippingRates.prepaidSurface}</p>
                             </div>
                           </button>
-
+            <div className="bg-red-100 text-red-800 p-2 rounded-md mb-2 text-sm">⚠️ Cash on Delivery requires a ₹99 online pre‑payment before order confirmation.</div>
                           {/* Cash on Delivery Option */}
                           <button type="button" onClick={() => setPaymentType('cod')}
                             className={`p-4 rounded-xl border-2 text-left transition-all flex items-center justify-between gap-4 ${paymentType === 'cod' ? 'border-green-500 bg-green-500/10' : 'border-slate-300 dark:border-slate-700 hover:border-green-500/40 bg-transparent'}`}>
@@ -389,7 +389,7 @@ const getCookie = (name) => {
                               </div>
                               <div>
                                 <div className="flex items-center gap-2">
-                                  <span className="text-sm font-bold text-slate-900 dark:text-white">Cash on Delivery</span>
+                                  <span className="text-sm font-bold text-slate-900 dark:text-white">Cash on Delivery (₹99 pre‑pay required)</span>
                                 </div>
                                 <p className="text-xs text-slate-650 dark:text-slate-400 mt-0.5 font-medium">Pay when order is delivered</p>
                               </div>
