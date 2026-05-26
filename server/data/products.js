@@ -3,9 +3,9 @@ export const products = [
     id: 1,
     name: 'Cigarette Shaped Bubble Blower',
     price: 399,
-    weight: 40,                         // dead weight in grams
+    weight: 150,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
-    packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Novelty',
     material: 'PLA',
     image: '/Product Photos/Cigrettes/Cigrette - 1.jpeg',
