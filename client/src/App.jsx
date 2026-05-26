@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 
@@ -20,6 +21,22 @@ import Cart from './pages/Cart';
 import InteractiveBackground from './components/ui/InteractiveBackground';
 
 function App() {
+  // Referral handling: parse ref param and store in cookie
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    if (ref) {
+      const expires = new Date();
+      expires.setDate(expires.getDate() + 30);
+      document.cookie = `tork3d_ref=${encodeURIComponent(ref)}; expires=${expires.toUTCString()}; path=/`;
+    }
+  }, []);
+
+  const getCookie = (name) => {
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? decodeURIComponent(match[2]) : '';
+  };
+
   return (
     <ThemeProvider>
       <CartProvider>

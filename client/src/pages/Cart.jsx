@@ -28,7 +28,10 @@ export default function Cart() {
   const [shippingError, setShippingError] = useState('');
   const [selectedMode, setSelectedMode] = useState(null);
   const debounceRef = useRef(null);
-
+const getCookie = (name) => {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : '';
+};
   // Terms and Conditions states
   const [showTcModal, setShowTcModal] = useState(false);
   const [agreedTc, setAgreedTc] = useState(false);
@@ -94,6 +97,7 @@ export default function Cart() {
     customerName: customerInfo.name,
     customerEmail: customerInfo.email,
     customerPhone: customerInfo.phone,
+    referredBy: getCookie('tork3d_ref'),
     shippingAddress: fulfillment === 'pickup' ? null : {
       address1: customerInfo.address1,
       city: customerInfo.city,
