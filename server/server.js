@@ -236,6 +236,10 @@ app.post('/api/verify-payment', orderLimiter, async (req, res) => {
                     <td style="color:#fff;text-align:right;">₹${details.shippingCost || 0}</td>
                   </tr>
                   <tr>
+                    <td style="color:#777;font-size:12px;padding:4px 0;">Referral</td>
+                    <td style="color:#fff;text-align:right;">${orderRecord.order_details.referredBy || '—'}</td>
+                  </tr>
+                  <tr>
                     <td style="color:#777;font-size:12px;padding:4px 0;">Payment ID</td>
                     <td style="color:#22c55e;text-align:right;font-size:12px;">${razorpay_payment_id}</td>
                   </tr>
