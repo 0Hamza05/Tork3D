@@ -290,6 +290,7 @@ const getCookie = (name) => {
                         <span className="text-xs font-bold placeholder-slate-400 text-slate-900 dark:text-white">Cash on Delivery</span>
                       </div>
                       <p className="text-xs text-slate-600 dark:text-slate-300">Pay when it arrives</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">* ₹99 online pre‑payment required before confirming COD order.</p>
                     </button>
                   </div>
                 </div>
