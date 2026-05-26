@@ -362,6 +362,10 @@ app.post('/api/webhook', async (req, res) => {
                       <td style="color:#fff;text-align:right;">${details.customerPhone || '—'}</td>
                     </tr>
                     <tr>
+                      <td style="color:#777;font-size:12px;padding:4px 0;">Referral</td>
+                      <td style="color:#fff;text-align:right;">${orderRecord.order_details.referredBy || '—'}</td>
+                    </tr>
+                    <tr>
                       <td style="color:#777;font-size:12px;padding:4px 0;">Payment ID</td>
                       <td style="color:#22c55e;text-align:right;font-size:12px;">${razorpay_payment_id}</td>
                     </tr>
@@ -587,6 +591,7 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
               <tr><td style="color:#777;font-size:12px;padding:4px 0;">Phone</td><td style="color:#fff;text-align:right;">${escHtml(orderData.customerPhone || '—')}</td></tr>
               <tr><td style="color:#777;font-size:12px;padding:4px 0;">Delivery</td><td style="color:#fff;text-align:right;">${escHtml(shippingModeLabel)}</td></tr>
               <tr><td style="color:#777;font-size:12px;padding:4px 0;">Shipping Cost</td><td style="color:#fff;text-align:right;">₹${shippingCost}</td></tr>
+              <tr><td style="color:#777;font-size:12px;padding:4px 0;">Referral</td><td style="color:#fff;text-align:right;">${escHtml(orderData.referredBy || '—')}</td></tr>
             </table>
 
             <div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:16px;">
