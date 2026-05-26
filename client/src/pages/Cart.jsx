@@ -39,13 +39,13 @@ export default function Cart() {
 
   const shippingCost = fulfillment === 'pickup'
     ? 0
-    : selectedMode === 'express' ? shippingRates?.express ?? 0
-    : selectedMode === 'surface' ? shippingRates?.surface ?? 0
+    : paymentType === 'prepaid' ? shippingRates?.prepaidSurface ?? 0
+    : paymentType === 'cod' ? shippingRates?.codSurface ?? 0
     : 0;
 
   const totalPrice = subtotal + shippingCost;
 
-  // Re-fetch rates when pincode, weight, or payment type changes
+  // Re-fetch rates when pincode, weight, or subtotal changes
   useEffect(() => {
     const pincode = customerInfo.pincode;
     if (fulfillment === 'pickup') return;
@@ -58,20 +58,25 @@ export default function Cart() {
     debounceRef.current = setTimeout(async () => {
       setShippingLoading(true); setShippingError(''); setShippingRates(null); setSelectedMode(null);
       try {
-        const pt = paymentType === 'cod' ? 'COD' : 'Pre-paid';
-        const codAmount = paymentType === 'cod' ? subtotal : 0;
         const itemsParam = encodeURIComponent(JSON.stringify(cart.map(i => ({ id: i.id, quantity: i.quantity }))));
-        const res = await fetch(
-          `${API_BASE_URL}/api/shipping-rate?pincode=${pincode}&pt=${pt}&codAmount=${codAmount}&items=${itemsParam}`
-        );
-        const data = await res.json();
-        if (data.success) {
-          setShippingRates(data);
-          setSelectedMode(data.surface ? 'surface' : 'express');
+        const [prepaidRes, codRes] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/shipping-rate?pincode=${pincode}&pt=Pre-paid&codAmount=0&items=${itemsParam}`),
+          fetch(`${API_BASE_URL}/api/shipping-rate?pincode=${pincode}&pt=COD&codAmount=${subtotal}&items=${itemsParam}`)
+        ]);
+        
+        const prepaidData = await prepaidRes.json();
+        const codData = await codRes.json();
+
+        if (prepaidData.success && codData.success) {
+          setShippingRates({
+            prepaidSurface: prepaidData.surface || prepaidData.express || 0,
+            codSurface: codData.surface || codData.express || 0
+          });
+          setSelectedMode('surface');
         } else {
-          setShippingError(data.message || 'Pincode not serviceable');
+          setShippingError(prepaidData.message || codData.message || 'Pincode not serviceable');
         }
-      } catch {
+      } catch (err) {
         setShippingError('Could not fetch shipping rate. Please try again.');
       } finally {
         setShippingLoading(false);
@@ -79,7 +84,7 @@ export default function Cart() {
     }, 600);
 
     return () => clearTimeout(debounceRef.current);
-  }, [customerInfo.pincode, totalWeightGrams, fulfillment, paymentType]);
+  }, [customerInfo.pincode, totalWeightGrams, fulfillment, subtotal]);
 
   const buildOrderData = () => ({
     type: 'cart',
@@ -261,31 +266,30 @@ export default function Cart() {
                   value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})} />
               </div>
 
-              {/* Payment Method */}
-              <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
-                <h3 className="text-sm font-semibold mb-3 placeholder-slate-400 text-slate-900 dark:text-white">Payment Method</h3>
-                <div className="grid grid-cols-2 gap-3">
-                  <button type="button" onClick={() => setPaymentType('prepaid')}
-                    className={`p-3 rounded-xl border-2 text-left transition-all ${paymentType === 'prepaid' ? 'border-accent-orange bg-accent-orange/10' : 'border-slate-300 dark:border-slate-700 hover:border-accent-orange/40'}`}>
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <CreditCard className="w-3.5 h-3.5 text-accent-orange" />
-                      <span className="text-xs font-bold placeholder-slate-400 text-slate-900 dark:text-white">Pay Online</span>
-                    </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-300">UPI, Cards, Net Banking</p>
-                  </button>
-                  <button type="button" onClick={() => setPaymentType('cod')}
-                    className={`p-3 rounded-xl border-2 text-left transition-all ${paymentType === 'cod' ? 'border-green-500 bg-green-500/10' : 'border-slate-300 dark:border-slate-700 hover:border-green-500/40'}`}>
-                    <div className="flex items-center gap-1.5 mb-0.5">
-                      <Banknote className="w-3.5 h-3.5 text-green-500" />
-                      <span className="text-xs font-bold placeholder-slate-400 text-slate-900 dark:text-white">Cash on Delivery</span>
-                    </div>
-                    <p className="text-xs text-slate-600 dark:text-slate-300">Pay when it arrives</p>
-                  </button>
+              {/* Payment Method - Only shown for pickup fulfillment since delivery has unified comparative options at the bottom */}
+              {fulfillment === 'pickup' && (
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
+                  <h3 className="text-sm font-semibold mb-3 placeholder-slate-400 text-slate-900 dark:text-white">Payment Method</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button type="button" onClick={() => setPaymentType('prepaid')}
+                      className={`p-3 rounded-xl border-2 text-left transition-all ${paymentType === 'prepaid' ? 'border-accent-orange bg-accent-orange/10' : 'border-slate-300 dark:border-slate-700 hover:border-accent-orange/40'}`}>
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <CreditCard className="w-3.5 h-3.5 text-accent-orange" />
+                        <span className="text-xs font-bold placeholder-slate-400 text-slate-900 dark:text-white">Pay Online</span>
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-300">UPI, Cards, Net Banking</p>
+                    </button>
+                    <button type="button" onClick={() => setPaymentType('cod')}
+                      className={`p-3 rounded-xl border-2 text-left transition-all ${paymentType === 'cod' ? 'border-green-500 bg-green-500/10' : 'border-slate-300 dark:border-slate-700 hover:border-green-500/40'}`}>
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <Banknote className="w-3.5 h-3.5 text-green-500" />
+                        <span className="text-xs font-bold placeholder-slate-400 text-slate-900 dark:text-white">Cash on Delivery</span>
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-300">Pay when it arrives</p>
+                    </button>
+                  </div>
                 </div>
-                {paymentType === 'cod' && (
-                  <p className="text-xs text-amber-600 mt-2">⚠ COD surcharge may apply and is included in the shipping rate shown below.</p>
-                )}
-              </div>
+              )}
 
               {/* Fulfilment Method */}
               <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
@@ -337,42 +341,71 @@ export default function Cart() {
                       value={customerInfo.pincode} onChange={e => setCustomerInfo({...customerInfo, pincode: e.target.value.replace(/\D/g, '')})} />
 
                     {shippingLoading && (
-                      <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                        <Loader2 className="w-4 h-4 animate-spin" /> Fetching delivery rates…
+                      <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 py-1">
+                        <Loader2 className="w-4 h-4 animate-spin text-accent-orange" /> Fetching delivery rates…
                       </div>
                     )}
                     {shippingError && !shippingLoading && (
-                      <div className="flex items-center gap-2 text-sm text-red-500">
-                        <AlertCircle className="w-4 h-4" /> {shippingError}
+                      <div className="flex items-center gap-2 text-sm text-red-500 bg-red-500/10 p-3 rounded-xl border border-red-500/20 mt-1">
+                        <AlertCircle className="w-4 h-4 flex-shrink-0" /> {shippingError}
                       </div>
                     )}
                     {shippingRates && !shippingLoading && (
-                      <div>
-                        <p className="text-xs text-slate-600 dark:text-slate-300 mb-2 uppercase tracking-wider">Choose delivery speed</p>
-                        <div className="grid grid-cols-2 gap-3">
-                          {shippingRates.express && (
-                            <button type="button" onClick={() => setSelectedMode('express')}
-                              className={`p-3 rounded-xl border-2 text-left transition-all ${selectedMode === 'express' ? 'border-accent-orange bg-accent-orange/10' : 'border-slate-300 dark:border-slate-700 hover:border-accent-orange/50'}`}>
-                              <div className="flex items-center gap-1.5 mb-1">
-                                <Zap className="w-3.5 h-3.5 text-accent-orange" />
-                                <span className="text-xs font-bold text-slate-900 dark:text-white">Express</span>
+                      <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                        <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Choose Payment & Shipping</p>
+                        <div className="grid grid-cols-1 gap-3">
+                          {/* Pay Online Option */}
+                          <button type="button" onClick={() => setPaymentType('prepaid')}
+                            className={`p-4 rounded-xl border-2 text-left transition-all flex items-center justify-between gap-4 ${paymentType === 'prepaid' ? 'border-accent-orange bg-accent-orange/10' : 'border-slate-300 dark:border-slate-700 hover:border-accent-orange/40 bg-transparent'}`}>
+                            <div className="flex items-start gap-3">
+                              <div className="p-2 bg-accent-orange/10 rounded-lg mt-0.5">
+                                <CreditCard className="w-5 h-5 text-accent-orange" />
                               </div>
-                              <p className="text-lg font-bold text-slate-900 dark:text-white">₹{shippingRates.express}</p>
-                              <p className="text-xs text-slate-600 dark:text-slate-300">1–3 business days</p>
-                            </button>
-                          )}
-                          {shippingRates.surface && (
-                            <button type="button" onClick={() => setSelectedMode('surface')}
-                              className={`p-3 rounded-xl border-2 text-left transition-all ${selectedMode === 'surface' ? 'border-accent-blue bg-accent-blue/10' : 'border-slate-300 dark:border-slate-700 hover:border-accent-blue/50'}`}>
-                              <div className="flex items-center gap-1.5 mb-1">
-                                <Truck className="w-3.5 h-3.5 text-accent-blue" />
-                                <span className="text-xs font-bold text-slate-900 dark:text-white">Standard</span>
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-bold text-slate-900 dark:text-white">Pay Online</span>
+                                  <span className="text-[10px] font-bold bg-green-500/20 text-green-600 dark:text-green-400 px-1.5 py-0.5 rounded-full">Recommended</span>
+                                </div>
+                                <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">UPI, Cards, Net Banking</p>
                               </div>
-                              <p className="text-lg font-bold text-slate-900 dark:text-white">₹{shippingRates.surface}</p>
-                              <p className="text-xs text-slate-600 dark:text-slate-300">4–7 business days</p>
-                            </button>
-                          )}
+                            </div>
+                            <div className="text-right">
+                              <p className="text-[10px] text-slate-500 dark:text-slate-450 uppercase font-semibold">Shipping</p>
+                              <p className="text-base font-extrabold text-slate-900 dark:text-white">₹{shippingRates.prepaidSurface}</p>
+                            </div>
+                          </button>
+
+                          {/* Cash on Delivery Option */}
+                          <button type="button" onClick={() => setPaymentType('cod')}
+                            className={`p-4 rounded-xl border-2 text-left transition-all flex items-center justify-between gap-4 ${paymentType === 'cod' ? 'border-green-500 bg-green-500/10' : 'border-slate-300 dark:border-slate-700 hover:border-green-500/40 bg-transparent'}`}>
+                            <div className="flex items-start gap-3">
+                              <div className="p-2 bg-green-500/10 rounded-lg mt-0.5">
+                                <Banknote className="w-5 h-5 text-green-500" />
+                              </div>
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-sm font-bold text-slate-900 dark:text-white">Cash on Delivery</span>
+                                </div>
+                                <p className="text-xs text-slate-650 dark:text-slate-400 mt-0.5 font-medium">Pay when order is delivered</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-[10px] text-slate-500 dark:text-slate-450 uppercase font-semibold">Shipping</p>
+                              <p className="text-base font-extrabold text-slate-900 dark:text-white">₹{shippingRates.codSurface}</p>
+                            </div>
+                          </button>
                         </div>
+                        {paymentType === 'cod' ? (
+                          <p className="text-[11px] text-amber-600 dark:text-amber-400 flex items-start gap-1.5 bg-amber-500/5 p-2 rounded-lg border border-amber-500/10">
+                            <AlertCircle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                            <span>COD standard shipping includes a surcharge charged by the courier for cash collection. Save on shipping fees by choosing to Pay Online.</span>
+                          </p>
+                        ) : (
+                          <p className="text-[11px] text-green-600 dark:text-green-400 flex items-start gap-1.5 bg-green-500/5 p-2 rounded-lg border border-green-500/10">
+                            <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                            <span>You are saving on shipping charges by paying online! Thank you for choosing prepaid.</span>
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
