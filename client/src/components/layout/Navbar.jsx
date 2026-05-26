@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
 import { useTheme } from '../../context/ThemeContext';
-import { Sun, Moon, Menu, X, Hexagon, ShoppingCart } from 'lucide-react';
+import { Sun, Moon, Menu, X, ShoppingCart } from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 const navLinks = [
@@ -44,7 +44,7 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link to="/" onClick={handleLogoClick} className="flex items-center gap-2 group">
-              <Hexagon className="h-8 w-8 text-accent-orange group-hover:text-accent-blue transition-colors duration-300" />
+              <img src="/favicon.png" alt="Tork3D Logo" className="h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-110" />
               <span className="text-xl font-bold tracking-tight">Tork<span className="text-accent-orange group-hover:text-accent-blue transition-colors duration-300">3D</span></span>
             </Link>
           </div>

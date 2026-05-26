@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Hexagon, Instagram, Mail, Phone } from 'lucide-react';
+import { Instagram, Mail, Phone } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -10,7 +10,7 @@ export default function Footer() {
 
           <div className="space-y-4">
             <Link to="/" className="flex items-center gap-2">
-              <Hexagon className="h-6 w-6 text-accent-orange" />
+              <img src="/favicon.png" alt="Tork3D Logo" className="h-6 w-6 object-contain" />
               <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Tork<span className="text-accent-orange">3D</span></span>
             </Link>
             <p className="text-slate-600 dark:text-slate-300 text-sm">
