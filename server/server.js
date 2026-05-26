@@ -602,8 +602,12 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
               <p style="margin:0 0 10px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Items Ordered</p>
               <ul style="margin:0;padding:0;list-style:none;">${itemsHtml}</ul>
               <div style="margin-top:12px;padding-top:12px;border-top:1px solid #333;">
-                <strong style="color:#fff;">Total to Collect: </strong>
-                <strong style="color:#F97316;font-size:18px;">₹${totalAmount}</strong>
+                <strong style="color:#fff;">Full Order Amount: </strong>
+                <strong style="color:#F97316;font-size:18px;">₹${totalAmount}</strong><br/>
+                <strong style="color:#fff;">Prepaid: </strong>
+                <strong style="color:#F97316;font-size:18px;">₹99</strong><br/>
+                <strong style="color:#fff;">Remaining to Collect: </strong>
+                <strong style="color:#F97316;font-size:18px;">₹${totalAmount - 99}</strong>
               </div>
             </div>
 

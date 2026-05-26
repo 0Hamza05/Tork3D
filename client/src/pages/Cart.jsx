@@ -488,13 +488,26 @@ const getCookie = (name) => {
                   className="flex-1 text-sm animate-pulse" 
                   disabled={!agreedTc || isProcessing} 
                   onClick={async () => {
-                    setShowTcModal(false);
-                    if (pendingCheckoutType === 'cod') {
-                      await executeCodCheckout();
-                    } else {
-                      await executeOnlineCheckout();
-                    }
-                  }}
+  setShowTcModal(false);
+  if (pendingCheckoutType === 'cod') {
+    // Prepay Rs 99 before confirming COD order
+    const prepayOptions = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: 99 * 100, // 99 INR in paise
+      currency: 'INR',
+      name: 'Tork3D Fabrication',
+      description: 'COD Prepayment ₹99',
+      handler: async function (response) {
+        // After successful prepayment, place COD order
+        await executeCodCheckout();
+      },
+      theme: { color: '#F97316' }
+    };
+    new window.Razorpay(prepayOptions).open();
+  } else {
+    await executeOnlineCheckout();
+  }
+}}
                 >
                   {isProcessing ? 'Processing…' : pendingCheckoutType === 'cod' ? 'Agree & Place Order' : 'Agree & Pay'}
                 </Button>
