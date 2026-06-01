@@ -7,7 +7,7 @@ export default function WhatsAppWidget() {
       href="https://wa.me/919900390390"
       target="_blank"
       rel="noreferrer"
-      className="fixed bottom-6 right-6 z-50 group flex items-center justify-center w-14 h-14 bg-green-500 rounded-full shadow-lg hover:bg-green-600 hover:scale-110 transition-all duration-300"
+      className="fixed bottom-6 right-6 z-50 group flex items-center justify-center w-14 h-14 bg-green-500 rounded-full shadow-lg hover:bg-green-600 hover:scale-110 transition-all duration-300 sm:bottom-6"
       aria-label="Chat on WhatsApp"
     >
       {/* WhatsApp SVG Icon */}
@@ -21,7 +21,7 @@ export default function WhatsAppWidget() {
       </svg>
       
       {/* Tooltip */}
-      <span className="absolute right-16 px-3 py-1.5 bg-slate-800 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg pointer-events-none">
+      <span className="absolute right-full mr-3 px-3 py-1.5 bg-slate-800 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg pointer-events-none">
         Chat with us
       </span>
     </a>

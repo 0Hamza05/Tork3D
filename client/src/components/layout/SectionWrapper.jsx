@@ -1,8 +1,10 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '../../lib/utils';
 
 export function SectionWrapper({ children, className, id }) {
+  const prefersReduced = useReducedMotion();
+
   return (
     <section id={id} className={cn("py-20 md:py-32 overflow-hidden", className)}>
       <motion.div
@@ -13,7 +15,7 @@ export function SectionWrapper({ children, className, id }) {
           hidden: {},
           show: {
             transition: {
-              staggerChildren: 0.1
+              staggerChildren: prefersReduced ? 0 : 0.1
             }
           }
         }}
@@ -25,11 +27,23 @@ export function SectionWrapper({ children, className, id }) {
   );
 }
 
+export function useFadeIn() {
+  const prefersReduced = useReducedMotion();
+  return {
+    hidden: { opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 30 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: prefersReduced ? { duration: 0 } : { ease: [0.16, 1, 0.3, 1], duration: 0.6 }
+    }
+  };
+}
+
 export const fadeIn = {
   hidden: { opacity: 0, y: 30 },
-  show: { 
-    opacity: 1, 
+  show: {
+    opacity: 1,
     y: 0,
-    transition: { type: 'spring', duration: 0.8, bounce: 0.3 }
+    transition: { ease: [0.16, 1, 0.3, 1], duration: 0.6 }
   }
 };

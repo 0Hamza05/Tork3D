@@ -60,7 +60,7 @@ export const products = [
   {
     id: 3,
     name: 'Spiderman Hueforge',
-    price: 250,
+    price: 299,
     weight: 30,                         // dead weight in grams
     packageType: 'box',                   // 'box' | 'flyer'
     packageDimensions: { l: 25, w: 25, h: 5 }, // packed dims in cm
@@ -87,7 +87,7 @@ export const products = [
   {
     id: 4,
     name: 'Pokedex Magnetic Fidget',
-    price: 349,
+    price: 249,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
@@ -117,7 +117,7 @@ export const products = [
   {
     id: 5,
     name: 'Batman Magnetic Fidget',
-    price: 349,
+    price: 249,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
@@ -147,7 +147,7 @@ export const products = [
   {
     id: 6,
     name: 'Spiderman Magnetic Fidget',
-    price: 349,
+    price: 249,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
@@ -171,6 +171,34 @@ export const products = [
       'Dimensions': '45 x 35 x 15 mm',
       'Weight': '25 g',
       'Material': 'PLA, Neodymium Magnets',
+      'Lead Time': '2–4 Business Days',
+    }
+  },
+  {
+    id: 7,
+    name: 'Screaming Whistle',
+    price: 349,
+    weight: 50,                           // dead weight in grams (15 g print + ~35 g packaging)
+    packageType: 'flyer',                  // 'box' | 'flyer'
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
+    category: 'Novelty',
+    material: 'PLA',
+    image: '/Product Photos/Screaming Whistle/Screaming Whistle - 1.jpeg',
+    description: 'A hauntingly unique Mayan skull-shaped whistle that releases a blood-curdling scream when blown with force. Inspired by ancient Aztec death whistles, this eerie novelty piece produces a startlingly realistic human-scream sound that will shock anyone nearby. A jaw-dropping conversation starter and collector\'s item.',
+    highlights: [
+      'Authentic Mayan/Aztec death whistle design',
+      'Produces a chilling human-like screaming sound',
+      'Unique skull shape — great novelty gift or collector\'s item',
+      'Lightweight and durable PLA construction',
+    ],
+    images: [
+      '/Product Photos/Screaming Whistle/Screaming Whistle - 1.jpeg',
+      '/Product Photos/Screaming Whistle/Screaming Whistle - 2.jpeg',
+      '/Product Photos/Screaming Whistle/Screaming Whistle - 3.jpeg',
+    ],
+    specs: {
+      'Dimensions': '43 x 33 x 32 mm',
+      'Weight': '~15 g',
       'Lead Time': '2–4 Business Days',
     }
   }

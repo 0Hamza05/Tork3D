@@ -10,7 +10,7 @@ export function Button({
   asChild,
   ...props 
 }) {
-  const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-accent-blue focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
+  const baseStyles = "inline-flex items-center justify-center rounded-md font-semibold tracking-tight transition-all focus:outline-none focus:ring-2 focus:ring-accent-orange focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-950 disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
   
   const variants = {
     primary: "bg-accent-orange text-white hover:bg-accent-orange/90 shadow-lg shadow-orange-500/20",

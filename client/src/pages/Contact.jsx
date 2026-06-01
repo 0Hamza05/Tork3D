@@ -69,7 +69,7 @@ export default function Contact() {
                 <div>
                   <h3 className="text-xl font-bold mb-1 text-slate-900 dark:text-white">Email Us</h3>
                   <p className="text-slate-600 dark:text-slate-300">tork3d.design@gmail.com</p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">We typically reply within 24 hours</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">We typically reply within a few hours</p>
                 </div>
               </div>
 
@@ -125,7 +125,7 @@ export default function Contact() {
                 <CheckCircle2 className="w-16 h-16 text-green-500" />
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">Message Sent!</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xs">
-                  We've received your message and will get back to you within 24 hours.
+                  We've received your message and will get back to you shortly.
                 </p>
                 <button onClick={() => setSuccess(false)} className="text-sm text-accent-orange hover:underline mt-2">
                   Send another message
@@ -136,27 +136,27 @@ export default function Contact() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Name *</label>
                   <input name="name" type="text" required value={form.name} onChange={handleChange}
-                    className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white" />
+                    className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Email *</label>
                   <input name="email" type="email" required value={form.email} onChange={handleChange}
-                    className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white" />
+                    className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Mobile Number *</label>
                   <input name="phone" type="tel" required pattern="\d{10}" title="Please enter a valid 10-digit phone number." value={form.phone} onChange={handleChange}
-                    className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white" />
+                    className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Subject</label>
                   <input name="subject" type="text" value={form.subject} onChange={handleChange}
-                    className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white" />
+                    className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Message *</label>
                   <textarea name="message" rows="5" required value={form.message} onChange={handleChange}
-                    className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue resize-none text-slate-900 dark:text-white" />
+                    className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue resize-none text-slate-900 dark:text-white" />
                 </div>
 
                 {error && <p className="text-sm text-red-500">{error}</p>}

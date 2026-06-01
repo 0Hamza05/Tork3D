@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Check, Truck, Shield, MessageCircle, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
@@ -16,11 +16,18 @@ export default function ProductDetail() {
   const cartItem = cart.find(item => item.id === product?.id);
   const [activeImg, setActiveImg] = React.useState(0);
   const [isLoaded, setIsLoaded] = React.useState(false);
+  const prefersReduced = useReducedMotion();
+  const videoRef = React.useRef(null);
 
-  // Reset loading state when active image changes
   React.useEffect(() => {
     setIsLoaded(false);
   }, [activeImg]);
+
+  React.useEffect(() => {
+    if (prefersReduced && videoRef.current) {
+      videoRef.current.pause();
+    }
+  }, [prefersReduced]);
 
   const nextImg = () => {
     if (product?.images) setActiveImg(prev => (prev + 1) % product.images.length);
@@ -64,16 +71,17 @@ export default function ProductDetail() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Gallery */}
           <motion.div variants={fadeIn} className="space-y-4">
-            <div className="relative aspect-square rounded-2xl overflow-hidden glass-card border-none bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 group">
+            <div className="relative aspect-square rounded-2xl overflow-hidden glass-card border-none bg-secondary dark:bg-slate-800 group">
               {!isLoaded && (
                 <div className="absolute inset-0 animate-pulse bg-slate-200 dark:bg-slate-700" />
               )}
               {product.images[activeImg]?.toLowerCase().endsWith('.mp4') ? (
-                <video 
-                  src={product.images[activeImg]} 
+                <video
+                  ref={videoRef}
+                  src={product.images[activeImg]}
                   controls
                   playsInline
-                  autoPlay
+                  autoPlay={!prefersReduced}
                   loop
                   onCanPlay={() => setIsLoaded(true)}
                   className={`w-full h-full object-contain transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
@@ -89,14 +97,16 @@ export default function ProductDetail() {
               
               {product.images.length > 1 && (
                 <>
-                  <button 
+                  <button
                     onClick={prevImg}
+                    aria-label="Previous image"
                     className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/80 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm z-10"
                   >
                     <ChevronLeft className="w-6 h-6 -ml-0.5" />
                   </button>
-                  <button 
+                  <button
                     onClick={nextImg}
+                    aria-label="Next image"
                     className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/50 hover:bg-black/80 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm z-10"
                   >
                     <ChevronRight className="w-6 h-6 ml-0.5" />
@@ -105,7 +115,10 @@ export default function ProductDetail() {
               )}
             </div>
             <div className={`grid gap-4 ${
-              product.images.length <= 3 ? `grid-cols-${product.images.length}` : 'grid-cols-4'
+              product.images.length === 1 ? 'grid-cols-1' :
+              product.images.length === 2 ? 'grid-cols-2' :
+              product.images.length === 3 ? 'grid-cols-3' :
+              'grid-cols-4'
             }`}>
               {product.images.map((img, i) => {
                 const isVid = img.toLowerCase().endsWith('.mp4');
@@ -113,6 +126,7 @@ export default function ProductDetail() {
                   <button
                     key={i}
                     onClick={() => setActiveImg(i)}
+                    aria-label={`View image ${i + 1} of ${product.images.length}`}
                     className={`aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all relative ${
                       activeImg === i ? 'border-accent-blue opacity-100' : 'border-transparent opacity-60 hover:opacity-100'
                     }`}
@@ -159,8 +173,8 @@ export default function ProductDetail() {
 
             {cartItem ? (
               <div className="space-y-4 mb-12">
-                <div className="flex items-center gap-4 bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-3 w-fit">
-                  <span className="text-slate-650 dark:text-slate-350 text-sm font-semibold">Quantity in Cart:</span>
+                <div className="flex items-center gap-4 bg-secondary dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-3 w-fit">
+                  <span className="text-slate-600 dark:text-slate-300 text-sm font-semibold">Quantity in Cart:</span>
                   <div className="flex items-center gap-3">
                     <button 
                       onClick={() => {
@@ -188,7 +202,7 @@ export default function ProductDetail() {
                       removeFromCart(product.id);
                       toast.success(`${product.name} removed from cart.`);
                     }}
-                    className="text-xs text-red-500 hover:text-red-650 ml-4 font-semibold hover:underline"
+                    className="text-xs text-red-500 hover:text-red-600 ml-4 font-semibold hover:underline"
                   >
                     Remove
                   </button>
@@ -207,7 +221,7 @@ export default function ProductDetail() {
                     target="_blank" 
                     rel="noreferrer"
                   >
-                    <MessageCircle className="w-5 h-5 text-[#25D366]" />
+                    <MessageCircle className="w-5 h-5 text-whatsapp" />
                     WhatsApp
                   </Button>
                 </div>
@@ -225,7 +239,7 @@ export default function ProductDetail() {
                   target="_blank" 
                   rel="noreferrer"
                 >
-                  <MessageCircle className="w-5 h-5 text-[#25D366]" />
+                  <MessageCircle className="w-5 h-5 text-whatsapp" />
                   WhatsApp
                 </Button>
               </div>
@@ -250,7 +264,7 @@ export default function ProductDetail() {
             {Object.keys(product.specs).length > 0 && (
               <div className="flex flex-wrap gap-4">
                 {Object.entries(product.specs).map(([key, value]) => (
-                  <div key={key} className="bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 rounded-xl px-5 py-3 border border-slate-200 dark:border-slate-800 text-center">
+                  <div key={key} className="bg-secondary dark:bg-slate-800 rounded-xl px-5 py-3 border border-slate-200 dark:border-slate-800 text-center">
                     <div className="text-xs text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">{key}</div>
                     <div className="font-semibold text-slate-900 dark:text-white text-sm">{value}</div>
                   </div>

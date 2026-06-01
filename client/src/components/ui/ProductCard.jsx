@@ -34,9 +34,10 @@ export function ProductCard({ product }) {
           {!isLoaded && (
             <div className="absolute inset-0 animate-pulse bg-slate-200 dark:bg-slate-700" />
           )}
-          <img 
-            src={product.image} 
-            alt={product.name} 
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
             onLoad={() => setIsLoaded(true)}
             className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${isLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}`}
           />

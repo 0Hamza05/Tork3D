@@ -1,179 +1,344 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useMemo, useState, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Settings, Clock, Layers, ShieldCheck, PenTool, Cpu } from 'lucide-react';
+import { ArrowRight, Settings, Clock, Layers, ShieldCheck, PenTool, Cpu, Circle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { ProductCard } from '../components/ui/ProductCard';
-
 import { products } from '../data/products';
 
+// Pull in all gallery images + every product image for the hero carousel
+const galleryModules = import.meta.glob('../assets/gallery/**/*.{jpg,jpeg,png,webp,gif,JPG,JPEG,PNG,WEBP}', { eager: true });
+const GALLERY_IMGS = Object.values(galleryModules).map(m => m.default).filter(Boolean);
+const PRODUCT_IMGS = products
+  .map(p => p.image)
+  .filter(src => src && /\.(jpe?g|png|webp|gif)$/i.test(src));
+
 const FEATURES = [
-  { icon: Settings, title: 'Precision', desc: 'Down to 0.08mm layer height' },
-  { icon: Clock, title: 'Fast Turnaround', desc: 'As quick as 24 hours' },
-  { icon: Layers, title: 'CAD Support', desc: 'Dedicated engineering team' },
-  { icon: ShieldCheck, title: 'Reliability', desc: 'Quality control on every print' },
-  { icon: Cpu, title: 'Engineered Materials', desc: 'PLA, PETG, and TPU' },
-  { icon: PenTool, title: 'Customization', desc: 'From idea to final product' },
+  { icon: Settings, title: 'Precision',           desc: 'Down to 0.08mm layer height' },
+  { icon: Clock,    title: 'Fast Turnaround',     desc: 'Quick dispatch on every order' },
+  { icon: Layers,   title: 'CAD Support',         desc: 'Dedicated engineering team' },
+  { icon: ShieldCheck, title: 'Reliability',      desc: 'Quality control on every print' },
+  { icon: Cpu,      title: 'Engineered Materials', desc: 'PLA, PETG, and TPU' },
+  { icon: PenTool,  title: 'Customization',       desc: 'From idea to final product' },
 ];
 
+// ── Hero Carousel ──────────────────────────────────────────────────────────
+function HeroCarousel({ prefersReduced }) {
+  const imgs = useMemo(() => [...GALLERY_IMGS, ...PRODUCT_IMGS], []);
+  const [current, setCurrent] = useState(0);
+
+  // Auto-advance every 3 seconds
+  useEffect(() => {
+    if (prefersReduced || imgs.length === 0) return;
+    const id = setInterval(() => {
+      setCurrent(c => (c + 1) % imgs.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [imgs.length, prefersReduced]);
+
+  if (imgs.length === 0) return null;
+
+  return (
+    <motion.div
+      className="hidden lg:block relative h-[560px] xl:h-[640px] rounded-lg overflow-hidden"
+      initial={{ opacity: prefersReduced ? 1 : 0, scale: prefersReduced ? 1 : 0.97 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={prefersReduced ? { duration: 0 } : { duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+    >
+      {imgs.map((src, i) => (
+        <img
+          key={src}
+          src={src}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+          style={{ opacity: i === current ? 1 : 0 }}
+          loading={i === 0 ? 'eager' : 'lazy'}
+        />
+      ))}
+
+      {/* Orange gradient wash at bottom */}
+      <div className="absolute inset-0 bg-gradient-to-t from-accent-orange/20 via-transparent to-transparent pointer-events-none" />
+
+      {/* Dot indicators */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+        {imgs.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+              i === current ? 'bg-white w-4' : 'bg-white/40'
+            }`}
+            aria-label={`Go to image ${i + 1}`}
+          />
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Home() {
+  const prefersReduced = useReducedMotion();
+
   return (
     <div className="flex flex-col w-full">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden py-24">
-        {/* Abstract Background */}
-        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-accent-blue/15 dark:bg-accent-blue/20 rounded-full filter blur-[100px] animate-blob" />
-          <div className="absolute top-1/3 right-1/4 w-[500px] h-[500px] bg-accent-orange/15 dark:bg-accent-orange/20 rounded-full filter blur-[100px] animate-blob animation-delay-2000" />
-          <div className="absolute -bottom-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-accent-blue/15 dark:bg-accent-blue/20 rounded-full filter blur-[120px] animate-blob animation-delay-4000" />
-          
-          {/* Decorative Blueprint Markers */}
-          <div className="absolute top-20 left-20 w-32 h-32 border-l-2 border-t-2 border-slate-300 dark:border-slate-700" />
-          <div className="absolute bottom-20 right-20 w-32 h-32 border-r-2 border-b-2 border-slate-300 dark:border-slate-700" />
-        </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="relative">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="flex justify-center"
-            >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-800 text-accent-orange mb-8 backdrop-blur-sm shadow-sm">
-                <span className="relative flex h-3 w-3">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-orange opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-3 w-3 bg-accent-orange"></span>
-                </span>
-                <span className="text-sm font-medium">Now accepting custom orders</span>
-              </div>
-            </motion.div>
+      {/* ── Hero ─────────────────────────────────────────────────── */}
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-canvas dark:bg-canvas-dark">
 
-            <div className="relative inline-block mb-6">
-              <motion.h1 
-                className="text-5xl md:text-7xl font-extrabold tracking-tight pb-2 text-slate-900 dark:text-white"
-                initial={{ clipPath: "inset(100% 0 0 0)" }}
-                animate={{ clipPath: "inset(0% 0 0 0)" }}
-                transition={{ duration: 0.8, ease: "linear", delay: 0.2 }}
-              >
-                Custom 3D Printing & <br className="hidden md:block" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent-blue to-accent-orange pb-2">
-                  Engineering Solutions
-                </span>
-              </motion.h1>
-              
-              {/* Laser / Extruder Line */}
+        {/* Engineering grid texture */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(15,23,42,0.04) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(15,23,42,0.04) 1px, transparent 1px)
+            `,
+            backgroundSize: '48px 48px',
+          }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none dark:block hidden"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px)
+            `,
+            backgroundSize: '48px 48px',
+          }}
+        />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-32 lg:py-0 lg:min-h-screen flex items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_460px] xl:grid-cols-[1fr_540px] gap-12 xl:gap-20 items-center w-full">
+
+            {/* Left: text */}
+            <div>
               <motion.div
-                className="absolute left-[-5%] right-[-5%] h-[3px] bg-accent-blue shadow-[0_0_20px_rgba(56,189,248,1),0_0_40px_rgba(56,189,248,0.8)] rounded-full z-20 pointer-events-none"
-                initial={{ top: "100%", opacity: 0 }}
-                animate={{ 
-                  top: "0%", 
-                  opacity: [0, 1, 1, 0],
-                  scaleX: [0.8, 1, 1, 0.8] 
-                }}
-                transition={{ 
-                  top: { duration: 0.8, ease: "linear", delay: 0.2 },
-                  opacity: { duration: 1.0, times: [0, 0.1, 0.9, 1], ease: "linear", delay: 0.1 },
-                  scaleX: { duration: 0.8, ease: "linear", delay: 0.2 }
-                }}
-              />
+                initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={prefersReduced ? { duration: 0 } : { duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="flex items-center gap-2.5 mb-10"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-accent-orange flex-shrink-0" />
+                <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-[0.18em]">
+                  Now accepting custom orders
+                </span>
+              </motion.div>
+
+              <motion.h1
+                className="font-display font-black leading-[0.88] tracking-tight text-slate-900 dark:text-white mb-8"
+                style={{ fontSize: 'clamp(64px, 10vw, 128px)' }}
+                initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={prefersReduced ? { duration: 0 } : { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+              >
+                Precision<br />
+                <span className="text-accent-orange">3D</span><br />
+                Printing.
+              </motion.h1>
+
+              <motion.p
+                className="text-lg text-slate-500 dark:text-slate-400 max-w-[38ch] mb-10 leading-relaxed"
+                initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={prefersReduced ? { duration: 0 } : { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.18 }}
+              >
+                Industrial-grade materials, 0.08mm layer height, quality-checked on every print. Made in India.
+              </motion.p>
+
+              <motion.div
+                className="flex flex-col sm:flex-row gap-3 pb-20 sm:pb-0"
+                initial={{ opacity: prefersReduced ? 1 : 0, y: prefersReduced ? 0 : 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={prefersReduced ? { duration: 0 } : { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.26 }}
+              >
+                <Link to="/custom">
+                  <Button size="lg" className="group">
+                    Request a Quote
+                    <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <Link to="/shop">
+                  <Button variant="secondary" size="lg">
+                    Browse Products
+                  </Button>
+                </Link>
+              </motion.div>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 1.2 }}
-            >
-              <p className="mt-4 max-w-2xl text-xl text-slate-600 dark:text-slate-300 mx-auto mb-10">
-                Bring your ideas to life with industrial-grade materials, precision engineering, and lightning-fast turnaround times.
-              </p>
+            {/* Right: scrolling image carousel */}
+            <HeroCarousel prefersReduced={prefersReduced} />
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/custom" className="w-full sm:w-auto">
-                  <Button size="lg" className="group w-full">
-                    <span className="flex items-center justify-center whitespace-nowrap">
-                      Request Custom Print
-                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </Button>
-                </Link>
-                <Link to="/shop" className="w-full sm:w-auto">
-                  <Button variant="secondary" size="lg" className="w-full">
-                    Shop Products
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* ── Marquee spec strip ───────────────────────────────────── */}
+      <div className="border-y border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 overflow-hidden py-3.5 select-none">
+        <div className="marquee-track" aria-hidden="true">
+          {[...Array(2)].map((_, pass) => (
+            <div key={pass} className="flex items-center shrink-0">
+              {[
+                'PLA', 'PETG', 'TPU',
+                '0.08 mm precision', 'Fast dispatch',
+                'Custom prints', 'Made in India',
+                'Same-day quotes', 'CAD support',
+                'Quality checked',
+              ].map((item) => (
+                <React.Fragment key={item}>
+                  <span className="font-display font-bold text-sm uppercase tracking-widest text-slate-800 dark:text-slate-200 whitespace-nowrap px-6">
+                    {item}
+                  </span>
+                  <span className="text-accent-orange text-xs" aria-hidden="true">◆</span>
+                </React.Fragment>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Featured Products ────────────────────────────────────── */}
       <SectionWrapper>
-        <div className="flex justify-between items-end mb-12">
+        <div className="flex justify-between items-end mb-10">
           <motion.div variants={fadeIn}>
-            <h2 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">Featured Products</h2>
-            <p className="text-slate-600 dark:text-slate-300">Hand-picked selections from our catalog.</p>
+            <h2 className="font-display font-black text-4xl md:text-5xl text-slate-900 dark:text-white leading-tight">
+              Featured Products
+            </h2>
           </motion.div>
-          <Link to="/shop" className="hidden sm:flex items-center text-accent-blue font-semibold hover:text-accent-blue/80 transition-colors">
-            View all <ArrowRight className="ml-2 w-4 h-4" />
+          <Link
+            to="/shop"
+            className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-accent-orange hover:text-accent-orange/80 transition-colors"
+          >
+            View all <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {products.slice(0, 4).map(product => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
-        
-        <Link to="/shop" className="sm:hidden mt-8 flex justify-center items-center text-accent-blue font-semibold hover:text-accent-blue/80 transition-colors">
-          View all products <ArrowRight className="ml-2 w-4 h-4" />
+
+        <Link
+          to="/shop"
+          className="sm:hidden mt-8 flex justify-center items-center gap-1.5 text-sm font-semibold text-accent-orange hover:text-accent-orange/80 transition-colors"
+        >
+          View all products <ArrowRight className="w-4 h-4" />
         </Link>
       </SectionWrapper>
 
-      {/* Why Choose Us */}
-      <SectionWrapper className="bg-[rgb(var(--secondary-bg))] dark:bg-slate-800">
-        <motion.div variants={fadeIn} className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">Why Tork3D</h2>
-          <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">We combine top-tier technology with engineering expertise.</p>
+      {/* ── How It Works ─────────────────────────────────────────── */}
+      <SectionWrapper>
+        <motion.div variants={fadeIn} className="mb-12">
+          <h2 className="font-display font-black text-4xl md:text-5xl text-slate-900 dark:text-white leading-tight">
+            How it works
+          </h2>
         </motion.div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {FEATURES.map((feature, i) => {
-            const Icon = feature.icon;
-            return (
-              <motion.div key={feature.title} variants={fadeIn} className="glass-card p-8 group">
-                <div className="w-14 h-14 rounded-xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center mb-6 group-hover:bg-accent-orange/10 transition-colors duration-300">
-                  <Icon className="w-7 h-7 text-accent-orange" />
-                </div>
-                <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">{feature.title}</h3>
-                <p className="text-slate-600 dark:text-slate-300">{feature.desc}</p>
-              </motion.div>
-            )
-          })}
+
+        <div className="grid grid-cols-1 md:grid-cols-3">
+          {[
+            {
+              n: '01',
+              title: 'Browse or upload',
+              desc: 'Order from our ready-to-ship catalog, or submit your own design and specs via the custom order form.',
+            },
+            {
+              n: '02',
+              title: 'We print with precision',
+              desc: 'Your order enters our print farm. Every part is dimensionally checked and quality-reviewed before packing.',
+            },
+            {
+              n: '03',
+              title: 'Delivered across India',
+              desc: 'Shipped via Delhivery with live tracking. Prepaid or cash on delivery — your choice at checkout.',
+            },
+          ].map(({ n, title, desc }) => (
+            <motion.div
+              key={n}
+              variants={fadeIn}
+              className="flex gap-5 py-8 md:py-0 md:px-10 md:flex-col border-b md:border-b-0 md:border-l border-slate-200 dark:border-slate-800 first:border-l-0 first:md:pl-0 last:border-b-0"
+            >
+              <div className="font-display font-black text-6xl md:text-7xl text-slate-300 dark:text-slate-600 leading-none select-none shrink-0 md:mb-4">
+                {n}
+              </div>
+              <div className="pt-1">
+                <h3 className="font-display font-bold text-lg text-slate-900 dark:text-white mb-2 leading-tight">
+                  {title}
+                </h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                  {desc}
+                </p>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </SectionWrapper>
 
-      {/* CTA Section */}
-      <SectionWrapper>
-        <motion.div variants={fadeIn} className="relative rounded-3xl overflow-hidden glass-card p-12 md:p-20 text-center">
-          <div className="absolute inset-0 bg-gradient-to-r from-accent-blue/20 to-accent-orange/20 opacity-50 mix-blend-overlay" />
-          <div className="relative z-10">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900 dark:text-white">Ready to print your idea?</h2>
-            <p className="text-xl text-slate-600 dark:text-slate-300 mb-10 max-w-2xl mx-auto">
-              Upload your STL file, get an instant quote, and let our farm handle the rest.
+      {/* ── Why Tork3D ───────────────────────────────────────────── */}
+      <SectionWrapper className="bg-secondary dark:bg-slate-900/60">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          <motion.div variants={fadeIn}>
+            <h2 className="font-display font-black text-4xl md:text-5xl text-slate-900 dark:text-white leading-tight mb-4">
+              Why Tork3D
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 max-w-[34ch] leading-relaxed">
+              Top-tier technology and engineering expertise, from first prototype to final product.
+            </p>
+          </motion.div>
+
+          <dl className="divide-y divide-slate-200 dark:divide-slate-800">
+            {FEATURES.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <motion.div
+                  key={feature.title}
+                  variants={fadeIn}
+                  className="flex items-center gap-6 py-5 first:pt-0 last:pb-0"
+                >
+                  <Icon className="w-5 h-5 text-accent-orange shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <dt className="font-display font-bold text-base text-slate-900 dark:text-white tracking-tight">
+                      {feature.title}
+                    </dt>
+                    <dd className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{feature.desc}</dd>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </dl>
+        </div>
+      </SectionWrapper>
+
+      {/* ── CTA ─────────────────────────────────────────────────── */}
+      <section className="bg-accent-orange">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-100px' }}
+            variants={fadeIn}
+            className="max-w-2xl"
+          >
+            <h2 className="font-display font-black text-5xl md:text-6xl xl:text-7xl text-white leading-[0.92] tracking-tight mb-6">
+              Ready to print your idea?
+            </h2>
+            <p className="text-orange-100 text-lg mb-10 max-w-[42ch] leading-relaxed">
+              Upload your STL file, choose your specs, and get a quote within the hour.
             </p>
             <Link to="/custom" className="inline-block">
-              <Button size="lg" className="group text-lg px-8 py-6">
-                <span className="flex items-center justify-center whitespace-nowrap">
-                  Get a Quote Now
-                  <ArrowRight className="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                </span>
+              <Button
+                size="lg"
+                className="bg-white text-accent-orange hover:bg-orange-50 shadow-none font-bold"
+              >
+                Request a Custom Print
+                <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
-          </div>
-        </motion.div>
-      </SectionWrapper>
+          </motion.div>
+        </div>
+      </section>
+
     </div>
   );
 }

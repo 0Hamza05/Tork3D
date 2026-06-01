@@ -73,7 +73,7 @@ export default function CustomOrder() {
 
         <motion.div variants={fadeIn} className="mb-12 text-center max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 text-slate-900 dark:text-white">Print Your Own Model</h1>
-          <p className="text-xl text-slate-600 dark:text-slate-300">Upload your STL file, select your specifications, and we'll handle the fabrication.</p>
+          <p className="text-xl text-slate-600 dark:text-slate-300">Fill in your project specs and we'll send you a quote. After submitting, share your STL or CAD file with us on WhatsApp to get started.</p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -106,7 +106,7 @@ export default function CustomOrder() {
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Material</label>
                     <div className="relative">
                       <select
-                        className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-4 pr-10 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white appearance-none cursor-pointer"
+                        className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-4 pr-10 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white appearance-none cursor-pointer"
                         value={formData.material} onChange={(e) => setFormData({ ...formData, material: e.target.value })}
                       >
                         <option>PLA</option><option>PETG</option><option>TPU</option>
@@ -118,7 +118,7 @@ export default function CustomOrder() {
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Color</label>
                     <div className="relative">
                       <select
-                        className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-4 pr-10 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white appearance-none cursor-pointer"
+                        className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg pl-4 pr-10 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white appearance-none cursor-pointer"
                         value={formData.color} onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                       >
                         <option>Black</option><option>White</option><option>Grey</option><option>Red</option><option>Blue</option><option>Custom (Specify below)</option>
@@ -129,7 +129,7 @@ export default function CustomOrder() {
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Quantity: {formData.quantity}</label>
                     <input type="number" min="1" max="1000"
-                      className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
+                      className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
                       value={formData.quantity} onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) })}
                     />
                   </div>
@@ -147,14 +147,14 @@ export default function CustomOrder() {
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Full Name *</label>
                     <input type="text" required
-                      className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
+                      className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
                       value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Email Address *</label>
                     <input type="email" required
-                      className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
+                      className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
                       value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
@@ -163,7 +163,7 @@ export default function CustomOrder() {
                     <input type="tel" required
                       pattern="\d{10}"
                       title="Please enter a valid 10-digit phone number."
-                      className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
+                      className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
                       value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     />
                   </div>
@@ -172,7 +172,7 @@ export default function CustomOrder() {
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">Project Description</label>
                   <textarea rows="4"
-                    className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
+                    className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-orange text-slate-900 dark:text-white"
                     placeholder="Special instructions, tolerances, intended use..."
                     value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   />
@@ -210,10 +210,10 @@ export default function CustomOrder() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-accent-blue/20 to-accent-orange/20 border border-white/10 p-8 rounded-2xl relative overflow-hidden">
+            <div className="bg-accent-orange p-8 rounded-md">
               <div className="relative z-10">
-                <h3 className="text-xl font-bold mb-2 text-slate-900 dark:text-white">Need Bulk Production?</h3>
-                <p className="text-sm text-slate-700 dark:text-slate-200 mb-6">We offer print farm scaling for runs of 100+ units. Chat with us on WhatsApp for wholesale pricing.</p>
+                <h3 className="font-display font-bold text-xl mb-2 text-white">Need Bulk Production?</h3>
+                <p className="text-sm text-orange-100 mb-6">We offer print farm scaling for runs of 100+ units. Chat with us on WhatsApp for wholesale pricing.</p>
                 <a
                   href="https://wa.me/919900390390"
                   target="_blank"

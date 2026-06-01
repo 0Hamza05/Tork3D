@@ -73,12 +73,70 @@ const SENDER_EMAIL = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
 
 // (multer removed — no file upload routes in current flow)
 
+// ── Shared order email builder ───────────────────────────────────────────────
+const buildOrderEmailHtml = (orderRecord, paymentId) => {
+  const details = orderRecord.order_details || {};
+  const addr = details.shippingAddress || {};
+
+  const itemsHtml = details.items
+    ? details.items.map(item =>
+        `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;">
+          <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
+          <span style="color:#999;float:right;">&#8377;${item.price * item.quantity}</span>
+        </li>`
+      ).join('')
+    : `<li style="padding:6px 0;color:#ccc;">Single product order</li>`;
+
+  const addressText = addr.address1
+    ? `${escHtml(addr.address1)}${addr.address2 ? ', ' + escHtml(addr.address2) : ''}, ${escHtml(addr.city)} - ${escHtml(addr.pincode)}, ${escHtml(addr.state)}`
+    : 'No address provided';
+
+  const shippingModeLabel = details.shippingMode === 'express'
+    ? '⚡ Express (1–3 days)'
+    : details.shippingMode === 'surface'
+      ? '📦 Standard (4–7 days)'
+      : details.shippingMode === 'pickup'
+        ? '🏭 Collect from Site (FREE)'
+        : '—';
+
+  return `
+    <div style="font-family:'Segoe UI',Arial,sans-serif;background:#0f0f0f;padding:32px;border-radius:12px;max-width:560px;margin:auto;">
+      <p style="margin:0 0 4px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#F97316;font-weight:700;">Tork3D</p>
+      <h2 style="margin:0 0 24px;font-size:22px;color:#fff;">New Paid Order Received</h2>
+
+      <table width="100%" style="margin-bottom:20px;">
+        <tr><td style="color:#777;font-size:12px;padding:4px 0;">Customer</td><td style="color:#fff;font-weight:600;text-align:right;">${escHtml(orderRecord.customer_name)}</td></tr>
+        <tr><td style="color:#777;font-size:12px;padding:4px 0;">Email</td><td style="color:#fff;text-align:right;">${escHtml(orderRecord.customer_email)}</td></tr>
+        <tr><td style="color:#777;font-size:12px;padding:4px 0;">Phone</td><td style="color:#fff;text-align:right;">${escHtml(details.customerPhone || '—')}</td></tr>
+        <tr><td style="color:#777;font-size:12px;padding:4px 0;">Delivery</td><td style="color:#fff;text-align:right;">${shippingModeLabel}</td></tr>
+        <tr><td style="color:#777;font-size:12px;padding:4px 0;">Shipping Cost</td><td style="color:#fff;text-align:right;">&#8377;${details.shippingCost || 0}</td></tr>
+        <tr><td style="color:#777;font-size:12px;padding:4px 0;">Referral</td><td style="color:#fff;text-align:right;">${escHtml(details.referredBy || '—')}</td></tr>
+        ${paymentId ? `<tr><td style="color:#777;font-size:12px;padding:4px 0;">Payment ID</td><td style="color:#22c55e;text-align:right;font-size:12px;">${escHtml(paymentId)}</td></tr>` : ''}
+      </table>
+
+      <div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:16px;">
+        <p style="margin:0 0 10px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Items Ordered</p>
+        <ul style="margin:0;padding:0;list-style:none;">${itemsHtml}</ul>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid #333;">
+          <strong style="color:#fff;">Total: </strong>
+          <strong style="color:#F97316;font-size:18px;">&#8377;${orderRecord.total_amount}</strong>
+        </div>
+      </div>
+
+      <div style="background:#1a1a1a;border-radius:8px;padding:16px;">
+        <p style="margin:0 0 6px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Delivery Address</p>
+        <p style="margin:0;color:#ccc;font-size:14px;line-height:1.6;">${addressText}</p>
+      </div>
+    </div>
+  `;
+};
+
 // Server-Side Calculate Price Logic (Zero-Trust)
 const calculatePrice = (orderData) => {
   if (orderData.type === 'shop') {
     const product = products.find(p => p.id === orderData.productId);
-    if (product) return product.price * 100;
-    return (orderData.price || 0) * 100;
+    if (!product) return 0; // reject unknown products — never trust client price
+    return product.price * 100;
   } else if (orderData.type === 'cart') {
     // Validate each item's price against the server's product database
     const subtotal = orderData.items.reduce((sum, item) => {
@@ -181,85 +239,11 @@ app.post('/api/verify-payment', orderLimiter, async (req, res) => {
       if (updatedOrders && updatedOrders.length > 0) {
         const orderRecord = updatedOrders[0];
         try {
-          const details = orderRecord.order_details || {};
-          const addr = details.shippingAddress || {};
-
-          const itemsHtml = details.items
-            ? details.items.map(item =>
-              `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;">
-                  <strong style="color:#fff;">${item.quantity}x ${item.name}</strong>
-                  <span style="color:#999;float:right;">₹${item.price * item.quantity}</span>
-                </li>`
-            ).join('')
-            : `<li style="padding:6px 0;color:#ccc;">Single product order</li>`;
-
-          const addressText = addr.address1
-            ? `${addr.address1}${addr.address2 ? ', ' + addr.address2 : ''}, ${addr.city} - ${addr.pincode}, ${addr.state}`
-            : 'No address provided';
-
-          const shippingModeLabel = details.shippingMode === 'express'
-            ? '⚡ Express (1–3 days)'
-            : details.shippingMode === 'surface'
-              ? '📦 Standard (4–7 days)'
-              : details.shippingMode === 'pickup'
-                ? '🏭 Collect from Site (FREE)'
-                : '—';
-
           await resend.emails.send({
             from: `Tork3D Orders <${SENDER_EMAIL}>`,
             to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
-            subject: `💰 NEW PAID ORDER — ${orderRecord.customer_name} (₹${orderRecord.total_amount})`,
-            html: `
-              <div style="font-family:'Segoe UI',Arial,sans-serif;background:#0f0f0f;padding:32px;border-radius:12px;max-width:560px;margin:auto;">
-                <p style="margin:0 0 4px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#F97316;font-weight:700;">Tork3D</p>
-                <h2 style="margin:0 0 24px;font-size:22px;color:#fff;">New Paid Order Received</h2>
-
-                <table width="100%" style="margin-bottom:20px;">
-                  <tr>
-                    <td style="color:#777;font-size:12px;padding:4px 0;">Customer</td>
-                    <td style="color:#fff;font-weight:600;text-align:right;">${orderRecord.customer_name}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#777;font-size:12px;padding:4px 0;">Email</td>
-                    <td style="color:#fff;text-align:right;">${orderRecord.customer_email}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#777;font-size:12px;padding:4px 0;">Phone</td>
-                    <td style="color:#fff;text-align:right;">${details.customerPhone || '—'}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#777;font-size:12px;padding:4px 0;">Delivery</td>
-                    <td style="color:#fff;text-align:right;">${shippingModeLabel}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#777;font-size:12px;padding:4px 0;">Shipping Cost</td>
-                    <td style="color:#fff;text-align:right;">₹${details.shippingCost || 0}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#777;font-size:12px;padding:4px 0;">Referral</td>
-                    <td style="color:#fff;text-align:right;">${orderRecord.order_details.referredBy || '—'}</td>
-                  </tr>
-                  <tr>
-                    <td style="color:#777;font-size:12px;padding:4px 0;">Payment ID</td>
-                    <td style="color:#22c55e;text-align:right;font-size:12px;">${razorpay_payment_id}</td>
-                  </tr>
-                </table>
-
-                <div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:16px;">
-                  <p style="margin:0 0 10px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Items Ordered</p>
-                  <ul style="margin:0;padding:0;list-style:none;">${itemsHtml}</ul>
-                  <div style="margin-top:12px;padding-top:12px;border-top:1px solid #333;">
-                    <strong style="color:#fff;">Total: </strong>
-                    <strong style="color:#F97316;font-size:18px;">₹${orderRecord.total_amount}</strong>
-                  </div>
-                </div>
-
-                <div style="background:#1a1a1a;border-radius:8px;padding:16px;">
-                  <p style="margin:0 0 6px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Delivery Address</p>
-                  <p style="margin:0;color:#ccc;font-size:14px;line-height:1.6;">${addressText}</p>
-                </div>
-              </div>
-            `
+            subject: `💰 NEW PAID ORDER — ${escHtml(orderRecord.customer_name)} (₹${orderRecord.total_amount})`,
+            html: buildOrderEmailHtml(orderRecord, razorpay_payment_id)
           });
           console.log('✅ Order notification email sent to business.');
         } catch (emailErr) {
@@ -320,72 +304,14 @@ app.post('/api/webhook', async (req, res) => {
         console.log(`Order ${razorpay_order_id} marked as paid via webhook.`);
         const orderRecord = updatedOrderData[0];
 
-        // --- Send business notification email for shop orders ---
+        // Send business notification email for shop/cart orders
         if (orderRecord.order_type === 'cart' || orderRecord.order_type === 'shop') {
           try {
-            const details = orderRecord.order_details || {};
-            const addr = details.shippingAddress || {};
-
-            const itemsHtml = details.items
-              ? details.items.map(item =>
-                `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;">
-                    <strong style="color:#fff;">${item.quantity}x ${item.name}</strong>
-                    <span style="color:#999;float:right;">₹${item.price * item.quantity}</span>
-                  </li>`
-              ).join('')
-              : `<li style="padding:6px 0;color:#ccc;">Single product order</li>`;
-
-            const addressText = addr.address1
-              ? `${addr.address1}${addr.address2 ? ', ' + addr.address2 : ''}, ${addr.city} - ${addr.pincode}, ${addr.state}`
-              : 'No address provided';
-
             await resend.emails.send({
               from: `Tork3D Orders <${SENDER_EMAIL}>`,
               to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
-              subject: `💰 NEW PAID ORDER — ${orderRecord.customer_name} (₹${orderRecord.total_amount})`,
-              html: `
-                <div style="font-family:'Segoe UI',Arial,sans-serif;background:#0f0f0f;padding:32px;border-radius:12px;max-width:560px;margin:auto;">
-                  <p style="margin:0 0 4px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#F97316;font-weight:700;">Tork3D</p>
-                  <h2 style="margin:0 0 24px;font-size:22px;color:#fff;">New Paid Order Received</h2>
-
-                  <table width="100%" style="margin-bottom:20px;">
-                    <tr>
-                      <td style="color:#777;font-size:12px;padding:4px 0;">Customer</td>
-                      <td style="color:#fff;font-weight:600;text-align:right;">${orderRecord.customer_name}</td>
-                    </tr>
-                    <tr>
-                      <td style="color:#777;font-size:12px;padding:4px 0;">Email</td>
-                      <td style="color:#fff;text-align:right;">${orderRecord.customer_email}</td>
-                    </tr>
-                    <tr>
-                      <td style="color:#777;font-size:12px;padding:4px 0;">Phone</td>
-                      <td style="color:#fff;text-align:right;">${details.customerPhone || '—'}</td>
-                    </tr>
-                    <tr>
-                      <td style="color:#777;font-size:12px;padding:4px 0;">Referral</td>
-                      <td style="color:#fff;text-align:right;">${orderRecord.order_details.referredBy || '—'}</td>
-                    </tr>
-                    <tr>
-                      <td style="color:#777;font-size:12px;padding:4px 0;">Payment ID</td>
-                      <td style="color:#22c55e;text-align:right;font-size:12px;">${razorpay_payment_id}</td>
-                    </tr>
-                  </table>
-
-                  <div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:16px;">
-                    <p style="margin:0 0 10px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Items Ordered</p>
-                    <ul style="margin:0;padding:0;list-style:none;">${itemsHtml}</ul>
-                    <div style="margin-top:12px;padding-top:12px;border-top:1px solid #333;display:flex;justify-content:space-between;">
-                      <strong style="color:#fff;">Total</strong>
-                      <strong style="color:#F97316;font-size:18px;">₹${orderRecord.total_amount}</strong>
-                    </div>
-                  </div>
-
-                  <div style="background:#1a1a1a;border-radius:8px;padding:16px;">
-                    <p style="margin:0 0 6px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Delivery Address</p>
-                    <p style="margin:0;color:#ccc;font-size:14px;line-height:1.6;">${addressText}</p>
-                  </div>
-                </div>
-              `
+              subject: `💰 NEW PAID ORDER — ${escHtml(orderRecord.customer_name)} (₹${orderRecord.total_amount})`,
+              html: buildOrderEmailHtml(orderRecord, razorpay_payment_id)
             });
             console.log('✅ Shop order notification email sent to business.');
           } catch (emailErr) {
@@ -409,7 +335,7 @@ app.get('/api/shipping-rate', shippingLimiter, async (req, res) => {
   try {
     const { pincode, pt = 'Pre-paid', codAmount = '0', items, productId } = req.query;
 
-    if (!pincode || pincode.length !== 6) {
+    if (!pincode || !/^\d{6}$/.test(pincode)) {
       return res.status(400).json({ success: false, message: 'Valid 6-digit pincode required' });
     }
 
@@ -738,6 +664,11 @@ app.post('/api/create-quote', orderLimiter, async (req, res) => {
     console.error('Quote submission error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
+});
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // Global Error Guard

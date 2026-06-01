@@ -45,7 +45,7 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link to="/" onClick={handleLogoClick} className="flex items-center gap-2 group">
               <img src="/favicon.png" alt="Tork3D Logo" className="h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-110" />
-              <span className="text-xl font-bold tracking-tight">Tork<span className="text-accent-orange group-hover:text-accent-blue transition-colors duration-300">3D</span></span>
+              <span className="font-display font-black text-xl tracking-tight">Tork<span className="text-accent-orange">3D</span></span>
             </Link>
           </div>
           

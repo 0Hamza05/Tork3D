@@ -254,19 +254,19 @@ const getCookie = (name) => {
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Full Name *</label>
                 <input required type="text" placeholder="Your Name"
-                  className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white"
+                  className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white"
                   value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Email Address *</label>
                 <input required type="email" placeholder="your@email.com"
-                  className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white"
+                  className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white"
                   value={customerInfo.email} onChange={e => setCustomerInfo({...customerInfo, email: e.target.value})} />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Phone Number *</label>
                 <input required type="tel" placeholder="+91 98765 43210"
-                  className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white"
+                  className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white"
                   value={customerInfo.phone} onChange={e => setCustomerInfo({...customerInfo, phone: e.target.value})} />
               </div>
 
@@ -331,18 +331,18 @@ const getCookie = (name) => {
                 {fulfillment === 'delivery' && (
                   <div className="space-y-3">
                     <input required type="text" placeholder="Address Line 1"
-                      className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white text-sm"
+                      className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white text-sm"
                       value={customerInfo.address1} onChange={e => setCustomerInfo({...customerInfo, address1: e.target.value})} />
                     <div className="grid grid-cols-2 gap-3">
                       <input required type="text" placeholder="City"
-                        className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white text-sm"
+                        className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white text-sm"
                         value={customerInfo.city} onChange={e => setCustomerInfo({...customerInfo, city: e.target.value})} />
                       <input required type="text" placeholder="State"
-                        className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white text-sm"
+                        className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white text-sm"
                         value={customerInfo.state} onChange={e => setCustomerInfo({...customerInfo, state: e.target.value})} />
                     </div>
                     <input required type="text" placeholder="Pincode" maxLength={6}
-                      className="w-full bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white text-sm"
+                      className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white text-sm"
                       value={customerInfo.pincode} onChange={e => setCustomerInfo({...customerInfo, pincode: e.target.value.replace(/\D/g, '')})} />
 
                     {shippingLoading && (
@@ -550,7 +550,7 @@ const getCookie = (name) => {
                     <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">{item.material} • {item.category}</p>
                   </div>
                   <div className="flex items-center justify-between mt-auto">
-                    <div className="flex items-center bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-800 p-1">
+                    <div className="flex items-center bg-secondary dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-800 p-1">
                       <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-1 hover:bg-slate-50 dark:bg-slate-800 rounded-md transition-colors text-slate-600 dark:text-slate-300"><Minus className="w-4 h-4" /></button>
                       <span className="w-10 text-center font-medium text-slate-900 dark:text-white">{item.quantity}</span>
                       <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-1 hover:bg-slate-50 dark:bg-slate-800 rounded-md transition-colors text-slate-600 dark:text-slate-300"><Plus className="w-4 h-4" /></button>
@@ -594,19 +594,19 @@ const getCookie = (name) => {
 
               <Button size="lg" className="w-full mb-6" onClick={() => setShowModal(true)}>Checkout</Button>
 
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
-                  <ShieldCheck className="w-4 h-4 text-accent-blue flex-shrink-0" />
-                  Secure payment via Razorpay
-                </div>
-                <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
-                  <Truck className="w-4 h-4 text-accent-blue flex-shrink-0" />
-                  Live shipping rates via Delhivery
-                </div>
-                <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
-                  <Banknote className="w-4 h-4 text-accent-blue flex-shrink-0" />
-                  Cash on Delivery available
-                </div>
+              {/* Trust badges */}
+              <div className="rounded-md border border-slate-100 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+                {[
+                  { Icon: ShieldCheck, label: 'Secured by Razorpay' },
+                  { Icon: Truck,       label: 'Shipped via Delhivery' },
+                  { Icon: CheckCircle2, label: 'Quality checked before dispatch' },
+                  { Icon: Banknote,   label: 'COD available across India' },
+                ].map(({ Icon, label }) => (
+                  <div key={label} className="flex items-center gap-3 px-4 py-3 text-xs font-medium text-slate-600 dark:text-slate-300">
+                    <Icon className="w-4 h-4 text-accent-orange shrink-0" />
+                    {label}
+                  </div>
+                ))}
               </div>
             </div>
           </div>

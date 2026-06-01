@@ -10,14 +10,21 @@ export default {
       colors: {
         background: 'rgb(var(--background))',
         foreground: 'rgb(var(--foreground))',
+        secondary: 'rgb(var(--secondary-bg))',
+        canvas: {
+          DEFAULT: '#f9f9f8',
+          dark:    '#080808',
+        },
         accent: {
           DEFAULT: '#3b82f6',
           blue: '#3b82f6',
           orange: '#f97316'
-        }
+        },
+        whatsapp: '#25D366'
       },
       fontFamily: {
-        sans: ['Outfit', 'sans-serif'],
+        sans: ['Barlow', 'sans-serif'],
+        display: ['Barlow Condensed', 'sans-serif'],
       }
     },
   },

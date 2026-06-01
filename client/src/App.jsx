@@ -18,7 +18,7 @@ import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 import Cart from './pages/Cart';
-import InteractiveBackground from './components/ui/InteractiveBackground';
+// InteractiveBackground removed — replaced by CSS grid texture in hero
 
 function App() {
   // Referral handling: parse ref param and store in cookie
@@ -50,9 +50,14 @@ function App() {
             }} 
           />
           <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
-          <InteractiveBackground />
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent-orange focus:text-white focus:rounded-lg focus:font-semibold focus:shadow-lg"
+          >
+            Skip to content
+          </a>
           <Navbar />
-          <main className="flex-grow pt-16">
+          <main id="main-content" className="flex-grow pt-16">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />

@@ -145,6 +145,34 @@ export const products = [
     }
   },
   {
+    id: 7,
+    name: 'Screaming Whistle',
+    price: 359,
+    weight: 100,                          // dead weight in grams
+    packageType: 'flyer',                  // 'box' | 'flyer'
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm (same as Cigarette Bubble Blower)
+    category: 'Novelty',
+    material: 'PLA',
+    image: '/Product Photos/Screaming Whistle/Screaming Whistle - 1.jpeg',
+    description: 'A hauntingly unique Mayan skull-shaped whistle that releases a blood-curdling scream when blown with force. Inspired by ancient Aztec death whistles, this eerie novelty piece produces a startlingly realistic human-scream sound that will shock anyone nearby. A jaw-dropping conversation starter and collector\'s item.',
+    highlights: [
+      'Authentic Mayan/Aztec death whistle design',
+      'Produces a chilling human-like screaming sound',
+      'Unique skull shape — great novelty gift or collector\'s item',
+      'Lightweight and durable PLA construction',
+    ],
+    images: [
+      '/Product Photos/Screaming Whistle/Screaming Whistle - 1.jpeg',
+      '/Product Photos/Screaming Whistle/Screaming Whistle - 2.jpeg',
+      '/Product Photos/Screaming Whistle/Screaming Whistle - 3.jpeg',
+    ],
+    specs: {
+      'Dimensions': '43 x 33 x 32 mm',
+      'Weight': '~50 g',
+      'Lead Time': '2–4 Business Days',
+    }
+  },
+  {
     id: 6,
     name: 'Spiderman Magnetic Fidget',
     price: 349,

@@ -41,13 +41,15 @@ export default function Shop() {
         {/* Search & Sort Toolbar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-12">
           <div className="relative w-full md:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input 
-              type="text" 
+            <label htmlFor="product-search" className="sr-only">Search products</label>
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" aria-hidden="true" />
+            <input
+              id="product-search"
+              type="text"
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white"
+              className="w-full pl-12 pr-4 py-3 bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white"
             />
           </div>
           
@@ -58,7 +60,8 @@ export default function Shop() {
                 <button
                   key={sort}
                   onClick={() => setActiveSort(sort)}
-                  className={`whitespace-nowrap px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeSort === sort ? 'bg-accent-blue text-white' : 'bg-[rgb(var(--secondary-bg))] dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700'}`}
+                  aria-pressed={activeSort === sort}
+                  className={`whitespace-nowrap px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeSort === sort ? 'bg-accent-blue text-white' : 'bg-secondary dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700'}`}
                 >
                   {sort}
                 </button>
