@@ -75,7 +75,7 @@ export default function ProductDetail() {
               {!isLoaded && (
                 <div className="absolute inset-0 animate-pulse bg-slate-200 dark:bg-slate-700" />
               )}
-              {product.images[activeImg]?.toLowerCase().endsWith('.mp4') ? (
+              {product.images?.[activeImg]?.toLowerCase().endsWith('.mp4') ? (
                 <video
                   ref={videoRef}
                   src={product.images[activeImg]}
@@ -164,7 +164,7 @@ export default function ProductDetail() {
                 <Check className="w-5 h-5 text-green-600" /> In stock (Made to order)
               </div>
               <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
-                <Truck className="w-5 h-5 text-slate-500 dark:text-slate-400" /> Ships via Priority Mail
+                <Truck className="w-5 h-5 text-slate-500 dark:text-slate-400" /> Ships via Delhivery across India
               </div>
               <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
                 <Shield className="w-5 h-5 text-slate-500 dark:text-slate-400" /> Quality Guarantee

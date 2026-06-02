@@ -323,7 +323,7 @@ const getCookie = (name) => {
                   <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-4 mb-2">
                     <p className="text-xs font-bold text-green-700 mb-1">📍 Pickup Location</p>
                     <p className="text-sm placeholder-slate-400 text-slate-900 dark:text-white">Tork3D Workshop</p>
-                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-medium">Pune - 411048, Maharashtra</p>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 font-medium">Pune - 411040, Maharashtra</p>
                     <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">We'll contact you when your order is ready for collection.</p>
                   </div>
                 )}
@@ -485,26 +485,41 @@ const getCookie = (name) => {
                 >
                   Go Back
                 </button>
-                <Button 
-                  className="flex-1 text-sm animate-pulse" 
-                  disabled={!agreedTc || isProcessing} 
+                <Button
+                  className="flex-1 text-sm"
+                  disabled={!agreedTc || isProcessing}
                   onClick={async () => {
   setShowTcModal(false);
   if (pendingCheckoutType === 'cod') {
-    // Prepay Rs 99 before confirming COD order
-    const prepayOptions = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: 99 * 100, // 99 INR in paise
-      currency: 'INR',
-      name: 'Tork3D Fabrication',
-      description: 'COD Prepayment ₹99',
-      handler: async function (response) {
-        // After successful prepayment, place COD order
-        await executeCodCheckout();
-      },
-      theme: { color: '#F97316' }
-    };
-    new window.Razorpay(prepayOptions).open();
+    // Create a server-side Razorpay order for the ₹99 COD prepayment
+    setIsProcessing(true);
+    try {
+      const prepayRes = await fetch(`${API_BASE_URL}/api/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderData: { ...buildOrderData(), type: 'cod-prepay', amount: 99 } })
+      });
+      const prepayData = await prepayRes.json();
+      if (!prepayData.success) { toast.error('Could not initiate prepayment.'); setIsProcessing(false); return; }
+      const prepayOptions = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: 99 * 100,
+        currency: 'INR',
+        name: 'Tork3D Fabrication',
+        description: 'COD Prepayment ₹99',
+        order_id: prepayData.order.id,
+        prefill: { name: customerInfo.name, email: customerInfo.email, contact: customerInfo.phone },
+        handler: async function () {
+          await executeCodCheckout();
+        },
+        theme: { color: '#F97316' }
+      };
+      new window.Razorpay(prepayOptions).open();
+    } catch {
+      toast.error('Could not reach server for prepayment.');
+    } finally {
+      setIsProcessing(false);
+    }
   } else {
     await executeOnlineCheckout();
   }

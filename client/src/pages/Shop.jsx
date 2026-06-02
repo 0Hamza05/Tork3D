@@ -20,7 +20,7 @@ export default function Shop() {
   }).sort((a, b) => {
     if (activeSort === 'Price: Low to High') return a.price - b.price;
     if (activeSort === 'Price: High to Low') return b.price - a.price;
-    return 0; // Newest keeps id order
+    return b.id - a.id; // Newest = highest id first
   });
 
   return (

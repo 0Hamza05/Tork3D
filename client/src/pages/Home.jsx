@@ -266,7 +266,7 @@ export default function Home() {
                 <h3 className="font-display font-bold text-lg text-slate-900 dark:text-white mb-2 leading-tight">
                   {title}
                 </h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed">
                   {desc}
                 </p>
               </div>
@@ -282,7 +282,7 @@ export default function Home() {
             <h2 className="font-display font-black text-4xl md:text-5xl text-slate-900 dark:text-white leading-tight mb-4">
               Why Tork3D
             </h2>
-            <p className="text-slate-500 dark:text-slate-400 max-w-[34ch] leading-relaxed">
+            <p className="text-base text-slate-500 dark:text-slate-400 max-w-[34ch] leading-relaxed">
               Top-tier technology and engineering expertise, from first prototype to final product.
             </p>
           </motion.div>
@@ -298,10 +298,10 @@ export default function Home() {
                 >
                   <Icon className="w-5 h-5 text-accent-orange shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <dt className="font-display font-bold text-base text-slate-900 dark:text-white tracking-tight">
+                    <dt className="font-display font-bold text-lg text-slate-900 dark:text-white tracking-tight">
                       {feature.title}
                     </dt>
-                    <dd className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{feature.desc}</dd>
+                    <dd className="text-base text-slate-500 dark:text-slate-400 mt-0.5">{feature.desc}</dd>
                   </div>
                 </motion.div>
               );
