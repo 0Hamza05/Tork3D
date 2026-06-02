@@ -177,7 +177,7 @@ export const products = [
   {
     id: 7,
     name: 'Screaming Whistle',
-    price: 349,
+    price: 299,
     weight: 50,                           // dead weight in grams (15 g print + ~35 g packaging)
     packageType: 'flyer',                  // 'box' | 'flyer'
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm

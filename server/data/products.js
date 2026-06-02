@@ -147,7 +147,7 @@ export const products = [
   {
     id: 7,
     name: 'Screaming Whistle',
-    price: 359,
+    price: 299,
     weight: 100,                          // dead weight in grams
     packageType: 'flyer',                  // 'box' | 'flyer'
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm (same as Cigarette Bubble Blower)
