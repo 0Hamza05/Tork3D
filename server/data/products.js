@@ -168,7 +168,38 @@ export const products = [
     ],
     specs: {
       'Dimensions': '43 x 33 x 32 mm',
-      'Weight': '~50 g',
+      'Weight': '~15 g',
+      'Lead Time': '2–4 Business Days',
+    }
+  },
+  {
+    id: 8,
+    name: 'Cigarette Bubble Blower (2-Pack)',
+    price: 249,
+    weight: 100,                         // dead weight in grams
+    packageType: 'flyer',                 // 'box' | 'flyer'
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
+    category: 'Novelty',
+    material: 'PLA',
+    image: '/Product Photos/2 pack cigrette/Cig-1.jpeg',
+    description: 'The classic cigarette-shaped bubble blower, now in a convenient 2-pack — no case needed. Each blower is realistically shaped like a cigarette and produces a stream of bubbles, making it a hilarious pocket prank and a guaranteed conversation starter wherever you go.',
+    highlights: [
+      'Set of 2 cigarette-shaped bubble blowers',
+      'No case — slim, lightweight, and ready to carry',
+      'Realistic novelty shape — perfect party trick',
+      'Durable and lightweight PLA construction',
+    ],
+    images: [
+      '/Product Photos/2 pack cigrette/Cig-1.jpeg',
+      '/Product Photos/2 pack cigrette/Cig-2.jpeg',
+      '/Product Photos/2 pack cigrette/Cig-3.jpeg',
+      '/Product Photos/2 pack cigrette/Cig-4.jpeg',
+      '/Product Photos/2 pack cigrette/Cig-5.jpeg',
+    ],
+    specs: {
+      'Dimensions': '78 x 8 x 8 mm (per blower)',
+      'Weight': '15 g',
+      'Included': '2 Bubble Blowers',
       'Lead Time': '2–4 Business Days',
     }
   },
