@@ -185,7 +185,7 @@ app.post('/api/create-order', orderLimiter, async (req, res) => {
         customer_email: orderData.customerEmail,
         total_amount: amountInPaise / 100, // convert back to INR
         order_type: orderData.type,
-        order_details: orderData.type === 'cart' ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy } : (orderData.specs || {}),
+        order_details: (orderData.type === 'cart' || orderData.type === 'cod-prepay') ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy } : (orderData.specs || {}),
         status: 'payment_pending'
       }]);
 
@@ -237,19 +237,24 @@ app.post('/api/verify-payment', orderLimiter, async (req, res) => {
         throw error;
       }
 
-      // Send business notification email
+      // Send business notification email — skip for cod-prepay (COD order email sent separately)
+      // Also skip if webhook already processed this payment (payment_id already set before this update)
       if (updatedOrders && updatedOrders.length > 0) {
         const orderRecord = updatedOrders[0];
-        try {
-          await resend.emails.send({
-            from: `Tork3D Orders <${SENDER_EMAIL}>`,
-            to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
-            subject: `💰 NEW PAID ORDER — ${escHtml(orderRecord.customer_name)} (₹${orderRecord.total_amount})`,
-            html: buildOrderEmailHtml(orderRecord, razorpay_payment_id)
-          });
-          console.log('✅ Order notification email sent to business.');
-        } catch (emailErr) {
-          console.error('⚠️ Failed to send order notification email:', emailErr);
+        const isCodPrepay = orderRecord.order_type === 'cod-prepay';
+        const alreadyProcessedByWebhook = orderRecord.payment_id && orderRecord.payment_id !== razorpay_payment_id;
+        if (!isCodPrepay && !alreadyProcessedByWebhook) {
+          try {
+            await resend.emails.send({
+              from: `Tork3D Orders <${SENDER_EMAIL}>`,
+              to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
+              subject: `💰 NEW PAID ORDER — ${escHtml(orderRecord.customer_name)} (₹${orderRecord.total_amount})`,
+              html: buildOrderEmailHtml(orderRecord, razorpay_payment_id)
+            });
+            console.log('✅ Order notification email sent to business.');
+          } catch (emailErr) {
+            console.error('⚠️ Failed to send order notification email:', emailErr);
+          }
         }
       }
 
