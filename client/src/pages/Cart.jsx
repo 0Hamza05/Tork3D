@@ -424,7 +424,7 @@ const getCookie = (name) => {
               </button>
               {paymentType === 'cod' ? (
                 <Button className="flex-1 bg-green-600 hover:bg-green-700" disabled={!canProceed} onClick={handleCodCheckout}>
-                  {isProcessing ? 'Placing Order…' : `Place Order · ₹${totalPrice} COD`}
+                  {isProcessing ? 'Placing Order…' : `Pay ₹99 & Place COD Order`}
                 </Button>
               ) : (
                 <Button className="flex-1" disabled={!canProceed} onClick={handleOnlineCheckout}>
@@ -501,16 +501,31 @@ const getCookie = (name) => {
       });
       const prepayData = await prepayRes.json();
       if (!prepayData.success) { toast.error('Could not initiate prepayment.'); setIsProcessing(false); return; }
+      const prepayOrderData = buildOrderData();
       const prepayOptions = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: 99 * 100,
+        amount: prepayData.amount,
         currency: 'INR',
         name: 'Tork3D Fabrication',
         description: 'COD Prepayment ₹99',
         order_id: prepayData.order.id,
         prefill: { name: customerInfo.name, email: customerInfo.email, contact: customerInfo.phone },
-        handler: async function () {
-          await executeCodCheckout();
+        handler: async function (response) {
+          try {
+            const verifyRes = await fetch(`${API_BASE_URL}/api/verify-payment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderDetails: { ...prepayOrderData, amount: prepayData.amount }
+              })
+            });
+            const verifyData = await verifyRes.json();
+            if (!verifyData.success) { toast.error('Prepayment verification failed.'); return; }
+            await executeCodCheckout();
+          } catch { toast.error('Could not verify prepayment.'); }
         },
         theme: { color: '#F97316' }
       };

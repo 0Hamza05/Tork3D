@@ -149,6 +149,8 @@ const calculatePrice = (orderData) => {
     const shippingCost = parseFloat(orderData.shippingCost) || 0;
 
     return (subtotal + shippingCost) * 100;
+  } else if (orderData.type === 'cod-prepay') {
+    return 99 * 100; // fixed ₹99 COD prepayment
   }
   return 0;
 };
