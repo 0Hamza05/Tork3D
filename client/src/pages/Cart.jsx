@@ -357,6 +357,12 @@ const getCookie = (name) => {
                     )}
                     {shippingRates && !shippingLoading && (
                       <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                        <div className="flex items-start gap-2 text-sm text-accent-blue bg-accent-blue/10 p-3 rounded-xl border border-accent-blue/20">
+                          <Truck className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <span>
+                            Estimated delivery to <strong>{customerInfo.pincode}</strong>: <strong>4–7 business days</strong> (standard surface shipping via Delhivery).
+                          </span>
+                        </div>
                         <p className="text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Choose Payment & Shipping</p>
                         <div className="grid grid-cols-1 gap-3">
                           {/* Pay Online Option */}

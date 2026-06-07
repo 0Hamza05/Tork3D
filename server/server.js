@@ -131,6 +131,13 @@ const buildOrderEmailHtml = (orderRecord, paymentId) => {
   `;
 };
 
+// Cart item ids may carry a variant suffix (e.g. "9-red" for the Pagoda Lantern's
+// "Ivory White" variant) — strip it to resolve the underlying catalog product.
+const resolveDbProduct = (itemId) => {
+  const baseId = typeof itemId === 'string' ? parseInt(itemId.split('-')[0], 10) : itemId;
+  return products.find(p => p.id === baseId);
+};
+
 // Server-Side Calculate Price Logic (Zero-Trust)
 const calculatePrice = (orderData) => {
   if (orderData.type === 'shop') {
@@ -140,7 +147,7 @@ const calculatePrice = (orderData) => {
   } else if (orderData.type === 'cart') {
     // Validate each item's price against the server's product database
     const subtotal = orderData.items.reduce((sum, item) => {
-      const dbProduct = products.find(p => p.id === item.id);
+      const dbProduct = resolveDbProduct(item.id);
       const itemPrice = dbProduct ? dbProduct.price : 0;
       return sum + (itemPrice * item.quantity);
     }, 0);
@@ -400,7 +407,7 @@ app.get('/api/shipping-rate', shippingLimiter, async (req, res) => {
         let totalCodAmount = 0;
 
         parsedItems.forEach(item => {
-          const dbProduct = products.find(p => p.id === item.id);
+          const dbProduct = resolveDbProduct(item.id);
           if (dbProduct) {
             totalCgm += (dbProduct.weight || 200) * item.quantity;
             if (pt === 'COD') {
@@ -455,7 +462,7 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
 
     // Calculate subtotal server-side
     const subtotal = orderData.items.reduce((sum, item) => {
-      const dbProduct = products.find(p => p.id === item.id);
+      const dbProduct = resolveDbProduct(item.id);
       return sum + ((dbProduct ? dbProduct.price : 0) * item.quantity);
     }, 0);
     // Cap shippingCost at ₹500 to prevent frontend manipulation

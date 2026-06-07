@@ -13,11 +13,47 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
   const product = products.find(p => p.id === parseInt(id));
-  const cartItem = cart.find(item => item.id === product?.id);
+  const hasStyles = !!product?.styles?.length;
+  const hasColors = !!product?.colorOptions?.length;
+  const [selectedStyle, setSelectedStyle] = React.useState(product?.styles?.[0] ?? null);
+  const [standColor, setStandColor] = React.useState(product?.colorOptions?.[0] ?? null);
+  const [netColor, setNetColor] = React.useState(product?.colorOptions?.[0] ?? null);
   const [activeImg, setActiveImg] = React.useState(0);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const prefersReduced = useReducedMotion();
   const videoRef = React.useRef(null);
+
+  // Reset configuration/gallery selection when navigating to a different product
+  React.useEffect(() => {
+    setSelectedStyle(product?.styles?.[0] ?? null);
+    setStandColor(product?.colorOptions?.[0] ?? null);
+    setNetColor(product?.colorOptions?.[0] ?? null);
+    setActiveImg(0);
+  }, [product?.id]);
+
+  // The "effective" product reflects the chosen style + colors — used for cart
+  // actions and display, so each configuration is tracked as its own cart line.
+  const hasConfig = hasStyles || hasColors;
+  const displayProduct = hasConfig
+    ? {
+        ...product,
+        id: [
+          product.id,
+          selectedStyle?.id,
+          standColor && `stand-${standColor.id}`,
+          netColor && `net-${netColor.id}`,
+        ].filter(Boolean).join('-'),
+        name: [
+          product.name,
+          selectedStyle && `— ${selectedStyle.name}`,
+          (standColor || netColor) && `(Stand: ${standColor?.name ?? '—'}, Net: ${netColor?.name ?? '—'})`,
+        ].filter(Boolean).join(' '),
+        image: selectedStyle?.image ?? product.image,
+        images: selectedStyle?.images ?? product.images,
+      }
+    : product;
+
+  const cartItem = cart.find(item => item.id === displayProduct?.id);
 
   React.useEffect(() => {
     setIsLoaded(false);
@@ -30,11 +66,11 @@ export default function ProductDetail() {
   }, [prefersReduced]);
 
   const nextImg = () => {
-    if (product?.images) setActiveImg(prev => (prev + 1) % product.images.length);
+    if (displayProduct?.images) setActiveImg(prev => (prev + 1) % displayProduct.images.length);
   };
 
   const prevImg = () => {
-    if (product?.images) setActiveImg(prev => (prev - 1 + product.images.length) % product.images.length);
+    if (displayProduct?.images) setActiveImg(prev => (prev - 1 + displayProduct.images.length) % displayProduct.images.length);
   };
 
   if (!product) {
@@ -47,12 +83,12 @@ export default function ProductDetail() {
   }
 
   const handleAddToCart = () => {
-    addToCart(product);
-    toast.success(`${product.name} added to cart!`);
+    addToCart(displayProduct);
+    toast.success(`${displayProduct.name} added to cart!`);
   };
 
   const handleBuyNow = () => {
-    addToCart(product);
+    addToCart(displayProduct);
     navigate('/cart');
   };
 
@@ -75,10 +111,10 @@ export default function ProductDetail() {
               {!isLoaded && (
                 <div className="absolute inset-0 animate-pulse bg-slate-200 dark:bg-slate-700" />
               )}
-              {product.images?.[activeImg]?.toLowerCase().endsWith('.mp4') ? (
+              {displayProduct.images?.[activeImg]?.toLowerCase().endsWith('.mp4') ? (
                 <video
                   ref={videoRef}
-                  src={product.images[activeImg]}
+                  src={displayProduct.images[activeImg]}
                   controls
                   playsInline
                   autoPlay={!prefersReduced}
@@ -87,15 +123,15 @@ export default function ProductDetail() {
                   className={`w-full h-full object-contain transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
                 />
               ) : (
-                <img 
-                  src={product.images[activeImg]} 
-                  alt={product.name} 
+                <img
+                  src={displayProduct.images[activeImg]}
+                  alt={displayProduct.name}
                   onLoad={() => setIsLoaded(true)}
-                  className={`w-full h-full object-contain transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
+                  className={`w-full h-full object-contain transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
                 />
               )}
-              
-              {product.images.length > 1 && (
+
+              {displayProduct.images.length > 1 && (
                 <>
                   <button
                     onClick={prevImg}
@@ -115,18 +151,18 @@ export default function ProductDetail() {
               )}
             </div>
             <div className={`grid gap-4 ${
-              product.images.length === 1 ? 'grid-cols-1' :
-              product.images.length === 2 ? 'grid-cols-2' :
-              product.images.length === 3 ? 'grid-cols-3' :
+              displayProduct.images.length === 1 ? 'grid-cols-1' :
+              displayProduct.images.length === 2 ? 'grid-cols-2' :
+              displayProduct.images.length === 3 ? 'grid-cols-3' :
               'grid-cols-4'
             }`}>
-              {product.images.map((img, i) => {
+              {displayProduct.images.map((img, i) => {
                 const isVid = img.toLowerCase().endsWith('.mp4');
                 return (
                   <button
                     key={i}
                     onClick={() => setActiveImg(i)}
-                    aria-label={`View image ${i + 1} of ${product.images.length}`}
+                    aria-label={`View image ${i + 1} of ${displayProduct.images.length}`}
                     className={`aspect-[4/3] rounded-xl overflow-hidden border-2 transition-all relative ${
                       activeImg === i ? 'border-accent-blue opacity-100' : 'border-transparent opacity-60 hover:opacity-100'
                     }`}
@@ -159,6 +195,69 @@ export default function ProductDetail() {
               {product.description}
             </p>
 
+            {hasStyles && (
+              <div className="mb-6">
+                <div className="text-sm font-semibold text-slate-900 dark:text-white mb-3">
+                  Style: <span className="font-normal text-slate-500 dark:text-slate-400">{selectedStyle?.name}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  {product.styles.map(style => (
+                    <button
+                      key={style.id}
+                      onClick={() => { setSelectedStyle(style); setActiveImg(0); }}
+                      aria-label={`Select ${style.name} style`}
+                      aria-pressed={selectedStyle?.id === style.id}
+                      className={`relative w-14 h-14 rounded-xl overflow-hidden border-2 transition-all ${
+                        selectedStyle?.id === style.id
+                          ? 'border-accent-blue ring-2 ring-accent-blue/30'
+                          : 'border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500'
+                      }`}
+                    >
+                      <img src={style.image} alt={style.name} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {hasColors && (
+              <div className="mb-8 space-y-6">
+                {[
+                  { label: 'Main Stand Color', value: standColor, setter: setStandColor },
+                  { label: 'Net (Lattice) Color', value: netColor, setter: setNetColor },
+                ].map(({ label, value, setter }) => (
+                  <div key={label}>
+                    <div className="text-sm font-semibold text-slate-900 dark:text-white mb-3">
+                      {label}: <span className="font-normal text-slate-500 dark:text-slate-400">{value?.name}</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      {product.colorOptions.map(color => (
+                        <button
+                          key={color.id}
+                          onClick={() => setter(color)}
+                          aria-label={`Select ${color.name} for ${label}`}
+                          aria-pressed={value?.id === color.id}
+                          title={color.name}
+                          className={`relative w-9 h-9 rounded-full border-2 transition-all ${
+                            value?.id === color.id
+                              ? 'border-accent-blue ring-2 ring-accent-blue/30 scale-110'
+                              : 'border-slate-200 dark:border-slate-700 hover:scale-105'
+                          }`}
+                          style={{ backgroundColor: color.hex }}
+                        >
+                          {value?.id === color.id && (
+                            <Check className={`w-4 h-4 absolute inset-0 m-auto drop-shadow ${
+                              ['white', 'yellow', 'light-blue', 'pink', 'lavender'].includes(color.id) ? 'text-slate-900' : 'text-white'
+                            }`} />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div className="space-y-4 mb-8">
               <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
                 <Check className="w-5 h-5 text-green-600" /> In stock (Made to order)
@@ -179,10 +278,10 @@ export default function ProductDetail() {
                     <button 
                       onClick={() => {
                         if (cartItem.quantity > 1) {
-                          updateQuantity(product.id, cartItem.quantity - 1);
+                          updateQuantity(displayProduct.id, cartItem.quantity - 1);
                         } else {
-                          removeFromCart(product.id);
-                          toast.success(`${product.name} removed from cart.`);
+                          removeFromCart(displayProduct.id);
+                          toast.success(`${displayProduct.name} removed from cart.`);
                         }
                       }}
                       className="w-9 h-9 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center font-bold text-slate-800 dark:text-white transition-colors text-lg"
@@ -190,17 +289,17 @@ export default function ProductDetail() {
                       -
                     </button>
                     <span className="font-bold text-slate-900 dark:text-white w-8 text-center text-lg">{cartItem.quantity}</span>
-                    <button 
-                      onClick={() => updateQuantity(product.id, cartItem.quantity + 1)}
+                    <button
+                      onClick={() => updateQuantity(displayProduct.id, cartItem.quantity + 1)}
                       className="w-9 h-9 rounded-lg bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 flex items-center justify-center font-bold text-slate-800 dark:text-white transition-colors text-lg"
                     >
                       +
                     </button>
                   </div>
-                  <button 
+                  <button
                     onClick={() => {
-                      removeFromCart(product.id);
-                      toast.success(`${product.name} removed from cart.`);
+                      removeFromCart(displayProduct.id);
+                      toast.success(`${displayProduct.name} removed from cart.`);
                     }}
                     className="text-xs text-red-500 hover:text-red-600 ml-4 font-semibold hover:underline"
                   >

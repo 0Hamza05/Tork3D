@@ -232,6 +232,99 @@ export const products = [
       'Weight': '~15 g',
       'Lead Time': '2–4 Business Days',
     }
+  },
+  {
+    id: 9,
+    name: 'Japanese Pagoda Lantern',
+    price: 649,
+    weight: 200,                          // package (dead) weight in grams
+    packageType: 'box',                    // 'box' | 'flyer'
+    packageDimensions: { l: 11, w: 11, h: 15 }, // packed dims in cm
+    category: 'Decor',
+    material: 'PLA',
+    image: '/Product Photos/Pagoda/Type 1/Pagoda 1.jpeg',
+    description: 'A beautifully detailed Japanese-style pagoda lantern with a built-in warm-glow LED light. Its intricately latticed windows cast a soft, cozy glow, making it a striking centerpiece for any desk, shelf, or bedside table.',
+    highlights: [
+      'Includes a built-in warm-white LED light',
+      'Intricately latticed windows for a soft ambient glow',
+      'Elegant pagoda-inspired silhouette with fine roof detailing',
+      'Durable PLA construction, perfect as a gift or decor piece',
+    ],
+    images: [
+      '/Product Photos/Pagoda/Type 1/Pagoda 1.jpeg',
+      '/Product Photos/Pagoda/Type 1/Pagoda 2.jpeg',
+    ],
+    specs: {
+      'Dimensions': '90 x 90 x 110 mm',
+      'Weight': '150 g',
+      'Included': '1 Lantern, 1 LED Light',
+      'Lead Time': '3–5 Business Days',
+    },
+    // Roof style — each style has its own reference photos
+    styles: [
+      {
+        id: 'double-roof',
+        name: 'Double Roof',
+        image: '/Product Photos/Pagoda/Type 1/Pagoda 1.jpeg',
+        images: [
+          '/Product Photos/Pagoda/Type 1/Pagoda 1.jpeg',
+          '/Product Photos/Pagoda/Type 1/Pagoda 2.jpeg',
+        ],
+      },
+      {
+        id: 'single-roof',
+        name: 'Single Roof',
+        image: '/Product Photos/Pagoda/Type 2/Pagoda 1.jpeg',
+        images: [
+          '/Product Photos/Pagoda/Type 2/Pagoda 1.jpeg',
+          '/Product Photos/Pagoda/Type 2/Pagoda 2.jpeg',
+        ],
+      },
+    ],
+    // Shared color palette — customer picks an independent color for the main
+    // stand and for the lattice "net" windows (made-to-order PLA prints).
+    colorOptions: [
+      { id: 'red', name: 'Red', hex: '#DC2626' },
+      { id: 'white', name: 'White', hex: '#F8FAFC' },
+      { id: 'black', name: 'Black', hex: '#1F2937' },
+      { id: 'yellow', name: 'Yellow', hex: '#FACC15' },
+      { id: 'light-blue', name: 'Light Blue', hex: '#7DD3FC' },
+      { id: 'dark-gray', name: 'Dark Gray', hex: '#4B5563' },
+      { id: 'brown', name: 'Brown', hex: '#78350F' },
+      { id: 'pink', name: 'Pink', hex: '#F472B6' },
+      { id: 'lavender', name: 'Lavender', hex: '#C4B5FD' },
+      { id: 'dark-green', name: 'Dark Green', hex: '#166534' },
+    ],
+  },
+  {
+    id: 10,
+    name: 'Double Barrel Shotgun Keychain',
+    price: 299,
+    weight: 100,                          // package (dead) weight in grams
+    packageType: 'flyer',                  // 'box' | 'flyer'
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
+    category: 'Novelty',
+    material: 'PLA',
+    image: '/Product Photos/Shotgun Keychain/Shotgun1.jpeg',
+    description: 'A miniature double-barrel shotgun keychain with a working spring-loaded mechanism that actually fires small BBs. Pull back, take aim, and let it rip — a genuinely fun, functional novelty piece that doubles as a sturdy keychain.',
+    highlights: [
+      'Functional spring-loaded firing mechanism — shoots small BBs',
+      'Intricately detailed double-barrel shotgun design',
+      'Compact and pocket-sized, perfect for keys or bags',
+      'Durable PLA construction built to handle everyday use',
+    ],
+    images: [
+      '/Product Photos/Shotgun Keychain/Shotgun1.jpeg',
+      '/Product Photos/Shotgun Keychain/Shotgun2.jpeg',
+      '/Product Photos/Shotgun Keychain/Shotgun3.jpeg',
+      '/Product Photos/Shotgun Keychain/Shotgun4.jpeg',
+    ],
+    specs: {
+      'Dimensions': '60 x 30 x 30 mm',
+      'Weight': '35 g',
+      'Included': '1 Keychain, Spring-loaded BBs',
+      'Lead Time': '2–4 Business Days',
+    }
   }
 ];
 
