@@ -87,7 +87,7 @@ export const products = [
   {
     id: 4,
     name: 'Pokedex Magnetic Fidget',
-    price: 249,
+    price: 329,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
@@ -117,7 +117,7 @@ export const products = [
   {
     id: 5,
     name: 'Batman Magnetic Fidget',
-    price: 249,
+    price: 329,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
@@ -178,7 +178,7 @@ export const products = [
   {
     id: 6,
     name: 'Spiderman Magnetic Fidget',
-    price: 249,
+    price: 329,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
