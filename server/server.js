@@ -467,8 +467,9 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
       const dbProduct = resolveDbProduct(item.id);
       return sum + ((dbProduct ? dbProduct.price : 0) * item.quantity);
     }, 0);
+    const FREE_SHIPPING_THRESHOLD = 500;
     const rawShipping = Math.min(parseFloat(orderData.shippingCost) || 0, 500);
-    const shippingCost = rawShipping; // COD always pays shipping; no free shipping on COD
+    const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : rawShipping;
     const totalAmount = subtotal + shippingCost;
 
     // Save to Supabase

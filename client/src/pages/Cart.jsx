@@ -41,7 +41,7 @@ const getCookie = (name) => {
   const totalWeightGrams = cart.reduce((sum, item) => sum + ((item.weight || 200) * item.quantity), 0);
 
   const FREE_SHIPPING_THRESHOLD = 500;
-  const hasFreeShipping = fulfillment === 'delivery' && paymentType === 'prepaid' && subtotal >= FREE_SHIPPING_THRESHOLD;
+  const hasFreeShipping = fulfillment === 'delivery' && subtotal >= FREE_SHIPPING_THRESHOLD;
   const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
 
   const shippingCost = fulfillment === 'pickup' || hasFreeShipping
