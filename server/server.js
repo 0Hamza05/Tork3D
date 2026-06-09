@@ -79,12 +79,14 @@ const buildOrderEmailHtml = (orderRecord, paymentId) => {
   const addr = details.shippingAddress || {};
 
   const itemsHtml = details.items
-    ? details.items.map(item =>
-        `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;">
+    ? details.items.map(item => {
+        const dbProduct = resolveDbProduct(item.id);
+        const unitPrice = dbProduct ? dbProduct.price : item.price;
+        return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;">
           <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
-          <span style="color:#999;float:right;">&#8377;${item.price * item.quantity}</span>
-        </li>`
-      ).join('')
+          <span style="color:#999;float:right;">&#8377;${unitPrice * item.quantity}</span>
+        </li>`;
+      }).join('')
     : `<li style="padding:6px 0;color:#ccc;">Single product order</li>`;
 
   const addressText = addr.address1
@@ -514,12 +516,14 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
           : '🏭 Collect from Site (FREE)';
 
       const itemsHtml = orderData.items
-        ? orderData.items.map(item =>
-          `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;">
+        ? orderData.items.map(item => {
+            const dbProduct = resolveDbProduct(item.id);
+            const unitPrice = dbProduct ? dbProduct.price : item.price;
+            return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;">
               <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
-              <span style="color:#999;float:right;">&#8377;${item.price * item.quantity}</span>
-            </li>`
-        ).join('')
+              <span style="color:#999;float:right;">&#8377;${unitPrice * item.quantity}</span>
+            </li>`;
+          }).join('')
         : '';
 
       await resend.emails.send({
