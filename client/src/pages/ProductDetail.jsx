@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { Check, Truck, Shield, MessageCircle, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { ProductCard } from '../components/ui/ProductCard';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
 import toast from 'react-hot-toast';
@@ -94,7 +95,7 @@ export default function ProductDetail() {
 
   return (
     <div className="pt-24 min-h-screen">
-      <SectionWrapper>
+      <SectionWrapper className="pb-0">
         {/* Breadcrumbs Navigation */}
         <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-8 font-medium flex-wrap">
           <Link to="/" className="hover:text-accent-blue transition-colors">Home</Link>
@@ -373,6 +374,25 @@ export default function ProductDetail() {
           </motion.div>
         </div>
       </SectionWrapper>
+
+      {/* Related Products */}
+      {(() => {
+        const related = [
+          ...products.filter(p => p.id !== product.id && p.category === product.category),
+          ...products.filter(p => p.id !== product.id && p.category !== product.category),
+        ].slice(0, 4);
+        if (related.length === 0) return null;
+        return (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 md:pb-32">
+            <div className="border-t border-slate-200 dark:border-slate-800 pt-10">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-8">You Might Also Like</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {related.map(p => <ProductCard key={p.id} product={p} />)}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
