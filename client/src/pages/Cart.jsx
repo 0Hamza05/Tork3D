@@ -40,7 +40,11 @@ const getCookie = (name) => {
   // Display weight = simple sum of dead weights across all cart items
   const totalWeightGrams = cart.reduce((sum, item) => sum + ((item.weight || 200) * item.quantity), 0);
 
-  const shippingCost = fulfillment === 'pickup'
+  const FREE_SHIPPING_THRESHOLD = 500;
+  const hasFreeShipping = fulfillment === 'delivery' && paymentType === 'prepaid' && subtotal >= FREE_SHIPPING_THRESHOLD;
+  const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+
+  const shippingCost = fulfillment === 'pickup' || hasFreeShipping
     ? 0
     : paymentType === 'prepaid' ? shippingRates?.prepaidSurface ?? 0
     : paymentType === 'cod' ? shippingRates?.codSurface ?? 0
@@ -382,7 +386,10 @@ const getCookie = (name) => {
                             </div>
                             <div className="text-right">
                               <p className="text-[10px] text-slate-500 dark:text-slate-450 uppercase font-semibold">Shipping</p>
-                              <p className="text-base font-extrabold text-slate-900 dark:text-white">₹{shippingRates.prepaidSurface}</p>
+                              {hasFreeShipping
+                                ? <p className="text-base font-extrabold text-green-600 dark:text-green-400">FREE</p>
+                                : <p className="text-base font-extrabold text-slate-900 dark:text-white">₹{shippingRates.prepaidSurface}</p>
+                              }
                             </div>
                           </button>
             <div className="bg-red-100 text-red-800 p-2 rounded-md mb-2 text-sm">⚠️ Cash on Delivery requires a ₹99 online pre‑payment before order confirmation.</div>
@@ -402,7 +409,10 @@ const getCookie = (name) => {
                             </div>
                             <div className="text-right">
                               <p className="text-[10px] text-slate-500 dark:text-slate-450 uppercase font-semibold">Shipping</p>
-                              <p className="text-base font-extrabold text-slate-900 dark:text-white">₹{shippingRates.codSurface}</p>
+                              {hasFreeShipping
+                                ? <p className="text-base font-extrabold text-green-600 dark:text-green-400">FREE</p>
+                                : <p className="text-base font-extrabold text-slate-900 dark:text-white">₹{shippingRates.codSurface}</p>
+                              }
                             </div>
                           </button>
                         </div>
@@ -601,6 +611,31 @@ const getCookie = (name) => {
           <div>
             <div className="glass-card p-8 sticky top-24">
               <h2 className="text-2xl font-bold mb-6 text-slate-900 dark:text-white">Order Summary</h2>
+
+              {/* Free shipping progress bar */}
+              {fulfillment === 'delivery' && (
+                <div className="mb-6">
+                  {hasFreeShipping ? (
+                    <div className="flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
+                      <Truck className="w-4 h-4 flex-shrink-0" />
+                      You've unlocked free shipping!
+                    </div>
+                  ) : (
+                    <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 space-y-2">
+                      <p className="text-xs text-slate-600 dark:text-slate-300">
+                        Add <span className="font-bold text-slate-900 dark:text-white">₹{amountToFreeShipping}</span> more for <span className="font-bold text-accent-orange">free shipping</span>
+                      </p>
+                      <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-accent-orange rounded-full transition-all duration-500"
+                          style={{ width: `${Math.min(100, (subtotal / FREE_SHIPPING_THRESHOLD) * 100)}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between text-slate-600 dark:text-slate-300">
                   <span>Subtotal</span>
@@ -609,13 +644,15 @@ const getCookie = (name) => {
                 <div className="flex justify-between text-slate-600 dark:text-slate-300">
                   <span className="flex items-center gap-1.5"><Truck className="w-4 h-4" /> Shipping</span>
                   <span>
-                    {selectedMode
-                      ? <span className="text-slate-900 dark:text-white font-medium">₹{shippingCost}</span>
-                      : <span className="text-xs text-slate-600 dark:text-slate-300 italic">Enter pincode at checkout</span>
+                    {hasFreeShipping
+                      ? <span className="text-green-600 dark:text-green-400 font-bold">FREE</span>
+                      : selectedMode
+                        ? <span className="text-slate-900 dark:text-white font-medium">₹{shippingCost}</span>
+                        : <span className="text-xs text-slate-600 dark:text-slate-300 italic">Enter pincode at checkout</span>
                     }
                   </span>
                 </div>
-                {selectedMode && (
+                {selectedMode && !hasFreeShipping && (
                   <p className="text-xs text-slate-600 dark:text-slate-300 text-right -mt-2">
                     {selectedMode === 'express' ? '⚡ Express · 1–3 days' : '📦 Standard · 4–7 days'}
                     {paymentType === 'cod' && ' (incl. COD charge)'}

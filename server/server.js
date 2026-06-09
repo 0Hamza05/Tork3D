@@ -152,8 +152,10 @@ const calculatePrice = (orderData) => {
       return sum + (itemPrice * item.quantity);
     }, 0);
 
-    // Use the Delhivery-calculated shipping cost from the frontend
-    const shippingCost = parseFloat(orderData.shippingCost) || 0;
+    const FREE_SHIPPING_THRESHOLD = 500;
+    const rawShipping = parseFloat(orderData.shippingCost) || 0;
+    // Free shipping only for prepaid orders (not COD)
+    const shippingCost = (orderData.shippingMode !== 'cod' && subtotal >= FREE_SHIPPING_THRESHOLD) ? 0 : rawShipping;
 
     return (subtotal + shippingCost) * 100;
   } else if (orderData.type === 'cod-prepay') {
@@ -465,8 +467,8 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
       const dbProduct = resolveDbProduct(item.id);
       return sum + ((dbProduct ? dbProduct.price : 0) * item.quantity);
     }, 0);
-    // Cap shippingCost at ₹500 to prevent frontend manipulation
-    const shippingCost = Math.min(parseFloat(orderData.shippingCost) || 0, 500);
+    const rawShipping = Math.min(parseFloat(orderData.shippingCost) || 0, 500);
+    const shippingCost = rawShipping; // COD always pays shipping; no free shipping on COD
     const totalAmount = subtotal + shippingCost;
 
     // Save to Supabase
