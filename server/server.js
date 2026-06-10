@@ -82,9 +82,9 @@ const buildOrderEmailHtml = (orderRecord, paymentId) => {
     ? details.items.map(item => {
         const dbProduct = resolveDbProduct(item.id);
         const unitPrice = dbProduct ? dbProduct.price : item.price;
-        return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;">
+        return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
           <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
-          <span style="color:#999;float:right;">&#8377;${unitPrice * item.quantity}</span>
+          <span style="color:#999;white-space:nowrap;">&#8377;${unitPrice * item.quantity}</span>
         </li>`;
       }).join('')
     : `<li style="padding:6px 0;color:#ccc;">Single product order</li>`;
@@ -519,9 +519,9 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
         ? orderData.items.map(item => {
             const dbProduct = resolveDbProduct(item.id);
             const unitPrice = dbProduct ? dbProduct.price : item.price;
-            return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;">
+            return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
               <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
-              <span style="color:#999;float:right;">&#8377;${unitPrice * item.quantity}</span>
+              <span style="color:#999;white-space:nowrap;">&#8377;${unitPrice * item.quantity}</span>
             </li>`;
           }).join('')
         : '';

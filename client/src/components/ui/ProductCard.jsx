@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from './Button';
@@ -8,12 +8,19 @@ import { useCart } from '../../context/CartContext';
 
 export function ProductCard({ product }) {
   const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
+  const navigate = useNavigate();
   const cartItem = cart.find(item => item.id === product.id);
   const [isLoaded, setIsLoaded] = React.useState(false);
+  const needsConfig = !!(product.styles?.length || product.colorOptions?.length);
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (needsConfig) {
+      // This product has style/color options — send to product page to configure
+      navigate(`/product/${product.id}`);
+      return;
+    }
     addToCart(product);
     toast.success(`${product.name} added to cart!`);
   };
