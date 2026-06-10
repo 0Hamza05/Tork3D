@@ -11,6 +11,7 @@ import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Policies from './pages/Policies';
 import NotFound from './pages/NotFound';
+import Maintenance from './pages/Maintenance';
 import ScrollToTop from './components/ScrollToTop';
 import WhatsAppWidget from './components/ui/WhatsAppWidget';
 
@@ -18,6 +19,7 @@ import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 import Cart from './pages/Cart';
+import { MAINTENANCE_MODE } from './config';
 // InteractiveBackground removed — replaced by CSS grid texture in hero
 
 function App() {
@@ -55,10 +57,10 @@ function App() {
           <main id="main-content" className="flex-grow pt-16">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/custom" element={<CustomOrder />} />
+              <Route path="/shop" element={MAINTENANCE_MODE ? <Maintenance /> : <Shop />} />
+              <Route path="/product/:id" element={MAINTENANCE_MODE ? <Maintenance /> : <ProductDetail />} />
+              <Route path="/cart" element={MAINTENANCE_MODE ? <Maintenance /> : <Cart />} />
+              <Route path="/custom" element={MAINTENANCE_MODE ? <Maintenance /> : <CustomOrder />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/policies" element={<Policies />} />
