@@ -236,6 +236,13 @@ app.post('/api/verify-payment', orderLimiter, async (req, res) => {
     const isAuthentic = expectedSignature === razorpay_signature;
 
     if (isAuthentic) {
+      // Check current status BEFORE updating, so we know if the webhook already processed this order
+      const { data: existingOrders } = await supabase
+        .from('tork3d_orders')
+        .select('status')
+        .eq('razorpay_order_id', razorpay_order_id);
+      const alreadyPaid = existingOrders && existingOrders.length > 0 && existingOrders[0].status === 'paid';
+
       // Payment is verified! Update Supabase status to paid and fetch the record
       const { data: updatedOrders, error } = await supabase
         .from('tork3d_orders')
@@ -249,12 +256,11 @@ app.post('/api/verify-payment', orderLimiter, async (req, res) => {
       }
 
       // Send business notification email — skip for cod-prepay (COD order email sent separately)
-      // Also skip if webhook already processed this payment (payment_id already set before this update)
+      // Also skip if webhook already processed this payment (status was already 'paid')
       if (updatedOrders && updatedOrders.length > 0) {
         const orderRecord = updatedOrders[0];
         const isCodPrepay = orderRecord.order_type === 'cod-prepay';
-        const alreadyProcessedByWebhook = orderRecord.payment_id && orderRecord.payment_id !== razorpay_payment_id;
-        if (!isCodPrepay && !alreadyProcessedByWebhook) {
+        if (!isCodPrepay && !alreadyPaid) {
           try {
             await resend.emails.send({
               from: `Tork3D Orders <${SENDER_EMAIL}>`,
@@ -309,6 +315,13 @@ app.post('/api/webhook', async (req, res) => {
       const razorpay_order_id = payment.order_id;
       const razorpay_payment_id = payment.id;
 
+      // Check current status BEFORE updating, so we know if verify-payment already processed this order
+      const { data: existingOrders } = await supabase
+        .from('tork3d_orders')
+        .select('status')
+        .eq('razorpay_order_id', razorpay_order_id);
+      const alreadyPaid = existingOrders && existingOrders.length > 0 && existingOrders[0].status === 'paid';
+
       // Update Supabase to 'paid'
       const { data: updatedOrderData, error } = await supabase
         .from('tork3d_orders')
@@ -322,8 +335,8 @@ app.post('/api/webhook', async (req, res) => {
         console.log(`Order ${razorpay_order_id} marked as paid via webhook.`);
         const orderRecord = updatedOrderData[0];
 
-        // Send business notification email for shop/cart orders
-        if (orderRecord.order_type === 'cart' || orderRecord.order_type === 'shop') {
+        // Send business notification email for shop/cart orders (skip if verify-payment already sent it)
+        if (!alreadyPaid && (orderRecord.order_type === 'cart' || orderRecord.order_type === 'shop')) {
           try {
             await resend.emails.send({
               from: `Tork3D Orders <${SENDER_EMAIL}>`,
