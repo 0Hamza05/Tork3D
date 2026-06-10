@@ -133,6 +133,86 @@ const buildOrderEmailHtml = (orderRecord, paymentId) => {
   `;
 };
 
+// ── Customer-facing order confirmation email ─────────────────────────────────
+const buildCustomerOrderEmailHtml = ({ customerName, items, total, shippingCost, shippingModeLabel, addressText, codRemaining }) => {
+  const itemsHtml = items
+    ? items.map(item => {
+        const dbProduct = resolveDbProduct(item.id);
+        const unitPrice = dbProduct ? dbProduct.price : item.price;
+        return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+          <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
+          <span style="color:#999;white-space:nowrap;">&#8377;${unitPrice * item.quantity}</span>
+        </li>`;
+      }).join('')
+    : `<li style="padding:6px 0;color:#ccc;">Single product order</li>`;
+
+  return `
+    <div style="font-family:'Segoe UI',Arial,sans-serif;background:#0f0f0f;padding:32px;border-radius:12px;max-width:560px;margin:auto;">
+      <p style="margin:0 0 4px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#F97316;font-weight:700;">Tork3D</p>
+      <h2 style="margin:0 0 8px;font-size:22px;color:#fff;">Thanks for your order, ${escHtml(customerName)}!</h2>
+      <p style="margin:0 0 24px;color:#ccc;font-size:14px;">We've received your order and will get it ready for dispatch soon.</p>
+
+      <div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:16px;">
+        <p style="margin:0 0 10px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Items Ordered</p>
+        <ul style="margin:0;padding:0;list-style:none;">${itemsHtml}</ul>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid #333;">
+          <strong style="color:#fff;">Total: </strong>
+          <strong style="color:#F97316;font-size:18px;">&#8377;${total}</strong>
+          ${codRemaining != null ? `<br/><span style="color:#999;font-size:13px;">₹99 prepaid online &middot; ₹${codRemaining} payable on delivery</span>` : ''}
+        </div>
+      </div>
+
+      <table width="100%" style="margin-bottom:16px;">
+        <tr><td style="color:#777;font-size:12px;padding:4px 0;">Delivery</td><td style="color:#fff;text-align:right;">${shippingModeLabel}</td></tr>
+        <tr><td style="color:#777;font-size:12px;padding:4px 0;">Shipping Cost</td><td style="color:#fff;text-align:right;">${shippingCost === 0 ? 'FREE' : '&#8377;' + shippingCost}</td></tr>
+      </table>
+
+      ${addressText ? `<div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:16px;">
+        <p style="margin:0 0 6px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Delivery Address</p>
+        <p style="margin:0;color:#ccc;font-size:14px;line-height:1.6;">${addressText}</p>
+      </div>` : ''}
+
+      <p style="margin:0;color:#666;font-size:12px;">Questions about your order? Just reply to this email or reach us on WhatsApp.</p>
+    </div>
+  `;
+};
+
+// Sends the order confirmation email to the customer for a paid cart/shop order record
+const sendCustomerConfirmationEmail = async (orderRecord) => {
+  if (!orderRecord.customer_email) return;
+  const details = orderRecord.order_details || {};
+  const addr = details.shippingAddress || {};
+  const addressText = addr.address1
+    ? `${escHtml(addr.address1)}${addr.address2 ? ', ' + escHtml(addr.address2) : ''}, ${escHtml(addr.city)} - ${escHtml(addr.pincode)}, ${escHtml(addr.state)}`
+    : '';
+  const shippingModeLabel = details.shippingMode === 'express'
+    ? '⚡ Express (1–3 days)'
+    : details.shippingMode === 'surface'
+      ? '📦 Standard (4–7 days)'
+      : details.shippingMode === 'pickup'
+        ? '🏭 Collect from Site'
+        : '—';
+
+  try {
+    await resend.emails.send({
+      from: `Tork3D Orders <${SENDER_EMAIL}>`,
+      to: [orderRecord.customer_email],
+      subject: `Your Tork3D order is confirmed!`,
+      html: buildCustomerOrderEmailHtml({
+        customerName: orderRecord.customer_name,
+        items: details.items,
+        total: orderRecord.total_amount,
+        shippingCost: details.shippingCost || 0,
+        shippingModeLabel,
+        addressText
+      })
+    });
+    console.log('✅ Order confirmation email sent to customer.');
+  } catch (emailErr) {
+    console.error('⚠️ Failed to send customer confirmation email:', emailErr);
+  }
+};
+
 // Cart item ids may carry a variant suffix (e.g. "9-red" for the Pagoda Lantern's
 // "Ivory White" variant) — strip it to resolve the underlying catalog product.
 const resolveDbProduct = (itemId) => {
@@ -272,6 +352,7 @@ app.post('/api/verify-payment', orderLimiter, async (req, res) => {
           } catch (emailErr) {
             console.error('⚠️ Failed to send order notification email:', emailErr);
           }
+          await sendCustomerConfirmationEmail(orderRecord);
         }
       }
 
@@ -348,6 +429,7 @@ app.post('/api/webhook', async (req, res) => {
           } catch (emailErr) {
             console.error('⚠️ Failed to send shop order email:', emailErr);
           }
+          await sendCustomerConfirmationEmail(orderRecord);
         }
 
         // Waybills are now generated manually from the Supabase dashboard.
@@ -579,6 +661,24 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
         `
       });
       console.log('✅ COD order notification email sent.');
+
+      if (orderData.customerEmail) {
+        await resend.emails.send({
+          from: `Tork3D Orders <${SENDER_EMAIL}>`,
+          to: [orderData.customerEmail],
+          subject: `Your Tork3D order is confirmed!`,
+          html: buildCustomerOrderEmailHtml({
+            customerName: orderData.customerName,
+            items: orderData.items,
+            total: totalAmount,
+            shippingCost,
+            shippingModeLabel,
+            addressText,
+            codRemaining: totalAmount - 99
+          })
+        });
+        console.log('✅ Order confirmation email sent to customer.');
+      }
     } catch (emailErr) {
       console.error('⚠️ COD email failed:', emailErr);
     }
