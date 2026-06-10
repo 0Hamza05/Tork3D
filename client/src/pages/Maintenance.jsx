@@ -29,7 +29,7 @@ export default function Maintenance() {
               variant="outline"
               asChild
               className="flex-1 flex items-center justify-center gap-2"
-              href="https://wa.me/+919900390390"
+              href="https://wa.me/+917073085538"
               target="_blank"
               rel="noreferrer"
             >

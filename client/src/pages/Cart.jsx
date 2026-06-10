@@ -218,6 +218,7 @@ const getCookie = (name) => {
             <CheckCircle2 className="w-20 h-20 text-green-500" />
             <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Order Placed!</h1>
             <p className="text-slate-600 dark:text-slate-300">Your Cash on Delivery order has been confirmed. We'll contact you once it's ready to ship.</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400">A confirmation message/email will be sent to the mobile number or email address you provided.</p>
             <Link to="/shop" className="inline-block"><Button size="lg" className="w-full">Continue Shopping</Button></Link>
           </div>
         </SectionWrapper>

@@ -105,7 +105,7 @@ export default function Contact() {
                 size="lg" 
                 className="w-full bg-[#25D366] hover:bg-[#25D366]/90 text-white shadow-none flex items-center justify-center" 
                 asChild
-                href="https://wa.me/919900390390" 
+                href="https://wa.me/917073085538" 
                 target="_blank" 
                 rel="noreferrer"
               >

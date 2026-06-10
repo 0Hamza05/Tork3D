@@ -87,7 +87,7 @@ export default function CustomOrder() {
                   We've received your project details. Please send us your 3D model files via WhatsApp so we can provide an accurate quote.
                 </p>
                 <a
-                  href={`https://wa.me/919900390390?text=Hi%20Tork3D!%20I%20just%20submitted%20a%20quote%20request.%20My%20Email%20is%20${encodeURIComponent(formData.email)}.%20I'm%20sending%20my%20CAD%20files%20now.`}
+                  href={`https://wa.me/917073085538?text=Hi%20Tork3D!%20I%20just%20submitted%20a%20quote%20request.%20My%20Email%20is%20${encodeURIComponent(formData.email)}.%20I'm%20sending%20my%20CAD%20files%20now.`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center h-12 px-8 rounded-lg bg-green-500 hover:bg-green-600 text-white font-bold transition-colors"
@@ -215,7 +215,7 @@ export default function CustomOrder() {
                 <h3 className="font-display font-bold text-xl mb-2 text-white">Need Bulk Production?</h3>
                 <p className="text-sm text-orange-100 mb-6">We offer print farm scaling for runs of 100+ units. Chat with us on WhatsApp for wholesale pricing.</p>
                 <a
-                  href="https://wa.me/919900390390"
+                  href="https://wa.me/917073085538"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 w-full py-3 px-6 rounded-xl font-semibold text-white bg-[#25D366] hover:bg-[#1ebe5d] transition-colors"
