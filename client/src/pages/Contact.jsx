@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Mail, Phone, MessageCircle, Instagram, Loader2, CheckCircle2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
@@ -10,6 +11,17 @@ export default function Contact() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get('topic') === 'affiliate') {
+      setForm(f => ({
+        ...f,
+        subject: 'Affiliate Inquiry',
+        message: "Hi, I'd like to become an affiliate for Tork3D. Please share details on how the program works."
+      }));
+    }
+  }, [searchParams]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
