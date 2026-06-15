@@ -44,13 +44,77 @@ const getCookie = (name) => {
   const hasFreeShipping = fulfillment === 'delivery' && subtotal >= FREE_SHIPPING_THRESHOLD;
   const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
 
+  // Coupon (early-access launch coupon) state
+  const [couponInput, setCouponInput] = useState('');
+  const [couponApplying, setCouponApplying] = useState(false);
+  const [couponStatus, setCouponStatus] = useState(null); // { valid, discount, code, message }
+  const couponDiscount = couponStatus?.valid ? couponStatus.discount : 0;
+
   const shippingCost = fulfillment === 'pickup' || hasFreeShipping
     ? 0
     : paymentType === 'prepaid' ? shippingRates?.prepaidSurface ?? 0
     : paymentType === 'cod' ? shippingRates?.codSurface ?? 0
     : 0;
 
-  const totalPrice = subtotal + shippingCost;
+  const totalPrice = Math.max(0, subtotal - couponDiscount) + shippingCost;
+
+  const applyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    setCouponApplying(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/validate-coupon`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: couponInput.trim(),
+          items: cart.map(i => ({ id: i.id, quantity: i.quantity }))
+        })
+      });
+      const data = await res.json();
+      if (data.success && data.valid) {
+        setCouponStatus({ valid: true, discount: data.discount, code: data.code, message: data.message });
+        toast.success(data.message);
+      } else {
+        setCouponStatus({ valid: false, message: data.message || 'Invalid coupon.' });
+      }
+    } catch {
+      setCouponStatus({ valid: false, message: 'Could not validate coupon. Please try again.' });
+    } finally {
+      setCouponApplying(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCouponStatus(null);
+    setCouponInput('');
+  };
+
+  // Re-validate the coupon whenever the cart subtotal changes (keeps the ₹350 min & discount honest)
+  useEffect(() => {
+    if (!couponStatus?.valid) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/validate-coupon`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code: couponStatus.code,
+            items: cart.map(i => ({ id: i.id, quantity: i.quantity }))
+          })
+        });
+        const data = await res.json();
+        if (cancelled) return;
+        if (data.success && data.valid) {
+          setCouponStatus({ valid: true, discount: data.discount, code: data.code, message: data.message });
+        } else {
+          setCouponStatus({ valid: false, message: data.message || 'Coupon no longer applies.' });
+        }
+      } catch { /* keep prior state on network error */ }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subtotal]);
 
   // Re-fetch rates when pincode, weight, or subtotal changes
   useEffect(() => {
@@ -102,6 +166,7 @@ const getCookie = (name) => {
     customerEmail: customerInfo.email,
     customerPhone: customerInfo.phone,
     referredBy: getCookie('tork3d_ref'),
+    couponCode: couponStatus?.valid ? couponStatus.code : undefined,
     shippingAddress: fulfillment === 'pickup' ? null : {
       address1: customerInfo.address1,
       city: customerInfo.city,
@@ -637,11 +702,54 @@ const getCookie = (name) => {
                 </div>
               )}
 
+              {/* Coupon code */}
+              <div className="mb-6">
+                {couponStatus?.valid ? (
+                  <div className="flex items-center justify-between gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400">
+                      <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                      <span>{couponStatus.code} applied · 🎁 free keychain</span>
+                    </div>
+                    <button onClick={removeCoupon} className="text-xs text-slate-500 dark:text-slate-400 hover:text-red-500 font-medium">
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={couponInput}
+                        onChange={e => setCouponInput(e.target.value.toUpperCase())}
+                        placeholder="Coupon code"
+                        className="flex-1 bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white uppercase"
+                      />
+                      <button
+                        onClick={applyCoupon}
+                        disabled={couponApplying || !couponInput.trim()}
+                        className="px-4 py-2.5 rounded-lg bg-slate-900 dark:bg-slate-700 text-white text-sm font-semibold disabled:opacity-50 hover:opacity-90 transition-opacity"
+                      >
+                        {couponApplying ? '…' : 'Apply'}
+                      </button>
+                    </div>
+                    {couponStatus && !couponStatus.valid && (
+                      <p className="mt-2 text-xs text-red-500">{couponStatus.message}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between text-slate-600 dark:text-slate-300">
                   <span>Subtotal</span>
                   <span className="text-slate-900 dark:text-white">₹{subtotal}</span>
                 </div>
+                {couponDiscount > 0 && (
+                  <div className="flex justify-between text-green-600 dark:text-green-400 font-medium">
+                    <span>Discount ({couponStatus.code})</span>
+                    <span>−₹{couponDiscount}</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-slate-600 dark:text-slate-300">
                   <span className="flex items-center gap-1.5"><Truck className="w-4 h-4" /> Shipping</span>
                   <span>

@@ -12,6 +12,8 @@ import Contact from './pages/Contact';
 import Policies from './pages/Policies';
 import NotFound from './pages/NotFound';
 import Maintenance from './pages/Maintenance';
+import ComingSoon from './pages/ComingSoon';
+import EarlyAccess from './pages/EarlyAccess';
 import ScrollToTop from './components/ScrollToTop';
 import WhatsAppWidget from './components/ui/WhatsAppWidget';
 
@@ -19,7 +21,7 @@ import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 import Cart from './pages/Cart';
-import { MAINTENANCE_MODE } from './config';
+import { MAINTENANCE_MODE, LAUNCH_LOCK } from './config';
 // InteractiveBackground removed — replaced by CSS grid texture in hero
 
 function App() {
@@ -34,17 +36,36 @@ function App() {
     }
   }, []);
 
+  // Full-site lockout — show only the Coming Soon countdown + the coupon signup.
+  if (LAUNCH_LOCK) {
+    return (
+      <ThemeProvider>
+        <Router>
+          <ScrollToTop />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{ className: 'dark:bg-slate-800 dark:text-white', duration: 3000 }}
+          />
+          <Routes>
+            <Route path="/early-access" element={<EarlyAccess />} />
+            <Route path="*" element={<ComingSoon />} />
+          </Routes>
+        </Router>
+      </ThemeProvider>
+    );
+  }
+
   return (
     <ThemeProvider>
       <CartProvider>
         <Router>
           <ScrollToTop />
-          <Toaster 
+          <Toaster
             position="bottom-right"
             toastOptions={{
               className: 'dark:bg-slate-800 dark:text-white',
               duration: 3000,
-            }} 
+            }}
           />
           <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
           <a

@@ -31,6 +31,16 @@ const escHtml = (str) => String(str ?? '')
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#039;');
 
+// ── Coupon code generator ────────────────────────────────────────────────────
+// Excludes ambiguous chars (0/O/1/I) so codes are easy to read & type.
+const COUPON_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const generateCouponCode = () => {
+  let suffix = '';
+  const bytes = crypto.randomBytes(6);
+  for (let i = 0; i < 6; i++) suffix += COUPON_ALPHABET[bytes[i] % COUPON_ALPHABET.length];
+  return `TORK10-${suffix}`;
+};
+
 // ── Rate limiters ────────────────────────────────────────────────────────────
 const orderLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { success: false, message: 'Too many requests. Please try again later.' } });
 const shippingLimiter = rateLimit({ windowMs: 1 * 60 * 1000, max: 20, message: { success: false, message: 'Too many requests. Please try again later.' } });
@@ -119,11 +129,19 @@ const buildOrderEmailHtml = (orderRecord, paymentId) => {
       <div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:16px;">
         <p style="margin:0 0 10px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Items Ordered</p>
         <ul style="margin:0;padding:0;list-style:none;">${itemsHtml}</ul>
+        ${details.couponDiscount ? `<div style="margin-top:10px;display:flex;justify-content:space-between;color:#22c55e;font-size:13px;">
+          <span>Coupon${details.couponCode ? ' (' + escHtml(details.couponCode) + ')' : ''}</span>
+          <span>&minus;&#8377;${details.couponDiscount}</span>
+        </div>` : ''}
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid #333;">
           <strong style="color:#fff;">Total: </strong>
           <strong style="color:#F97316;font-size:18px;">&#8377;${orderRecord.total_amount}</strong>
         </div>
       </div>
+
+      ${details.freeKeychain ? `<div style="background:#1a1a1a;border:1px solid #F97316;border-radius:8px;padding:14px;margin-bottom:16px;text-align:center;">
+        <span style="color:#F97316;font-size:14px;font-weight:700;">🎁 PACK A FREE NAME KEYCHAIN with this order</span>
+      </div>` : ''}
 
       <div style="background:#1a1a1a;border-radius:8px;padding:16px;">
         <p style="margin:0 0 6px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Delivery Address</p>
@@ -134,7 +152,7 @@ const buildOrderEmailHtml = (orderRecord, paymentId) => {
 };
 
 // ── Customer-facing order confirmation email ─────────────────────────────────
-const buildCustomerOrderEmailHtml = ({ customerName, items, total, shippingCost, shippingModeLabel, addressText, codRemaining }) => {
+const buildCustomerOrderEmailHtml = ({ customerName, items, total, shippingCost, shippingModeLabel, addressText, codRemaining, discount, couponCode, freeKeychain }) => {
   const itemsHtml = items
     ? items.map(item => {
         const dbProduct = resolveDbProduct(item.id);
@@ -155,12 +173,20 @@ const buildCustomerOrderEmailHtml = ({ customerName, items, total, shippingCost,
       <div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:16px;">
         <p style="margin:0 0 10px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Items Ordered</p>
         <ul style="margin:0;padding:0;list-style:none;">${itemsHtml}</ul>
+        ${discount ? `<div style="margin-top:10px;display:flex;justify-content:space-between;color:#22c55e;font-size:13px;">
+          <span>Coupon${couponCode ? ' (' + escHtml(couponCode) + ')' : ''}</span>
+          <span>&minus;&#8377;${discount}</span>
+        </div>` : ''}
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid #333;">
           <strong style="color:#fff;">Total: </strong>
           <strong style="color:#F97316;font-size:18px;">&#8377;${total}</strong>
           ${codRemaining != null ? `<br/><span style="color:#999;font-size:13px;">₹99 prepaid online &middot; ₹${codRemaining} payable on delivery</span>` : ''}
         </div>
       </div>
+
+      ${freeKeychain ? `<div style="background:#1a1a1a;border:1px solid #F97316;border-radius:8px;padding:14px;margin-bottom:16px;text-align:center;">
+        <span style="color:#F97316;font-size:14px;font-weight:700;">🎁 A free name keychain is included with this order!</span>
+      </div>` : ''}
 
       <table width="100%" style="margin-bottom:16px;">
         <tr><td style="color:#777;font-size:12px;padding:4px 0;">Delivery</td><td style="color:#fff;text-align:right;">${shippingModeLabel}</td></tr>
@@ -204,7 +230,10 @@ const sendCustomerConfirmationEmail = async (orderRecord) => {
         total: orderRecord.total_amount,
         shippingCost: details.shippingCost || 0,
         shippingModeLabel,
-        addressText
+        addressText,
+        discount: details.couponDiscount,
+        couponCode: details.couponCode,
+        freeKeychain: details.freeKeychain
       })
     });
     console.log('✅ Order confirmation email sent to customer.');
@@ -220,26 +249,60 @@ const resolveDbProduct = (itemId) => {
   return products.find(p => p.id === baseId);
 };
 
-// Server-Side Calculate Price Logic (Zero-Trust)
-const calculatePrice = (orderData) => {
+// Compute the cart subtotal server-side from the authoritative product DB (never trust client prices).
+const computeCartSubtotal = (items) => (Array.isArray(items) ? items : []).reduce((sum, item) => {
+  const dbProduct = resolveDbProduct(item.id);
+  return sum + ((dbProduct ? dbProduct.price : 0) * item.quantity);
+}, 0);
+
+// ── Launch coupon (early-access) redemption rules ────────────────────────────
+const COUPON_MIN_SUBTOTAL = 350;   // discount only applies on orders above this
+const COUPON_DISCOUNT_RATE = 0.10; // 10% off
+
+// Validates an early-access coupon against the DB. Returns { valid, discount, code, reason }.
+const resolveCoupon = async (code, subtotal) => {
+  if (!code) return { valid: false, discount: 0 };
+  const normalized = String(code).trim().toUpperCase();
+  const { data } = await supabase
+    .from('tork3d_early_access')
+    .select('id, coupon_code, used')
+    .eq('coupon_code', normalized)
+    .limit(1);
+  if (!data || data.length === 0) return { valid: false, discount: 0, reason: 'Invalid coupon code.' };
+  if (data[0].used) return { valid: false, discount: 0, reason: 'This coupon has already been used.' };
+  if (subtotal < COUPON_MIN_SUBTOTAL) {
+    return { valid: false, discount: 0, reason: `Coupon valid only on orders above ₹${COUPON_MIN_SUBTOTAL}.` };
+  }
+  return { valid: true, discount: Math.round(subtotal * COUPON_DISCOUNT_RATE), code: normalized };
+};
+
+// Marks a coupon as used (idempotent — only flips an unused code). orderRef links it to the order.
+const markCouponUsed = async (couponCode, orderRef) => {
+  if (!couponCode) return;
+  const { error } = await supabase
+    .from('tork3d_early_access')
+    .update({ used: true, used_order_id: orderRef != null ? String(orderRef) : null })
+    .eq('coupon_code', String(couponCode).trim().toUpperCase())
+    .eq('used', false);
+  if (error) console.error('⚠️ Failed to mark coupon used:', error);
+};
+
+// Server-Side Calculate Price Logic (Zero-Trust). `discount` is a pre-validated rupee amount.
+const calculatePrice = (orderData, discount = 0) => {
   if (orderData.type === 'shop') {
     const product = products.find(p => p.id === orderData.productId);
     if (!product) return 0; // reject unknown products — never trust client price
     return product.price * 100;
   } else if (orderData.type === 'cart') {
-    // Validate each item's price against the server's product database
-    const subtotal = orderData.items.reduce((sum, item) => {
-      const dbProduct = resolveDbProduct(item.id);
-      const itemPrice = dbProduct ? dbProduct.price : 0;
-      return sum + (itemPrice * item.quantity);
-    }, 0);
+    const subtotal = computeCartSubtotal(orderData.items);
 
     const FREE_SHIPPING_THRESHOLD = 500;
     const rawShipping = parseFloat(orderData.shippingCost) || 0;
-    // Free shipping only for prepaid orders (not COD)
+    // Free shipping only for prepaid orders (not COD). Eligibility uses pre-discount subtotal.
     const shippingCost = (orderData.shippingMode !== 'cod' && subtotal >= FREE_SHIPPING_THRESHOLD) ? 0 : rawShipping;
 
-    return (subtotal + shippingCost) * 100;
+    const goods = Math.max(0, subtotal - discount);
+    return (goods + shippingCost) * 100;
   } else if (orderData.type === 'cod-prepay') {
     return 99 * 100; // fixed ₹99 COD prepayment
   }
@@ -251,8 +314,17 @@ app.post('/api/create-order', orderLimiter, async (req, res) => {
   try {
     const { orderData } = req.body;
 
+    // Validate & apply the early-access coupon (prepaid cart orders only)
+    let discount = 0;
+    let couponApplied = null;
+    if (orderData.type === 'cart' && orderData.couponCode) {
+      const subtotal = computeCartSubtotal(orderData.items);
+      const coupon = await resolveCoupon(orderData.couponCode, subtotal);
+      if (coupon.valid) { discount = coupon.discount; couponApplied = coupon.code; }
+    }
+
     // Calculate actual price securely on backend
-    const amountInPaise = calculatePrice(orderData);
+    const amountInPaise = calculatePrice(orderData, discount);
 
     const options = {
       amount: Math.round(amountInPaise),
@@ -276,7 +348,7 @@ app.post('/api/create-order', orderLimiter, async (req, res) => {
         customer_email: orderData.customerEmail,
         total_amount: amountInPaise / 100, // convert back to INR
         order_type: orderData.type,
-        order_details: (orderData.type === 'cart' || orderData.type === 'cod-prepay') ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy } : (orderData.specs || {}),
+        order_details: (orderData.type === 'cart' || orderData.type === 'cod-prepay') ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy, couponCode: couponApplied || undefined, couponDiscount: discount || undefined, freeKeychain: couponApplied ? true : undefined } : (orderData.specs || {}),
         status: 'payment_pending'
       }]);
 
@@ -353,6 +425,10 @@ app.post('/api/verify-payment', orderLimiter, async (req, res) => {
             console.error('⚠️ Failed to send order notification email:', emailErr);
           }
           await sendCustomerConfirmationEmail(orderRecord);
+          // Burn the coupon now that the order is paid
+          if (orderRecord.order_details?.couponCode) {
+            await markCouponUsed(orderRecord.order_details.couponCode, orderRecord.id);
+          }
         }
       }
 
@@ -430,6 +506,10 @@ app.post('/api/webhook', async (req, res) => {
             console.error('⚠️ Failed to send shop order email:', emailErr);
           }
           await sendCustomerConfirmationEmail(orderRecord);
+          // Burn the coupon now that the order is paid
+          if (orderRecord.order_details?.couponCode) {
+            await markCouponUsed(orderRecord.order_details.couponCode, orderRecord.id);
+          }
         }
 
         // Waybills are now generated manually from the Supabase dashboard.
@@ -560,17 +640,23 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
     const { orderData } = req.body;
 
     // Calculate subtotal server-side
-    const subtotal = orderData.items.reduce((sum, item) => {
-      const dbProduct = resolveDbProduct(item.id);
-      return sum + ((dbProduct ? dbProduct.price : 0) * item.quantity);
-    }, 0);
+    const subtotal = computeCartSubtotal(orderData.items);
     const FREE_SHIPPING_THRESHOLD = 500;
     const rawShipping = Math.min(parseFloat(orderData.shippingCost) || 0, 500);
     const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : rawShipping;
-    const totalAmount = subtotal + shippingCost;
+
+    // Validate & apply the early-access coupon
+    let discount = 0;
+    let couponApplied = null;
+    if (orderData.couponCode) {
+      const coupon = await resolveCoupon(orderData.couponCode, subtotal);
+      if (coupon.valid) { discount = coupon.discount; couponApplied = coupon.code; }
+    }
+
+    const totalAmount = Math.max(0, subtotal - discount) + shippingCost;
 
     // Save to Supabase
-    const { error: dbError } = await supabase
+    const { data: codInserted, error: dbError } = await supabase
       .from('tork3d_orders')
         .insert([
           {
@@ -585,16 +671,25 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
               paymentType: 'COD',
               shippingAddress: orderData.shippingAddress || null,
               customerPhone: orderData.customerPhone,
-              referredBy: orderData.referredBy
+              referredBy: orderData.referredBy,
+              couponCode: couponApplied || undefined,
+              couponDiscount: discount || undefined,
+              freeKeychain: couponApplied ? true : undefined
             },
             status: 'cod_pending'
           }
-        ]);
+        ])
+        .select();
 
 
     if (dbError) {
       console.error('COD order Supabase error:', dbError);
       throw dbError;
+    }
+
+    // Burn the coupon now that the COD order is confirmed (₹99 already prepaid)
+    if (couponApplied) {
+      await markCouponUsed(couponApplied, codInserted && codInserted[0] ? codInserted[0].id : null);
     }
 
     // Send business notification email
@@ -643,6 +738,10 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
             <div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:16px;">
               <p style="margin:0 0 10px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Items Ordered</p>
               <ul style="margin:0;padding:0;list-style:none;">${itemsHtml}</ul>
+              ${discount ? `<div style="margin-top:10px;display:flex;justify-content:space-between;color:#22c55e;font-size:13px;">
+                <span>Coupon${couponApplied ? ' (' + escHtml(couponApplied) + ')' : ''}</span>
+                <span>&minus;₹${discount}</span>
+              </div>` : ''}
               <div style="margin-top:12px;padding-top:12px;border-top:1px solid #333;">
                 <strong style="color:#fff;">Full Order Amount: </strong>
                 <strong style="color:#F97316;font-size:18px;">₹${totalAmount}</strong><br/>
@@ -652,6 +751,10 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
                 <strong style="color:#F97316;font-size:18px;">₹${totalAmount - 99}</strong>
               </div>
             </div>
+
+            ${couponApplied ? `<div style="background:#1a1a1a;border:1px solid #F97316;border-radius:8px;padding:14px;margin-bottom:16px;text-align:center;">
+              <span style="color:#F97316;font-size:14px;font-weight:700;">🎁 PACK A FREE NAME KEYCHAIN with this order</span>
+            </div>` : ''}
 
             <div style="background:#1a1a1a;border-radius:8px;padding:16px;">
               <p style="margin:0 0 6px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Delivery Address</p>
@@ -674,7 +777,10 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
             shippingCost,
             shippingModeLabel,
             addressText,
-            codRemaining: totalAmount - 99
+            codRemaining: totalAmount - 99,
+            discount: discount || undefined,
+            couponCode: couponApplied || undefined,
+            freeKeychain: couponApplied ? true : undefined
           })
         });
         console.log('✅ Order confirmation email sent to customer.');
@@ -736,6 +842,157 @@ app.post('/api/contact', contactLimiter, async (req, res) => {
   } catch (error) {
     console.error('Contact form error:', error);
     res.status(500).json({ success: false, message: 'Failed to send message. Please try again.' });
+  }
+});
+
+// 6b. Early Access / Launch Coupon Signup
+app.post('/api/early-access', contactLimiter, async (req, res) => {
+  try {
+    const { name, email, phone } = req.body;
+
+    if (!name || !email || !phone) {
+      return res.status(400).json({ success: false, message: 'Name, email and mobile number are required.' });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ success: false, message: 'Please provide a valid email address.' });
+    }
+    if (!/^\d{10}$/.test(String(phone).replace(/\D/g, '').slice(-10))) {
+      return res.status(400).json({ success: false, message: 'Please provide a valid 10-digit mobile number.' });
+    }
+
+    const normalizedEmail = String(email).trim().toLowerCase();
+
+    // If this email already signed up, return their existing coupon (no duplicates)
+    const { data: existing } = await supabase
+      .from('tork3d_early_access')
+      .select('coupon_code')
+      .eq('email', normalizedEmail)
+      .limit(1);
+
+    let couponCode;
+    let alreadyRegistered = false;
+
+    if (existing && existing.length > 0) {
+      couponCode = existing[0].coupon_code;
+      alreadyRegistered = true;
+    } else {
+      // Generate a unique coupon code (retry on the rare collision)
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const candidate = generateCouponCode();
+        const { data: clash } = await supabase
+          .from('tork3d_early_access')
+          .select('id')
+          .eq('coupon_code', candidate)
+          .limit(1);
+        if (!clash || clash.length === 0) { couponCode = candidate; break; }
+      }
+      if (!couponCode) throw new Error('Could not generate a unique coupon code.');
+
+      const { error: insertError } = await supabase
+        .from('tork3d_early_access')
+        .insert([{
+          name: String(name).trim(),
+          email: normalizedEmail,
+          phone: String(phone).trim(),
+          coupon_code: couponCode,
+          used: false
+        }]);
+
+      if (insertError) {
+        console.error('Early access insert error:', insertError);
+        throw insertError;
+      }
+    }
+
+    // Send the customer their coupon confirmation
+    try {
+      await resend.emails.send({
+        from: `Tork3D <${SENDER_EMAIL}>`,
+        to: [normalizedEmail],
+        subject: `Your Tork3D coupon is reserved! 🎁`,
+        html: `
+          <div style="font-family:'Segoe UI',Arial,sans-serif;background:#0f0f0f;padding:32px;border-radius:12px;max-width:560px;margin:auto;">
+            <p style="margin:0 0 4px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#F97316;font-weight:700;">Tork3D</p>
+            <h2 style="margin:0 0 8px;font-size:22px;color:#fff;">Thanks for waiting, ${escHtml(name)}!</h2>
+            <p style="margin:0 0 24px;color:#ccc;font-size:14px;">We're on a short break and we've saved you something for when we're back. Here's your coupon — keep it safe and use it at checkout once we reopen.</p>
+
+            <div style="background:#1a1a1a;border-radius:8px;padding:20px;margin-bottom:16px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Your Coupon Code</p>
+              <p style="margin:0;font-size:26px;font-weight:800;letter-spacing:3px;color:#fff;">${escHtml(couponCode)}</p>
+            </div>
+
+            <div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:16px;">
+              <p style="margin:0 0 10px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">What you get</p>
+              <ul style="margin:0;padding-left:18px;color:#ccc;font-size:14px;line-height:1.8;">
+                <li>🎁 A <strong style="color:#fff;">free name keychain</strong> with your order</li>
+                <li>🏷️ <strong style="color:#fff;">10% off</strong> your order (valid on orders above &#8377;350)</li>
+              </ul>
+            </div>
+
+            <p style="margin:0 0 4px;color:#ccc;font-size:14px;">☕ We're back on <strong style="color:#fff;">25th June</strong>. Place your order then and apply this code at checkout.</p>
+            <p style="margin:16px 0 0;font-size:11px;color:#444;">Questions? Just reply to this email or reach us on WhatsApp.</p>
+          </div>
+        `
+      });
+      console.log('✅ Early access coupon email sent to customer.');
+    } catch (emailErr) {
+      console.error('⚠️ Early access customer email failed:', emailErr);
+    }
+
+    // Notify the business of the new signup (only for brand-new registrations)
+    if (!alreadyRegistered) {
+      try {
+        await resend.emails.send({
+          from: `Tork3D <${SENDER_EMAIL}>`,
+          to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
+          subject: `🎯 New break coupon signup — ${escHtml(name)}`,
+          html: `
+            <div style="font-family:'Segoe UI',Arial,sans-serif;background:#0f0f0f;padding:32px;border-radius:12px;max-width:560px;margin:auto;">
+              <p style="margin:0 0 4px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#F97316;font-weight:700;">Tork3D</p>
+              <h2 style="margin:0 0 24px;font-size:22px;color:#fff;">New Break Coupon Signup</h2>
+              <table width="100%">
+                <tr><td style="color:#777;font-size:12px;padding:4px 0;">Name</td><td style="color:#fff;font-weight:600;text-align:right;">${escHtml(name)}</td></tr>
+                <tr><td style="color:#777;font-size:12px;padding:4px 0;">Email</td><td style="color:#fff;text-align:right;">${escHtml(normalizedEmail)}</td></tr>
+                <tr><td style="color:#777;font-size:12px;padding:4px 0;">Phone</td><td style="color:#fff;text-align:right;">${escHtml(phone)}</td></tr>
+                <tr><td style="color:#777;font-size:12px;padding:4px 0;">Coupon</td><td style="color:#22c55e;text-align:right;font-weight:700;">${escHtml(couponCode)}</td></tr>
+              </table>
+            </div>
+          `
+        });
+      } catch (emailErr) {
+        console.error('⚠️ Early access business email failed:', emailErr);
+      }
+    }
+
+    res.json({ success: true, couponCode, alreadyRegistered });
+  } catch (error) {
+    console.error('Early access error:', error);
+    res.status(500).json({ success: false, message: 'Could not reserve your coupon. Please try again.' });
+  }
+});
+
+// 6c. Validate Coupon (preview for cart — final discount is recomputed at order time)
+app.post('/api/validate-coupon', shippingLimiter, async (req, res) => {
+  try {
+    const { code, items } = req.body;
+    if (!code) return res.json({ success: true, valid: false, message: 'Enter a coupon code.' });
+
+    const subtotal = computeCartSubtotal(items);
+    const coupon = await resolveCoupon(code, subtotal);
+
+    if (!coupon.valid) {
+      return res.json({ success: true, valid: false, message: coupon.reason || 'Invalid coupon code.' });
+    }
+    return res.json({
+      success: true,
+      valid: true,
+      discount: coupon.discount,
+      code: coupon.code,
+      message: `Coupon applied! ₹${coupon.discount} off + a free name keychain.`
+    });
+  } catch (error) {
+    console.error('Coupon validation error:', error);
+    res.status(500).json({ success: false, message: 'Could not validate coupon. Please try again.' });
   }
 });
 
