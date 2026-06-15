@@ -141,6 +141,7 @@ const buildOrderEmailHtml = (orderRecord, paymentId) => {
 
       ${details.freeKeychain ? `<div style="background:#1a1a1a;border:1px solid #F97316;border-radius:8px;padding:14px;margin-bottom:16px;text-align:center;">
         <span style="color:#F97316;font-size:14px;font-weight:700;">🎁 PACK A FREE NAME KEYCHAIN with this order</span>
+        ${details.keychainName ? `<br/><span style="color:#fff;font-size:15px;">Engrave: <strong>${escHtml(details.keychainName)}</strong></span>` : ''}
       </div>` : ''}
 
       <div style="background:#1a1a1a;border-radius:8px;padding:16px;">
@@ -152,7 +153,7 @@ const buildOrderEmailHtml = (orderRecord, paymentId) => {
 };
 
 // ── Customer-facing order confirmation email ─────────────────────────────────
-const buildCustomerOrderEmailHtml = ({ customerName, items, total, shippingCost, shippingModeLabel, addressText, codRemaining, discount, couponCode, freeKeychain }) => {
+const buildCustomerOrderEmailHtml = ({ customerName, items, total, shippingCost, shippingModeLabel, addressText, codRemaining, discount, couponCode, freeKeychain, keychainName }) => {
   const itemsHtml = items
     ? items.map(item => {
         const dbProduct = resolveDbProduct(item.id);
@@ -186,6 +187,7 @@ const buildCustomerOrderEmailHtml = ({ customerName, items, total, shippingCost,
 
       ${freeKeychain ? `<div style="background:#1a1a1a;border:1px solid #F97316;border-radius:8px;padding:14px;margin-bottom:16px;text-align:center;">
         <span style="color:#F97316;font-size:14px;font-weight:700;">🎁 A free name keychain is included with this order!</span>
+        ${keychainName ? `<br/><span style="color:#fff;font-size:15px;">Name on keychain: <strong>${escHtml(keychainName)}</strong></span>` : ''}
       </div>` : ''}
 
       <table width="100%" style="margin-bottom:16px;">
@@ -233,7 +235,8 @@ const sendCustomerConfirmationEmail = async (orderRecord) => {
         addressText,
         discount: details.couponDiscount,
         couponCode: details.couponCode,
-        freeKeychain: details.freeKeychain
+        freeKeychain: details.freeKeychain,
+        keychainName: details.keychainName
       })
     });
     console.log('✅ Order confirmation email sent to customer.');
@@ -348,7 +351,7 @@ app.post('/api/create-order', orderLimiter, async (req, res) => {
         customer_email: orderData.customerEmail,
         total_amount: amountInPaise / 100, // convert back to INR
         order_type: orderData.type,
-        order_details: (orderData.type === 'cart' || orderData.type === 'cod-prepay') ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy, couponCode: couponApplied || undefined, couponDiscount: discount || undefined, freeKeychain: couponApplied ? true : undefined } : (orderData.specs || {}),
+        order_details: (orderData.type === 'cart' || orderData.type === 'cod-prepay') ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy, couponCode: couponApplied || undefined, couponDiscount: discount || undefined, freeKeychain: couponApplied ? true : undefined, keychainName: couponApplied ? orderData.keychainName : undefined } : (orderData.specs || {}),
         status: 'payment_pending'
       }]);
 
@@ -674,7 +677,8 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
               referredBy: orderData.referredBy,
               couponCode: couponApplied || undefined,
               couponDiscount: discount || undefined,
-              freeKeychain: couponApplied ? true : undefined
+              freeKeychain: couponApplied ? true : undefined,
+              keychainName: couponApplied ? orderData.keychainName : undefined
             },
             status: 'cod_pending'
           }
@@ -754,6 +758,7 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
 
             ${couponApplied ? `<div style="background:#1a1a1a;border:1px solid #F97316;border-radius:8px;padding:14px;margin-bottom:16px;text-align:center;">
               <span style="color:#F97316;font-size:14px;font-weight:700;">🎁 PACK A FREE NAME KEYCHAIN with this order</span>
+              ${orderData.keychainName ? `<br/><span style="color:#fff;font-size:15px;">Engrave: <strong>${escHtml(orderData.keychainName)}</strong></span>` : ''}
             </div>` : ''}
 
             <div style="background:#1a1a1a;border-radius:8px;padding:16px;">
@@ -780,7 +785,8 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
             codRemaining: totalAmount - 99,
             discount: discount || undefined,
             couponCode: couponApplied || undefined,
-            freeKeychain: couponApplied ? true : undefined
+            freeKeychain: couponApplied ? true : undefined,
+            keychainName: couponApplied ? orderData.keychainName : undefined
           })
         });
         console.log('✅ Order confirmation email sent to customer.');

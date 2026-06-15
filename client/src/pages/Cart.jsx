@@ -48,6 +48,7 @@ const getCookie = (name) => {
   const [couponInput, setCouponInput] = useState('');
   const [couponApplying, setCouponApplying] = useState(false);
   const [couponStatus, setCouponStatus] = useState(null); // { valid, discount, code, message }
+  const [keychainName, setKeychainName] = useState('');
   const couponDiscount = couponStatus?.valid ? couponStatus.discount : 0;
 
   const shippingCost = fulfillment === 'pickup' || hasFreeShipping
@@ -87,6 +88,7 @@ const getCookie = (name) => {
   const removeCoupon = () => {
     setCouponStatus(null);
     setCouponInput('');
+    setKeychainName('');
   };
 
   // Re-validate the coupon whenever the cart subtotal changes (keeps the ₹350 min & discount honest)
@@ -167,6 +169,7 @@ const getCookie = (name) => {
     customerPhone: customerInfo.phone,
     referredBy: getCookie('tork3d_ref'),
     couponCode: couponStatus?.valid ? couponStatus.code : undefined,
+    keychainName: couponStatus?.valid ? keychainName.trim() : undefined,
     shippingAddress: fulfillment === 'pickup' ? null : {
       address1: customerInfo.address1,
       city: customerInfo.city,
@@ -184,6 +187,9 @@ const getCookie = (name) => {
     }
     if (fulfillment === 'delivery' && !selectedMode) {
       toast.error('Please wait for shipping rates to load.'); return false;
+    }
+    if (couponStatus?.valid && !keychainName.trim()) {
+      toast.error('Please enter the name for your free keychain.'); return false;
     }
     return true;
   };
@@ -705,14 +711,30 @@ const getCookie = (name) => {
               {/* Coupon code */}
               <div className="mb-6">
                 {couponStatus?.valid ? (
-                  <div className="flex items-center justify-between gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
-                    <div className="flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400">
-                      <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                      <span>{couponStatus.code} applied · 🎁 free keychain</span>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
+                      <div className="flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400">
+                        <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                        <span>{couponStatus.code} applied · 🎁 free keychain</span>
+                      </div>
+                      <button onClick={removeCoupon} className="text-xs text-slate-500 dark:text-slate-400 hover:text-red-500 font-medium">
+                        Remove
+                      </button>
                     </div>
-                    <button onClick={removeCoupon} className="text-xs text-slate-500 dark:text-slate-400 hover:text-red-500 font-medium">
-                      Remove
-                    </button>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
+                        Name for your free keychain *
+                      </label>
+                      <input
+                        type="text"
+                        value={keychainName}
+                        onChange={e => setKeychainName(e.target.value)}
+                        maxLength={20}
+                        placeholder="e.g. Arya"
+                        className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white"
+                      />
+                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">This name will be engraved on your free keychain.</p>
+                    </div>
                   </div>
                 ) : (
                   <div>
