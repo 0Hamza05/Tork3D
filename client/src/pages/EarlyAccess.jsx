@@ -61,7 +61,7 @@ export default function EarlyAccess() {
               {result.alreadyRegistered ? "You're already on the list!" : "You're all set!"}
             </h1>
             <p className="text-slate-600 dark:text-slate-300 text-sm">
-              We've sent your coupon to your email. Here it is too — use it at checkout when we're back on 25th June.
+              We've sent your coupon to your email. Here it is too — use it at checkout when we're back on 30th June.
             </p>
             <div className="flex items-center justify-center gap-2 bg-accent-orange/10 border border-accent-orange/30 rounded-xl px-4 py-3">
               <span className="text-xl font-black tracking-widest text-accent-orange">{result.couponCode}</span>
@@ -89,7 +89,7 @@ export default function EarlyAccess() {
               <div className="flex items-start gap-3">
                 <Calendar className="w-5 h-5 text-accent-orange flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-slate-700 dark:text-slate-200">
-                  Order once we're back on <span className="font-bold">25th June</span>.
+                  Order once we're back on <span className="font-bold">30th June</span>.
                 </p>
               </div>
               <div className="flex items-start gap-3">

@@ -65,7 +65,7 @@ export default function ComingSoon() {
           </h1>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-lg mx-auto">
             Our store is closed for a few days while we recharge. We'll be back and
-            ready to print on <span className="font-bold text-slate-900 dark:text-white">25th June</span>.
+            ready to print on <span className="font-bold text-slate-900 dark:text-white">30th June</span>.
             Thanks for your patience!
           </p>
         </div>

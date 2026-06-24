@@ -935,7 +935,7 @@ app.post('/api/early-access', contactLimiter, async (req, res) => {
               </ul>
             </div>
 
-            <p style="margin:0 0 4px;color:#ccc;font-size:14px;">☕ We're back on <strong style="color:#fff;">25th June</strong>. Place your order then and apply this code at checkout.</p>
+            <p style="margin:0 0 4px;color:#ccc;font-size:14px;">☕ We're back on <strong style="color:#fff;">30th June</strong>. Place your order then and apply this code at checkout.</p>
             <p style="margin:16px 0 0;font-size:11px;color:#444;">Questions? Just reply to this email or reach us on WhatsApp.</p>
           </div>
         `
