@@ -1,0 +1,81 @@
+<!--
+  Tork3D — "We're open" launch announcement for early-access coupon signups.
+
+  PERSONALIZE per recipient before sending — replace these placeholders:
+    {{name}}            → recipient's first name        (e.g. Nicole)
+    {{coupon_code}}     → their personal code           (e.g. TORK10-NA4HVC)
+    {{unsubscribe_url}} → unsubscribe link (marketing email — keep this)
+
+  Subject line suggestion:
+    We're open, {{name}} — your Tork3D coupon is live 🎉
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tork3D is open</title>
+</head>
+<body style="margin:0;padding:0;background:#000000;">
+  <!-- Outer wrapper keeps the dark background in clients that strip body styles -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#000000;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+
+        <div style="font-family:'Segoe UI',Arial,sans-serif;background:#0f0f0f;padding:32px;border-radius:12px;max-width:560px;margin:auto;text-align:left;">
+          <p style="margin:0 0 4px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#F97316;font-weight:700;">Tork3D</p>
+          <h1 style="margin:0 0 8px;font-size:24px;color:#ffffff;font-weight:800;">We're open, {{name}}! 🎉</h1>
+          <p style="margin:0 0 24px;color:#cccccc;font-size:14px;line-height:1.6;">
+            Thanks for waiting through our break. The store is now <strong style="color:#ffffff;">live</strong> — and the coupon we saved for you is ready to use at checkout.
+          </p>
+
+          <!-- Coupon block -->
+          <div style="background:#1a1a1a;border-radius:8px;padding:20px;margin-bottom:16px;text-align:center;">
+            <p style="margin:0 0 8px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">Your Coupon Code</p>
+            <p style="margin:0;font-size:26px;font-weight:800;letter-spacing:3px;color:#ffffff;">{{coupon_code}}</p>
+          </div>
+
+          <!-- What they get -->
+          <div style="background:#1a1a1a;border-radius:8px;padding:16px;margin-bottom:24px;">
+            <p style="margin:0 0 10px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">What you signed up for</p>
+            <ul style="margin:0;padding-left:18px;color:#cccccc;font-size:14px;line-height:1.8;">
+              <li>🏷️ <strong style="color:#ffffff;">10% off</strong> your order (valid on orders above &#8377;350)</li>
+              <li>🎁 A <strong style="color:#ffffff;">free name keychain</strong>, engraved with the name of your choice</li>
+            </ul>
+          </div>
+
+          <!-- CTA -->
+          <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
+            <tr>
+              <td align="center" bgcolor="#F97316" style="border-radius:8px;">
+                <a href="https://www.tork3d.in" target="_blank"
+                   style="display:inline-block;padding:14px 36px;font-family:'Segoe UI',Arial,sans-serif;font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:8px;">
+                  Shop now &rarr;
+                </a>
+              </td>
+            </tr>
+          </table>
+
+          <!-- How to redeem -->
+          <p style="margin:0 0 4px;font-size:11px;color:#F97316;text-transform:uppercase;letter-spacing:1px;">How to use it</p>
+          <p style="margin:0 0 24px;color:#cccccc;font-size:14px;line-height:1.7;">
+            Add your favourites to the cart, enter <strong style="color:#ffffff;">{{coupon_code}}</strong> in the coupon box at checkout, and your discount plus the free keychain are applied automatically.
+          </p>
+
+          <p style="margin:0;color:#999999;font-size:13px;line-height:1.6;">
+            Questions about your order? Just reply to this email or reach us on WhatsApp — we're happy to help.
+          </p>
+
+          <!-- Footer -->
+          <hr style="border:none;border-top:1px solid #2a2a2a;margin:24px 0 16px;" />
+          <p style="margin:0;font-size:11px;color:#555555;line-height:1.6;">
+            You're receiving this because you signed up for early access at Tork3D.
+            <a href="{{unsubscribe_url}}" style="color:#777777;text-decoration:underline;">Unsubscribe</a>.
+          </p>
+        </div>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
