@@ -333,7 +333,7 @@ export const products = [
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
     category: 'Accessories',
     material: 'PLA',
-    image: '/Product Photos/Name Keychain/Name Keychain.png',
+    image: '/Product Photos/Name Keychain/Name Keychain.png?v=2',
     description: 'A personalized 3D-printed name keychain. Just send us the name you want and we will print it for you — a simple, thoughtful accessory for keys, bags, or as a small gift.',
     highlights: [
       'Personalized with the name of your choice',
@@ -342,7 +342,7 @@ export const products = [
       'Makes a great low-cost personalized gift'
     ],
     images: [
-      '/Product Photos/Name Keychain/Name Keychain.png'
+      '/Product Photos/Name Keychain/Name Keychain.png?v=2'
     ],
     specs: {
       'Dimensions': '20 x 20 x 20 mm',
