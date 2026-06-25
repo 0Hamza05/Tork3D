@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { API_BASE_URL } from '../config';
+import { products } from '../data/products';
 import toast from 'react-hot-toast';
 
 export default function Cart() {
@@ -50,6 +51,11 @@ const getCookie = (name) => {
   const [couponStatus, setCouponStatus] = useState(null); // { valid, discount, code, message }
   const [keychainName, setKeychainName] = useState('');
   const couponDiscount = couponStatus?.valid ? couponStatus.discount : 0;
+
+  // Free name keychain (product id 11) bundled with a valid early-access coupon (subtotal >= ₹350).
+  // The server treats this as free (freeKeychain flag); it is never added to the charged items.
+  const FREE_KEYCHAIN_ID = 11;
+  const freeKeychainProduct = products.find(p => p.id === FREE_KEYCHAIN_ID);
 
   const shippingCost = fulfillment === 'pickup' || hasFreeShipping
     ? 0
@@ -678,6 +684,39 @@ const getCookie = (name) => {
                 </div>
               </motion.div>
             ))}
+
+            {/* Free name keychain — bundled with a valid coupon */}
+            {couponStatus?.valid && freeKeychainProduct && (
+              <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                className="glass-card p-6 flex flex-col sm:flex-row gap-6 border-2 border-accent-orange/40 relative">
+                <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-wider bg-accent-orange text-white px-2 py-1 rounded-full">Free Gift</span>
+                <div className="w-full sm:w-32 h-32 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 flex-shrink-0">
+                  <img src={freeKeychainProduct.image} alt={freeKeychainProduct.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-grow flex flex-col justify-between py-1">
+                  <div>
+                    <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">{freeKeychainProduct.name}</h3>
+                    <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">🎁 Included free with coupon <strong className="text-slate-900 dark:text-white">{couponStatus.code}</strong></p>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">Name to engrave *</label>
+                      <input
+                        type="text"
+                        value={keychainName}
+                        onChange={e => setKeychainName(e.target.value)}
+                        maxLength={20}
+                        placeholder="e.g. Arya"
+                        className="w-full max-w-xs bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white"
+                      />
+                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">This name will be engraved on your free keychain.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-end gap-2 mt-4">
+                    <span className="text-base text-slate-400 line-through">₹{freeKeychainProduct.price}</span>
+                    <span className="text-xl font-bold text-green-600 dark:text-green-400">FREE</span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </div>
 
           <div>
@@ -711,30 +750,14 @@ const getCookie = (name) => {
               {/* Coupon code */}
               <div className="mb-6">
                 {couponStatus?.valid ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
-                      <div className="flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400">
-                        <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                        <span>{couponStatus.code} applied · 🎁 free keychain</span>
-                      </div>
-                      <button onClick={removeCoupon} className="text-xs text-slate-500 dark:text-slate-400 hover:text-red-500 font-medium">
-                        Remove
-                      </button>
+                  <div className="flex items-center justify-between gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400">
+                      <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                      <span>{couponStatus.code} applied · 🎁 free keychain added</span>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
-                        Name for your free keychain *
-                      </label>
-                      <input
-                        type="text"
-                        value={keychainName}
-                        onChange={e => setKeychainName(e.target.value)}
-                        maxLength={20}
-                        placeholder="e.g. Arya"
-                        className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white"
-                      />
-                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">This name will be engraved on your free keychain.</p>
-                    </div>
+                    <button onClick={removeCoupon} className="text-xs text-slate-500 dark:text-slate-400 hover:text-red-500 font-medium">
+                      Remove
+                    </button>
                   </div>
                 ) : (
                   <div>
@@ -770,6 +793,12 @@ const getCookie = (name) => {
                   <div className="flex justify-between text-green-600 dark:text-green-400 font-medium">
                     <span>Discount ({couponStatus.code})</span>
                     <span>−₹{couponDiscount}</span>
+                  </div>
+                )}
+                {couponStatus?.valid && freeKeychainProduct && (
+                  <div className="flex justify-between text-slate-600 dark:text-slate-300">
+                    <span>{freeKeychainProduct.name} (gift)</span>
+                    <span className="text-green-600 dark:text-green-400 font-medium">FREE</span>
                   </div>
                 )}
                 <div className="flex justify-between text-slate-600 dark:text-slate-300">

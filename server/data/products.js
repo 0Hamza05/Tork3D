@@ -322,6 +322,32 @@ export const products = [
       'Included': '1 Keychain, Spring-loaded BBs',
       'Lead Time': '2–4 Business Days',
     }
+  },
+  {
+    id: 11,
+    name: 'Name Keychain',
+    price: 50,
+    weight: 10,                         // dead weight in grams
+    packageType: 'flyer',                 // 'box' | 'flyer'
+    packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
+    category: 'Accessories',
+    material: 'PLA',
+    image: '/Product Photos/Name Keychain/Name Keychain.png',
+    description: 'A personalized 3D-printed name keychain. Just send us the name you want and we will print it for you — a simple, thoughtful accessory for keys, bags, or as a small gift.',
+    highlights: [
+      'Personalized with the name of your choice',
+      'Includes a durable metal split ring for easy attachment',
+      'Lightweight but sturdy PLA construction',
+      'Makes a great low-cost personalized gift'
+    ],
+    images: [
+      '/Product Photos/Name Keychain/Name Keychain.png'
+    ],
+    specs: {
+      'Dimensions': '20 x 20 x 20 mm',
+      'Weight': '10 g',
+      'Lead Time': '2–4 Business Days',
+    }
   }
 ];
 
