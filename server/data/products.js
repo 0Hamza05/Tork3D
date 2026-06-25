@@ -32,6 +32,7 @@ export const products = [
     id: 2,
     name: 'Minecraft TNT Keychain',
     price: 50,
+    bundle: { qty: 2, price: 99 },       // "2 for ₹99" deal
     weight: 10,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
@@ -117,7 +118,7 @@ export const products = [
   {
     id: 5,
     name: 'Batman Magnetic Fidget',
-    price: 329,
+    price: 399,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
@@ -206,7 +207,7 @@ export const products = [
   {
     id: 6,
     name: 'Spiderman Magnetic Fidget',
-    price: 329,
+    price: 399,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
@@ -362,4 +363,18 @@ export const chargeableWeight = (product, quantity = 1) => {
   const d = product.packageDimensions;
   const vol = d ? ((d.l * d.w * d.h) / 5) * quantity : dead;
   return Math.ceil(Math.max(dead, vol) / 100) * 100;
+};
+
+/**
+ * Line total (₹) for a product at a given quantity, honoring any bundle deal
+ * (e.g. TNT keychain "2 for ₹99"): each full bundle costs bundle.price, the
+ * remainder is charged at the unit price. No bundle → unit price × quantity.
+ */
+export const lineTotal = (product, quantity = 1) => {
+  if (product && product.bundle && product.bundle.qty > 0) {
+    const bundles = Math.floor(quantity / product.bundle.qty);
+    const remainder = quantity % product.bundle.qty;
+    return bundles * product.bundle.price + remainder * product.price;
+  }
+  return (product ? product.price : 0) * quantity;
 };

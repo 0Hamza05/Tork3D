@@ -100,7 +100,12 @@ export function ProductCard({ product }) {
           <div className="text-xs text-accent-blue font-medium mb-2 uppercase tracking-wider">{product.category}</div>
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{product.name}</h3>
           <div className="mt-auto flex items-center justify-between">
-            <span className="text-xl font-bold text-slate-900 dark:text-white">₹{product.price}</span>
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl font-bold text-slate-900 dark:text-white">₹{product.price}</span>
+              {product.bundle && (
+                <span className="text-[10px] font-bold uppercase tracking-wide bg-accent-orange/15 text-accent-orange px-1.5 py-0.5 rounded">{product.bundle.qty} for ₹{product.bundle.price}</span>
+              )}
+            </div>
             <span className="text-sm text-slate-500 dark:text-slate-400">{product.material}</span>
           </div>
         </div>

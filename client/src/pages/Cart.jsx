@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { API_BASE_URL } from '../config';
-import { products } from '../data/products';
+import { products, lineTotal } from '../data/products';
 import toast from 'react-hot-toast';
 
 export default function Cart() {
@@ -41,7 +41,7 @@ const getCookie = (name) => {
   // Display weight = simple sum of dead weights across all cart items
   const totalWeightGrams = cart.reduce((sum, item) => sum + ((item.weight || 200) * item.quantity), 0);
 
-  const FREE_SHIPPING_THRESHOLD = 500;
+  const FREE_SHIPPING_THRESHOLD = 699;
   const hasFreeShipping = fulfillment === 'delivery' && subtotal >= FREE_SHIPPING_THRESHOLD;
   const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
 
@@ -679,7 +679,12 @@ const getCookie = (name) => {
                       <span className="w-10 text-center font-medium text-slate-900 dark:text-white">{item.quantity}</span>
                       <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-1 hover:bg-slate-50 dark:bg-slate-800 rounded-md transition-colors text-slate-600 dark:text-slate-300"><Plus className="w-4 h-4" /></button>
                     </div>
-                    <div className="text-xl font-bold text-slate-900 dark:text-white">₹{item.price * item.quantity}</div>
+                    <div className="text-right">
+                      <div className="text-xl font-bold text-slate-900 dark:text-white">₹{lineTotal(item, item.quantity)}</div>
+                      {item.bundle && item.quantity >= item.bundle.qty && (
+                        <div className="text-xs font-medium text-green-600 dark:text-green-400">{item.bundle.qty} for ₹{item.bundle.price} deal applied</div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </motion.div>

@@ -190,7 +190,12 @@ export default function ProductDetail() {
           <motion.div variants={fadeIn} className="flex flex-col">
             <div className="text-sm text-accent-blue font-medium mb-2 uppercase tracking-wider">{product.category}</div>
             <h1 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">{product.name}</h1>
-            <div className="text-3xl font-light mb-6 text-slate-900 dark:text-white">₹{product.price}</div>
+            <div className="flex items-baseline gap-3 mb-6">
+              <span className="text-3xl font-light text-slate-900 dark:text-white">₹{product.price}</span>
+              {product.bundle && (
+                <span className="text-xs font-bold uppercase tracking-wide bg-accent-orange/15 text-accent-orange px-2 py-1 rounded">{product.bundle.qty} for ₹{product.bundle.price}</span>
+              )}
+            </div>
 
             <p className="text-slate-600 dark:text-slate-300 text-lg mb-8 leading-relaxed">
               {product.description}

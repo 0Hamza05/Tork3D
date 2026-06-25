@@ -7,7 +7,7 @@ import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
-import { products } from './data/products.js';
+import { products, lineTotal } from './data/products.js';
 
 dotenv.config();
 
@@ -94,7 +94,7 @@ const buildOrderEmailHtml = (orderRecord, paymentId) => {
         const unitPrice = dbProduct ? dbProduct.price : item.price;
         return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
           <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
-          <span style="color:#999;white-space:nowrap;">&#8377;${unitPrice * item.quantity}</span>
+          <span style="color:#999;white-space:nowrap;">&#8377;${dbProduct ? lineTotal(dbProduct, item.quantity) : unitPrice * item.quantity}</span>
         </li>`;
       }).join('')
     : `<li style="padding:6px 0;color:#ccc;">Single product order</li>`;
@@ -160,7 +160,7 @@ const buildCustomerOrderEmailHtml = ({ customerName, items, total, shippingCost,
         const unitPrice = dbProduct ? dbProduct.price : item.price;
         return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
           <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
-          <span style="color:#999;white-space:nowrap;">&#8377;${unitPrice * item.quantity}</span>
+          <span style="color:#999;white-space:nowrap;">&#8377;${dbProduct ? lineTotal(dbProduct, item.quantity) : unitPrice * item.quantity}</span>
         </li>`;
       }).join('')
     : `<li style="padding:6px 0;color:#ccc;">Single product order</li>`;
@@ -255,7 +255,7 @@ const resolveDbProduct = (itemId) => {
 // Compute the cart subtotal server-side from the authoritative product DB (never trust client prices).
 const computeCartSubtotal = (items) => (Array.isArray(items) ? items : []).reduce((sum, item) => {
   const dbProduct = resolveDbProduct(item.id);
-  return sum + ((dbProduct ? dbProduct.price : 0) * item.quantity);
+  return sum + (dbProduct ? lineTotal(dbProduct, item.quantity) : 0);
 }, 0);
 
 // ── Launch coupon (early-access) redemption rules ────────────────────────────
@@ -299,7 +299,7 @@ const calculatePrice = (orderData, discount = 0) => {
   } else if (orderData.type === 'cart') {
     const subtotal = computeCartSubtotal(orderData.items);
 
-    const FREE_SHIPPING_THRESHOLD = 500;
+    const FREE_SHIPPING_THRESHOLD = 699;
     const rawShipping = parseFloat(orderData.shippingCost) || 0;
     // Free shipping only for prepaid orders (not COD). Eligibility uses pre-discount subtotal.
     const shippingCost = (orderData.shippingMode !== 'cod' && subtotal >= FREE_SHIPPING_THRESHOLD) ? 0 : rawShipping;
@@ -593,7 +593,7 @@ app.get('/api/shipping-rate', shippingLimiter, async (req, res) => {
           if (dbProduct) {
             totalCgm += (dbProduct.weight || 200) * item.quantity;
             if (pt === 'COD') {
-              totalCodAmount += (dbProduct.price || 0) * item.quantity;
+              totalCodAmount += lineTotal(dbProduct, item.quantity);
             }
           }
         });
@@ -644,7 +644,7 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
 
     // Calculate subtotal server-side
     const subtotal = computeCartSubtotal(orderData.items);
-    const FREE_SHIPPING_THRESHOLD = 500;
+    const FREE_SHIPPING_THRESHOLD = 699;
     const rawShipping = Math.min(parseFloat(orderData.shippingCost) || 0, 500);
     const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : rawShipping;
 
@@ -715,7 +715,7 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
             const unitPrice = dbProduct ? dbProduct.price : item.price;
             return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
               <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
-              <span style="color:#999;white-space:nowrap;">&#8377;${unitPrice * item.quantity}</span>
+              <span style="color:#999;white-space:nowrap;">&#8377;${dbProduct ? lineTotal(dbProduct, item.quantity) : unitPrice * item.quantity}</span>
             </li>`;
           }).join('')
         : '';
