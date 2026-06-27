@@ -526,6 +526,11 @@ app.post('/api/webhook', async (req, res) => {
   }
 });
 
+// Flat per-parcel surcharge folded into the quoted courier rate (covers the
+// parcel-tracking SMS service). Applied silently to both express & surface,
+// prepaid & COD — never shown to the customer as a separate line.
+const DELIVERY_SURCHARGE = 2;
+
 // 4. Delhivery Shipping Rate Estimator
 app.get('/api/shipping-rate', shippingLimiter, async (req, res) => {
   try {
@@ -626,8 +631,8 @@ app.get('/api/shipping-rate', shippingLimiter, async (req, res) => {
 
     res.json({
       success: true,
-      express: expressTotal,
-      surface: surfaceTotal,
+      express: expressTotal > 0 ? expressTotal + DELIVERY_SURCHARGE : expressTotal,
+      surface: surfaceTotal > 0 ? surfaceTotal + DELIVERY_SURCHARGE : surfaceTotal,
       weight: totalWeight
     });
   } catch (error) {
