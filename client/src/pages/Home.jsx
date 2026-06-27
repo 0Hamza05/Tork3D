@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Settings, Clock, Layers, ShieldCheck, PenTool, Cpu, Circle } from 'lucide-react';
+import { ArrowRight, Settings, Clock, Layers, ShieldCheck, PenTool, Cpu, Circle, Gift } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { ProductCard } from '../components/ui/ProductCard';
@@ -83,6 +83,27 @@ export default function Home() {
 
   return (
     <div className="flex flex-col w-full">
+
+      {/* ── Coupon promo banner ──────────────────────────────────── */}
+      <Link
+        to="/shop"
+        className="group block bg-accent-orange hover:bg-orange-600 transition-colors"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-center gap-2.5 text-center">
+          <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+          </span>
+          <Gift className="w-4 h-4 text-white shrink-0" aria-hidden="true" />
+          <p className="text-xs sm:text-sm font-semibold text-white">
+            <span className="font-bold">Early-access coupons are now live!</span>
+            <span className="hidden sm:inline"> Apply yours at checkout for 10% off plus a free name keychain.</span>
+          </p>
+          <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-white whitespace-nowrap underline-offset-2 group-hover:underline">
+            Shop now <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+          </span>
+        </div>
+      </Link>
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-canvas dark:bg-canvas-dark">

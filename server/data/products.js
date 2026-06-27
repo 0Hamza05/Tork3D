@@ -88,7 +88,7 @@ export const products = [
   {
     id: 4,
     name: 'Pokedex Magnetic Fidget',
-    price: 329,
+    price: 349,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
@@ -327,7 +327,7 @@ export const products = [
   {
     id: 11,
     name: 'Name Keychain',
-    price: 50,
+    price: 79,
     engravable: true,                    // customer must supply a name to engrave at checkout
     weight: 10,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
