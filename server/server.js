@@ -93,7 +93,7 @@ const buildOrderEmailHtml = (orderRecord, paymentId) => {
         const dbProduct = resolveDbProduct(item.id);
         const unitPrice = dbProduct ? dbProduct.price : item.price;
         return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
-          <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
+          <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}${item.engraveName ? ' — Engrave: ' + escHtml(item.engraveName) : ''}</strong>
           <span style="color:#999;white-space:nowrap;">&#8377;${dbProduct ? lineTotal(dbProduct, item.quantity) : unitPrice * item.quantity}</span>
         </li>`;
       }).join('')
@@ -159,7 +159,7 @@ const buildCustomerOrderEmailHtml = ({ customerName, items, total, shippingCost,
         const dbProduct = resolveDbProduct(item.id);
         const unitPrice = dbProduct ? dbProduct.price : item.price;
         return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
-          <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
+          <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}${item.engraveName ? ' — Engrave: ' + escHtml(item.engraveName) : ''}</strong>
           <span style="color:#999;white-space:nowrap;">&#8377;${dbProduct ? lineTotal(dbProduct, item.quantity) : unitPrice * item.quantity}</span>
         </li>`;
       }).join('')
@@ -714,7 +714,7 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
             const dbProduct = resolveDbProduct(item.id);
             const unitPrice = dbProduct ? dbProduct.price : item.price;
             return `<li style="padding:6px 0;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
-              <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}</strong>
+              <strong style="color:#fff;">${escHtml(item.quantity + 'x ' + item.name)}${item.engraveName ? ' — Engrave: ' + escHtml(item.engraveName) : ''}</strong>
               <span style="color:#999;white-space:nowrap;">&#8377;${dbProduct ? lineTotal(dbProduct, item.quantity) : unitPrice * item.quantity}</span>
             </li>`;
           }).join('')

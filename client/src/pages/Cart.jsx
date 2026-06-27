@@ -50,6 +50,8 @@ const getCookie = (name) => {
   const [couponApplying, setCouponApplying] = useState(false);
   const [couponStatus, setCouponStatus] = useState(null); // { valid, discount, code, message }
   const [keychainName, setKeychainName] = useState('');
+  // Per-item engraving text for engravable products (e.g. the purchasable Name Keychain), keyed by cart item id.
+  const [engraveNames, setEngraveNames] = useState({});
   const couponDiscount = couponStatus?.valid ? couponStatus.discount : 0;
 
   // Free name keychain (product id 11) bundled with a valid early-access coupon (subtotal >= ₹350).
@@ -167,7 +169,7 @@ const getCookie = (name) => {
 
   const buildOrderData = () => ({
     type: 'cart',
-    items: cart.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity })),
+    items: cart.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity, ...(item.engravable ? { engraveName: (engraveNames[item.id] || '').trim() } : {}) })),
     shippingCost,
     shippingMode: fulfillment === 'pickup' ? 'pickup' : selectedMode,
     customerName: customerInfo.name,
@@ -196,6 +198,10 @@ const getCookie = (name) => {
     }
     if (couponStatus?.valid && !keychainName.trim()) {
       toast.error('Please enter the name for your free keychain.'); return false;
+    }
+    const missingEngrave = cart.find(item => item.engravable && !(engraveNames[item.id] || '').trim());
+    if (missingEngrave) {
+      toast.error(`Please enter the name to engrave for "${missingEngrave.name}".`); return false;
     }
     return true;
   };
@@ -672,6 +678,19 @@ const getCookie = (name) => {
                       </button>
                     </div>
                     <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">{item.material} • {item.category}</p>
+                    {item.engravable && (
+                      <div className="mb-2">
+                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-200 mb-1">Name to engrave *</label>
+                        <input
+                          type="text"
+                          value={engraveNames[item.id] || ''}
+                          onChange={e => setEngraveNames(prev => ({ ...prev, [item.id]: e.target.value }))}
+                          maxLength={20}
+                          placeholder="e.g. Arya"
+                          className="w-full max-w-xs bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white"
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center justify-between mt-auto">
                     <div className="flex items-center bg-secondary dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-800 p-1">

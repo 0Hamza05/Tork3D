@@ -328,6 +328,7 @@ export const products = [
     id: 11,
     name: 'Name Keychain',
     price: 50,
+    engravable: true,                    // customer must supply a name to engrave at checkout
     weight: 10,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
