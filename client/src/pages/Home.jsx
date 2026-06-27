@@ -96,8 +96,8 @@ export default function Home() {
           </span>
           <Gift className="w-4 h-4 text-white shrink-0" aria-hidden="true" />
           <p className="text-xs sm:text-sm font-semibold text-white">
-            <span className="font-bold">Early-access coupons are now live!</span>
-            <span className="hidden sm:inline"> Apply yours at checkout for 10% off plus a free name keychain.</span>
+            <span className="font-bold">Coupons are live — 48 hours only!</span>
+            <span className="hidden sm:inline"> Redeem yours now for 10% off plus a free name keychain.</span>
           </p>
           <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-white whitespace-nowrap underline-offset-2 group-hover:underline">
             Shop now <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
