@@ -87,21 +87,27 @@ export default function Home() {
       {/* ── Coupon promo banner ──────────────────────────────────── */}
       <Link
         to="/shop"
-        className="group block bg-accent-orange hover:bg-orange-600 transition-colors"
+        aria-label="Coupons are live for 48 hours — 10% off plus a free name keychain. Shop now."
+        className="promo-banner group block"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex items-center justify-center gap-2.5 text-center">
-          <span className="relative flex h-2 w-2 shrink-0" aria-hidden="true">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
-          </span>
-          <Gift className="w-4 h-4 text-white shrink-0" aria-hidden="true" />
-          <p className="text-xs sm:text-sm font-semibold text-white">
-            <span className="font-bold">Coupons are live — 48 hours only!</span>
-            <span className="hidden sm:inline"> Redeem yours now for 10% off plus a free name keychain.</span>
-          </p>
-          <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-white whitespace-nowrap underline-offset-2 group-hover:underline">
-            Shop now <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-          </span>
+        <div className="relative z-10 promo-marquee py-2.5" aria-hidden="true">
+          {[...Array(2)].map((_, pass) => (
+            <div key={pass} className="flex items-center shrink-0">
+              {[...Array(4)].map((_, i) => (
+                <React.Fragment key={i}>
+                  <span className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-white whitespace-nowrap px-6">
+                    <Gift className="w-4 h-4 shrink-0" />
+                    <span className="font-bold">Coupons are live — 48 hours only!</span>
+                    <span className="opacity-90">10% off + a free name keychain</span>
+                    <span className="inline-flex items-center gap-1 font-bold group-hover:underline underline-offset-2">
+                      Shop now <ArrowRight className="w-3.5 h-3.5" />
+                    </span>
+                  </span>
+                  <span className="text-white/60 text-xs" aria-hidden="true">◆</span>
+                </React.Fragment>
+              ))}
+            </div>
+          ))}
         </div>
       </Link>
 
