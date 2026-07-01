@@ -25,7 +25,7 @@ export const products = [
       'Dimensions': '85 x 35 x 15 mm (Case)',
       'Weight': '40 g',
       'Included': '1 Case, 3 Blowers',
-      'Lead Time': '2–4 Business Days',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
     }
   },
   {
@@ -55,7 +55,7 @@ export const products = [
     specs: {
       'Dimensions': '20 x 20 x 20 mm',
       'Weight': '10 g',
-      'Lead Time': '2–4 Business Days',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
     }
   },
   {
@@ -82,7 +82,7 @@ export const products = [
     specs: {
       'Dimensions': '200 x 200 x 2 mm',
       'Weight': '30 g',
-      'Lead Time': '3–5 Business Days',
+      'Preparation Time (before dispatch)': '3–5 Business Days',
     }
   },
   {
@@ -112,7 +112,7 @@ export const products = [
       'Dimensions': '45 x 35 x 15 mm',
       'Weight': '25 g',
       'Material': 'PLA, Neodymium Magnets',
-      'Lead Time': '2–4 Business Days',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
     }
   },
   {
@@ -142,7 +142,7 @@ export const products = [
       'Dimensions': '45 x 35 x 15 mm',
       'Weight': '25 g',
       'Material': 'PLA, Neodymium Magnets',
-      'Lead Time': '2–4 Business Days',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
     }
   },
   {
@@ -173,7 +173,7 @@ export const products = [
       'Dimensions': '78 x 8 x 8 mm (per blower)',
       'Weight': '15 g',
       'Included': '2 Bubble Blowers',
-      'Lead Time': '2–4 Business Days',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
     }
   },
   {
@@ -203,7 +203,7 @@ export const products = [
       'Dimensions': '45 x 35 x 15 mm',
       'Weight': '25 g',
       'Material': 'PLA, Neodymium Magnets',
-      'Lead Time': '2–4 Business Days',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
     }
   },
   {
@@ -231,7 +231,7 @@ export const products = [
     specs: {
       'Dimensions': '43 x 33 x 32 mm',
       'Weight': '~15 g',
-      'Lead Time': '2–4 Business Days',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
     }
   },
   {
@@ -259,7 +259,7 @@ export const products = [
       'Dimensions': '90 x 90 x 110 mm',
       'Weight': '150 g',
       'Included': '1 Lantern, 1 LED Light',
-      'Lead Time': '3–5 Business Days',
+      'Preparation Time (before dispatch)': '3–5 Business Days',
     },
     // Roof style — each style has its own reference photos
     styles: [
@@ -328,7 +328,7 @@ export const products = [
       'Dimensions': '60 x 30 x 30 mm',
       'Weight': '35 g',
       'Included': '1 Keychain, Spring-loaded BBs',
-      'Lead Time': '2–4 Business Days',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
     }
   },
   {
@@ -355,7 +355,7 @@ export const products = [
     specs: {
       'Dimensions': '20 x 20 x 20 mm',
       'Weight': '10 g',
-      'Lead Time': '2–4 Business Days',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
     }
   },
   {
@@ -384,7 +384,7 @@ export const products = [
       'Dimensions': '40 x 40 x 40 mm',
       'Weight': '40 g',
       'Material': 'PLA',
-      'Lead Time': '2–4 Business Days',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
     },
     colorOptions: [
       { id: 'red', name: 'Red', hex: '#DC2626' },
