@@ -31,11 +31,11 @@ export const products = [
   {
     id: 2,
     name: 'Minecraft TNT Keychain',
-    price: 50,
-    bundle: { qty: 2, price: 99 },       // "2 for ₹99" deal
+    price: 79,
+    bundle: { qty: 2, price: 140 },      // "2 for ₹140" deal
     weight: 10,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
-    packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Accessories',
     material: 'PLA',
     image: '/Product Photos/TNT Keychain/TNT Keychain - 1.jpeg',
@@ -91,7 +91,7 @@ export const products = [
     price: 349,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
-    packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
     image: '/Product Photos/Pokedex Fidget/Pokedex fidget - 1.jpeg',
@@ -121,7 +121,7 @@ export const products = [
     price: 399,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
-    packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
     image: '/Product Photos/Batman Fidget/Batman fidget - 1.jpeg',
@@ -182,7 +182,7 @@ export const products = [
     price: 399,
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
-    packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
     image: '/Product Photos/Spiderman Fidget/Spiderman fidget - 1.jpeg',
@@ -284,6 +284,10 @@ export const products = [
     ],
     // Shared color palette — customer picks an independent color for the main
     // stand and for the lattice "net" windows (made-to-order PLA prints).
+    colorSlots: [
+      { key: 'stand', label: 'Main Stand Color' },
+      { key: 'net', label: 'Net (Lattice) Color' },
+    ],
     colorOptions: [
       { id: 'red', name: 'Red', hex: '#DC2626' },
       { id: 'white', name: 'White', hex: '#F8FAFC' },
@@ -334,7 +338,7 @@ export const products = [
     engravable: true,                    // customer must supply a name to engrave at checkout
     weight: 10,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
-    packageDimensions: { l: 12, w: 12, h: 3 }, // packed dims in cm
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Accessories',
     material: 'PLA',
     image: '/Product Photos/Name Keychain/Name Keychain.png?v=2',
@@ -353,6 +357,47 @@ export const products = [
       'Weight': '10 g',
       'Lead Time': '2–4 Business Days',
     }
+  },
+  {
+    id: 12,
+    name: 'Infinity Cube',
+    price: 249,
+    weight: 40,                          // dead weight in grams
+    packageType: 'flyer',                 // 'box' | 'flyer'
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
+    category: 'Fidgets',
+    material: 'PLA',
+    image: '/Product Photos/Infinity Cube/Infinity-cube-1.png',
+    description: 'A satisfying 3D-printed infinity cube — fold it endlessly in your hand for a smooth, stress-melting fidget. Compact, quiet, and the perfect everyday-carry desk toy or thoughtful little gift.',
+    highlights: [
+      'Endless folding motion for calming, repetitive fidgeting',
+      'Smooth, quiet hinges — discreet enough for desk or class',
+      'Pocket-sized everyday-carry (EDC) form factor',
+      'Made to order in your choice of colour',
+    ],
+    images: [
+      '/Product Photos/Infinity Cube/Infinity-cube-1.png',
+      '/Product Photos/Infinity Cube/infinity-cube-2.png',
+      '/Product Photos/Infinity Cube/infinity-cube-3.mp4',
+    ],
+    specs: {
+      'Dimensions': '40 x 40 x 40 mm',
+      'Weight': '40 g',
+      'Material': 'PLA',
+      'Lead Time': '2–4 Business Days',
+    },
+    colorOptions: [
+      { id: 'red', name: 'Red', hex: '#DC2626' },
+      { id: 'white', name: 'White', hex: '#F8FAFC' },
+      { id: 'black', name: 'Black', hex: '#1F2937' },
+      { id: 'yellow', name: 'Yellow', hex: '#FACC15' },
+      { id: 'light-blue', name: 'Light Blue', hex: '#7DD3FC' },
+      { id: 'dark-gray', name: 'Dark Gray', hex: '#4B5563' },
+      { id: 'brown', name: 'Brown', hex: '#78350F' },
+      { id: 'pink', name: 'Pink', hex: '#F472B6' },
+      { id: 'lavender', name: 'Lavender', hex: '#C4B5FD' },
+      { id: 'dark-green', name: 'Dark Green', hex: '#166534' },
+    ],
   }
 ];
 

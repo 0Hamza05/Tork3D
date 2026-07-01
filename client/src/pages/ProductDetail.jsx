@@ -16,9 +16,15 @@ export default function ProductDetail() {
   const product = products.find(p => p.id === parseInt(id));
   const hasStyles = !!product?.styles?.length;
   const hasColors = !!product?.colorOptions?.length;
+  // Colors are configured via named "slots": a product can expose one picker
+  // (the default) or several (e.g. the Pagoda's stand + net). Falls back to a
+  // single "Color" slot when the product doesn't define its own.
+  const colorSlots = hasColors
+    ? (product.colorSlots?.length ? product.colorSlots : [{ key: 'color', label: 'Color' }])
+    : [];
+  const defaultColors = () => Object.fromEntries(colorSlots.map(s => [s.key, product.colorOptions[0]]));
   const [selectedStyle, setSelectedStyle] = React.useState(product?.styles?.[0] ?? null);
-  const [standColor, setStandColor] = React.useState(product?.colorOptions?.[0] ?? null);
-  const [netColor, setNetColor] = React.useState(product?.colorOptions?.[0] ?? null);
+  const [selectedColors, setSelectedColors] = React.useState(hasColors ? defaultColors() : {});
   const [activeImg, setActiveImg] = React.useState(0);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const prefersReduced = useReducedMotion();
@@ -27,9 +33,9 @@ export default function ProductDetail() {
   // Reset configuration/gallery selection when navigating to a different product
   React.useEffect(() => {
     setSelectedStyle(product?.styles?.[0] ?? null);
-    setStandColor(product?.colorOptions?.[0] ?? null);
-    setNetColor(product?.colorOptions?.[0] ?? null);
+    setSelectedColors(hasColors ? defaultColors() : {});
     setActiveImg(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product?.id]);
 
   // The "effective" product reflects the chosen style + colors — used for cart
@@ -41,13 +47,12 @@ export default function ProductDetail() {
         id: [
           product.id,
           selectedStyle?.id,
-          standColor && `stand-${standColor.id}`,
-          netColor && `net-${netColor.id}`,
+          ...colorSlots.map(s => selectedColors[s.key] && `${s.key}-${selectedColors[s.key].id}`),
         ].filter(Boolean).join('-'),
         name: [
           product.name,
           selectedStyle && `— ${selectedStyle.name}`,
-          (standColor || netColor) && `(Stand: ${standColor?.name ?? '—'}, Net: ${netColor?.name ?? '—'})`,
+          colorSlots.length > 0 && `(${colorSlots.map(s => `${s.label}: ${selectedColors[s.key]?.name ?? '—'}`).join(', ')})`,
         ].filter(Boolean).join(' '),
         image: selectedStyle?.image ?? product.image,
         images: selectedStyle?.images ?? product.images,
@@ -228,39 +233,39 @@ export default function ProductDetail() {
 
             {hasColors && (
               <div className="mb-8 space-y-6">
-                {[
-                  { label: 'Main Stand Color', value: standColor, setter: setStandColor },
-                  { label: 'Net (Lattice) Color', value: netColor, setter: setNetColor },
-                ].map(({ label, value, setter }) => (
-                  <div key={label}>
-                    <div className="text-sm font-semibold text-slate-900 dark:text-white mb-3">
-                      {label}: <span className="font-normal text-slate-500 dark:text-slate-400">{value?.name}</span>
+                {colorSlots.map(slot => {
+                  const value = selectedColors[slot.key];
+                  return (
+                    <div key={slot.key}>
+                      <div className="text-sm font-semibold text-slate-900 dark:text-white mb-3">
+                        {slot.label}: <span className="font-normal text-slate-500 dark:text-slate-400">{value?.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2.5 flex-wrap">
+                        {product.colorOptions.map(color => (
+                          <button
+                            key={color.id}
+                            onClick={() => setSelectedColors(prev => ({ ...prev, [slot.key]: color }))}
+                            aria-label={`Select ${color.name} for ${slot.label}`}
+                            aria-pressed={value?.id === color.id}
+                            title={color.name}
+                            className={`relative w-9 h-9 rounded-full border-2 transition-all ${
+                              value?.id === color.id
+                                ? 'border-accent-blue ring-2 ring-accent-blue/30 scale-110'
+                                : 'border-slate-200 dark:border-slate-700 hover:scale-105'
+                            }`}
+                            style={{ backgroundColor: color.hex }}
+                          >
+                            {value?.id === color.id && (
+                              <Check className={`w-4 h-4 absolute inset-0 m-auto drop-shadow ${
+                                ['white', 'yellow', 'light-blue', 'pink', 'lavender'].includes(color.id) ? 'text-slate-900' : 'text-white'
+                              }`} />
+                            )}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2.5 flex-wrap">
-                      {product.colorOptions.map(color => (
-                        <button
-                          key={color.id}
-                          onClick={() => setter(color)}
-                          aria-label={`Select ${color.name} for ${label}`}
-                          aria-pressed={value?.id === color.id}
-                          title={color.name}
-                          className={`relative w-9 h-9 rounded-full border-2 transition-all ${
-                            value?.id === color.id
-                              ? 'border-accent-blue ring-2 ring-accent-blue/30 scale-110'
-                              : 'border-slate-200 dark:border-slate-700 hover:scale-105'
-                          }`}
-                          style={{ backgroundColor: color.hex }}
-                        >
-                          {value?.id === color.id && (
-                            <Check className={`w-4 h-4 absolute inset-0 m-auto drop-shadow ${
-                              ['white', 'yellow', 'light-blue', 'pink', 'lavender'].includes(color.id) ? 'text-slate-900' : 'text-white'
-                            }`} />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
