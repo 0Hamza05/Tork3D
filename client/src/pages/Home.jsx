@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Settings, Clock, Layers, ShieldCheck, PenTool, Cpu, Circle, Gift } from 'lucide-react';
 import { Button } from '../components/ui/Button';
@@ -24,21 +24,55 @@ const FEATURES = [
   { icon: PenTool,  title: 'Customization',       desc: 'From idea to final product' },
 ];
 
+// Tailwind's default `lg` breakpoint — the carousel is only visible (and
+// should only ever fetch images) at this width and up.
+const DESKTOP_QUERY = '(min-width: 1024px)';
+
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia(DESKTOP_QUERY).matches
+  );
+  useEffect(() => {
+    const mql = window.matchMedia(DESKTOP_QUERY);
+    const onChange = () => setIsDesktop(mql.matches);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return isDesktop;
+}
+
 // ── Hero Carousel ──────────────────────────────────────────────────────────
+// Only the current frame is ever mounted (plus the next one preloaded quietly
+// in the background just ahead of its turn) — not all N images stacked in the
+// DOM at once. Stacking them defeated loading="lazy" entirely, since every
+// frame was already geometrically in-viewport and got fetched on page load.
 function HeroCarousel({ prefersReduced }) {
   const imgs = useMemo(() => [...GALLERY_IMGS, ...PRODUCT_IMGS], []);
   const [current, setCurrent] = useState(0);
+  const isDesktop = useIsDesktop();
+  // The carousel is CSS-hidden below `lg`, but the component still mounts on
+  // mobile — gate the interval/prefetch on actual visibility so phones never
+  // silently download carousel frames.
+  const active = isDesktop && !prefersReduced && imgs.length > 1;
 
   // Auto-advance every 3 seconds
   useEffect(() => {
-    if (prefersReduced || imgs.length === 0) return;
+    if (!active) return;
     const id = setInterval(() => {
       setCurrent(c => (c + 1) % imgs.length);
     }, 3000);
     return () => clearInterval(id);
-  }, [imgs.length, prefersReduced]);
+  }, [active, imgs.length]);
 
-  if (imgs.length === 0) return null;
+  // Preload just the next frame a little ahead of time so the crossfade
+  // never shows a blank flash.
+  useEffect(() => {
+    if (!active) return;
+    const img = new window.Image();
+    img.src = imgs[(current + 1) % imgs.length];
+  }, [active, current, imgs]);
+
+  if (imgs.length === 0 || !isDesktop) return null;
 
   return (
     <motion.div
@@ -47,17 +81,20 @@ function HeroCarousel({ prefersReduced }) {
       animate={{ opacity: 1, scale: 1 }}
       transition={prefersReduced ? { duration: 0 } : { duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
     >
-      {imgs.map((src, i) => (
-        <img
-          key={src}
-          src={src}
+      <AnimatePresence>
+        <motion.img
+          key={current}
+          src={imgs[current]}
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
-          style={{ opacity: i === current ? 1 : 0 }}
-          loading={i === 0 ? 'eager' : 'lazy'}
+          loading="eager"
+          initial={{ opacity: prefersReduced ? 1 : 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: prefersReduced ? 0 : 0.7 }}
+          className="absolute inset-0 w-full h-full object-cover"
         />
-      ))}
+      </AnimatePresence>
 
       {/* Orange gradient wash at bottom */}
       <div className="absolute inset-0 bg-gradient-to-t from-accent-orange/20 via-transparent to-transparent pointer-events-none" />
