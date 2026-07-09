@@ -24,7 +24,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- Razorpay checkout.js (~58KB) is loaded on demand at the moment of
+         payment (see client/src/lib/loadRazorpay.js) — not on every page. -->
   </head>
   <body class="antialiased min-h-screen">
     <div id="root"></div>

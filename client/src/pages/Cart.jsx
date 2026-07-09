@@ -7,6 +7,7 @@ import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { API_BASE_URL } from '../config';
 import { products, lineTotal } from '../data/products';
+import { loadRazorpayScript } from '../lib/loadRazorpay';
 import toast from 'react-hot-toast';
 
 export default function Cart() {
@@ -241,6 +242,8 @@ const getCookie = (name) => {
       const data = await res.json();
       if (!data.success) throw new Error(data.message);
       setShowModal(false);
+
+      await loadRazorpayScript();
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -601,6 +604,9 @@ const getCookie = (name) => {
       });
       const prepayData = await prepayRes.json();
       if (!prepayData.success) { toast.error('Could not initiate prepayment.'); setIsProcessing(false); return; }
+
+      await loadRazorpayScript();
+
       const prepayOrderData = buildOrderData();
       const prepayOptions = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
