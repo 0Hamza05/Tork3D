@@ -8,7 +8,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Novelty',
     material: 'PLA',
-    image: '/Product Photos/Cigrettes/Cigrette - 1.jpeg',
+    image: '/Product Photos/Cigrettes/Cigrette - 1_result.webp',
     description: 'A fun and unique cigarette-shaped bubble blower set. This novelty kit includes a custom-designed carrying case that perfectly fits 3 individual cigarette-shaped bubble blowers, making it highly portable and a hilarious conversation starter.',
     highlights: [
       'Set includes 1 carrying case and 3 bubble blowers',
@@ -17,9 +17,9 @@ export const products = [
       'Durable and lightweight PLA construction',
     ],
     images: [
-      '/Product Photos/Cigrettes/Cigrette - 1.jpeg',
-      '/Product Photos/Cigrettes/Cigrette - 2.jpeg',
-      '/Product Photos/Cigrettes/Cigrette - 3.jpeg'
+      '/Product Photos/Cigrettes/Cigrette - 1_result.webp',
+      '/Product Photos/Cigrettes/Cigrette - 2_result.webp',
+      '/Product Photos/Cigrettes/Cigrette - 3_result.webp'
     ],
     specs: {
       'Dimensions': '85 x 35 x 15 mm (Case)',
@@ -38,7 +38,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Accessories',
     material: 'PLA',
-    image: '/Product Photos/TNT Keychain/TNT Keychain - 1.jpeg',
+    image: '/Product Photos/TNT Keychain/TNT Keychain - 1_result.webp',
     description: 'Bring a piece of your favorite block-building game wherever you go with this highly detailed Minecraft TNT block keychain. Perfect for backpacks, keys, or as a small gift for any gamer.',
     highlights: [
       'Accurate pixel-art aesthetic and coloring',
@@ -47,10 +47,10 @@ export const products = [
       'Perfect gift for gamers and Minecraft fans'
     ],
     images: [
-      '/Product Photos/TNT Keychain/TNT Keychain - 1.jpeg',
-      '/Product Photos/TNT Keychain/TNT Keychain - 2.jpeg',
-      '/Product Photos/TNT Keychain/TNT Keychain - 3.jpeg',
-      '/Product Photos/TNT Keychain/TNT Keychain - 4.jpeg'
+      '/Product Photos/TNT Keychain/TNT Keychain - 1_result.webp',
+      '/Product Photos/TNT Keychain/TNT Keychain - 2_result.webp',
+      '/Product Photos/TNT Keychain/TNT Keychain - 3_result.webp',
+      '/Product Photos/TNT Keychain/TNT Keychain - 4_result.webp'
     ],
     specs: {
       'Dimensions': '20 x 20 x 20 mm',
@@ -67,7 +67,7 @@ export const products = [
     packageDimensions: { l: 25, w: 25, h: 5 }, // packed dims in cm
     category: 'Art',
     material: 'PLA',
-    image: '/Product Photos/Spiderman Hueforge/Spiderman Hueforge 1.jpeg',
+    image: '/Product Photos/Spiderman Hueforge/Spiderman Hueforge 1_result.webp',
     description: 'A stunning 3D printed painting of Spiderman created using Hueforge technology. The unique layer-blending technique creates a highly detailed, textured artwork perfect for any Marvel fan.',
     highlights: [
       'High-quality Hueforge 3D printing technology',
@@ -76,8 +76,8 @@ export const products = [
       'Perfect for wall mounting or desk display'
     ],
     images: [
-      '/Product Photos/Spiderman Hueforge/Spiderman Hueforge 1.jpeg',
-      '/Product Photos/Spiderman Hueforge/Spiderman Hueforge 2.jpeg'
+      '/Product Photos/Spiderman Hueforge/Spiderman Hueforge 1_result.webp',
+      '/Product Photos/Spiderman Hueforge/Spiderman Hueforge 2_result.webp'
     ],
     specs: {
       'Dimensions': '200 x 200 x 2 mm',
@@ -94,7 +94,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
-    image: '/Product Photos/Pokedex Fidget/Pokedex fidget - 1.jpeg',
+    image: '/Product Photos/Pokedex Fidget/Pokedex fidget - 1_result.webp',
     description: 'Satisfy your fidgeting needs with this Pokédex-themed magnetic fidget slider. Featuring smooth sliding feedback, tactile clicks, and strong neodymium magnets, it is the ultimate EDC pocket toy for Pokémon fans and fidget lovers alike.',
     highlights: [
       'Highly tactile magnetic sliding mechanism',
@@ -103,10 +103,10 @@ export const products = [
       'Premium quality construction with strong neodymium magnets',
     ],
     images: [
-      '/Product Photos/Pokedex Fidget/Pokedex fidget - 1.jpeg',
-      '/Product Photos/Pokedex Fidget/Pokedex fidget - 2.jpeg',
-      '/Product Photos/Pokedex Fidget/Pokedex fidget - 3.jpeg',
-      '/Product Photos/Pokedex Fidget/Pokedex fidget - 4.jpeg',
+      '/Product Photos/Pokedex Fidget/Pokedex fidget - 1_result.webp',
+      '/Product Photos/Pokedex Fidget/Pokedex fidget - 2_result.webp',
+      '/Product Photos/Pokedex Fidget/Pokedex fidget - 3_result.webp',
+      '/Product Photos/Pokedex Fidget/Pokedex fidget - 4_result.webp',
     ],
     specs: {
       'Dimensions': '45 x 35 x 15 mm',
@@ -124,7 +124,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
-    image: '/Product Photos/Batman Fidget/Batman fidget - 1.jpeg',
+    image: '/Product Photos/Batman Fidget/Batman fidget - 1_result.webp',
     description: 'Channel your inner dark knight with this Batman-themed magnetic fidget toy. Designed with a sleek bat logo shape, this tactile magnetic slider provides deeply satisfying haptic feedback to keep your hands busy and mind focused.',
     highlights: [
       'Sleek Dark Knight Bat-themed aesthetic',
@@ -133,9 +133,9 @@ export const products = [
       'Great stress-relieving tool for work or study',
     ],
     images: [
-      '/Product Photos/Batman Fidget/Batman fidget - 1.jpeg',
-      '/Product Photos/Batman Fidget/Batman fidget - 2.jpeg',
-      '/Product Photos/Batman Fidget/Batman fidget - 3.jpeg',
+      '/Product Photos/Batman Fidget/Batman fidget - 1_result.webp',
+      '/Product Photos/Batman Fidget/Batman fidget - 2_result.webp',
+      '/Product Photos/Batman Fidget/Batman fidget - 3_result.webp',
       '/Product Photos/Batman Fidget/Batman fidget - 4.mp4',
     ],
     specs: {
@@ -154,7 +154,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm (same as Cigarette Bubble Blower)
     category: 'Novelty',
     material: 'PLA',
-    image: '/Product Photos/Screaming Whistle/Screaming Whistle - 1.jpeg',
+    image: '/Product Photos/Screaming Whistle/Screaming Whistle - 1_result.webp',
     description: 'A hauntingly unique Mayan skull-shaped whistle that releases a blood-curdling scream when blown with force. Inspired by ancient Aztec death whistles, this eerie novelty piece produces a startlingly realistic human-scream sound that will shock anyone nearby. A jaw-dropping conversation starter and collector\'s item.',
     highlights: [
       'Authentic Mayan/Aztec death whistle design',
@@ -163,9 +163,9 @@ export const products = [
       'Lightweight and durable PLA construction',
     ],
     images: [
-      '/Product Photos/Screaming Whistle/Screaming Whistle - 1.jpeg',
-      '/Product Photos/Screaming Whistle/Screaming Whistle - 2.jpeg',
-      '/Product Photos/Screaming Whistle/Screaming Whistle - 3.jpeg',
+      '/Product Photos/Screaming Whistle/Screaming Whistle - 1_result.webp',
+      '/Product Photos/Screaming Whistle/Screaming Whistle - 2_result.webp',
+      '/Product Photos/Screaming Whistle/Screaming Whistle - 3_result.webp',
     ],
     specs: {
       'Dimensions': '43 x 33 x 32 mm',
@@ -182,7 +182,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Novelty',
     material: 'PLA',
-    image: '/Product Photos/2 pack cigrette/Cig-1.jpeg',
+    image: '/Product Photos/2 pack cigrette/Cig-1_result.webp',
     description: 'The classic cigarette-shaped bubble blower, now in a convenient 2-pack — no case needed. Each blower is realistically shaped like a cigarette and produces a stream of bubbles, making it a hilarious pocket prank and a guaranteed conversation starter wherever you go.',
     highlights: [
       'Set of 2 cigarette-shaped bubble blowers',
@@ -191,11 +191,11 @@ export const products = [
       'Durable and lightweight PLA construction',
     ],
     images: [
-      '/Product Photos/2 pack cigrette/Cig-1.jpeg',
-      '/Product Photos/2 pack cigrette/Cig-2.jpeg',
-      '/Product Photos/2 pack cigrette/Cig-3.jpeg',
-      '/Product Photos/2 pack cigrette/Cig-4.jpeg',
-      '/Product Photos/2 pack cigrette/Cig-5.jpeg',
+      '/Product Photos/2 pack cigrette/Cig-1_result.webp',
+      '/Product Photos/2 pack cigrette/Cig-2_result.webp',
+      '/Product Photos/2 pack cigrette/Cig-3_result.webp',
+      '/Product Photos/2 pack cigrette/Cig-4_result.webp',
+      '/Product Photos/2 pack cigrette/Cig-5_result.webp',
     ],
     specs: {
       'Dimensions': '78 x 8 x 8 mm (per blower)',
@@ -213,7 +213,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
-    image: '/Product Photos/Spiderman Fidget/Spiderman fidget - 1.jpeg',
+    image: '/Product Photos/Spiderman Fidget/Spiderman fidget - 1_result.webp',
     description: 'Bring the web-slinger along on your daily routine with this Spiderman-themed magnetic fidget slider. Combining a sleek web-patterned red and black design with deeply tactile and responsive magnetic clicks, this is the perfect desk toy.',
     highlights: [
       'Spiderman web-patterned red and black styling',
@@ -222,9 +222,9 @@ export const products = [
       'Includes premium neodymium magnets for strong haptic feel',
     ],
     images: [
-      '/Product Photos/Spiderman Fidget/Spiderman fidget - 1.jpeg',
-      '/Product Photos/Spiderman Fidget/Spiderman fidget - 2.jpeg',
-      '/Product Photos/Spiderman Fidget/Spiderman fidget - 3.jpeg',
+      '/Product Photos/Spiderman Fidget/Spiderman fidget - 1_result.webp',
+      '/Product Photos/Spiderman Fidget/Spiderman fidget - 2_result.webp',
+      '/Product Photos/Spiderman Fidget/Spiderman fidget - 3_result.webp',
       '/Product Photos/Spiderman Fidget/Spiderman fidget - 4.mp4',
     ],
     specs: {
@@ -243,7 +243,7 @@ export const products = [
     packageDimensions: { l: 11, w: 11, h: 15 }, // packed dims in cm
     category: 'Decor',
     material: 'PLA',
-    image: '/Product Photos/Pagoda/Type 1/Pagoda 1.jpeg',
+    image: '/Product Photos/Pagoda/Type 1/Pagoda 1_result.webp',
     description: 'A beautifully detailed Japanese-style pagoda lantern with a built-in warm-glow LED light. Its intricately latticed windows cast a soft, cozy glow, making it a striking centerpiece for any desk, shelf, or bedside table.',
     highlights: [
       'Includes a built-in warm-white LED light',
@@ -252,8 +252,8 @@ export const products = [
       'Durable PLA construction, perfect as a gift or decor piece',
     ],
     images: [
-      '/Product Photos/Pagoda/Type 1/Pagoda 1.jpeg',
-      '/Product Photos/Pagoda/Type 1/Pagoda 2.jpeg',
+      '/Product Photos/Pagoda/Type 1/Pagoda 1_result.webp',
+      '/Product Photos/Pagoda/Type 1/Pagoda 2_result.webp',
     ],
     specs: {
       'Dimensions': '90 x 90 x 110 mm',
@@ -265,19 +265,19 @@ export const products = [
       {
         id: 'double-roof',
         name: 'Double Roof',
-        image: '/Product Photos/Pagoda/Type 1/Pagoda 1.jpeg',
+        image: '/Product Photos/Pagoda/Type 1/Pagoda 1_result.webp',
         images: [
-          '/Product Photos/Pagoda/Type 1/Pagoda 1.jpeg',
-          '/Product Photos/Pagoda/Type 1/Pagoda 2.jpeg',
+          '/Product Photos/Pagoda/Type 1/Pagoda 1_result.webp',
+          '/Product Photos/Pagoda/Type 1/Pagoda 2_result.webp',
         ],
       },
       {
         id: 'single-roof',
         name: 'Single Roof',
-        image: '/Product Photos/Pagoda/Type 2/Pagoda 1.jpeg',
+        image: '/Product Photos/Pagoda/Type 2/Pagoda 1_result.webp',
         images: [
-          '/Product Photos/Pagoda/Type 2/Pagoda 1.jpeg',
-          '/Product Photos/Pagoda/Type 2/Pagoda 2.jpeg',
+          '/Product Photos/Pagoda/Type 2/Pagoda 1_result.webp',
+          '/Product Photos/Pagoda/Type 2/Pagoda 2_result.webp',
         ],
       },
     ],
@@ -307,7 +307,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Novelty',
     material: 'PLA',
-    image: '/Product Photos/Shotgun Keychain/Shotgun1.jpeg',
+    image: '/Product Photos/Shotgun Keychain/Shotgun1_result.webp',
     description: 'A miniature double-barrel shotgun keychain with a working spring-loaded mechanism that actually fires small BBs. Pull back, take aim, and let it rip — a genuinely fun, functional novelty piece that doubles as a sturdy keychain.',
     highlights: [
       'Functional spring-loaded firing mechanism — shoots small BBs',
@@ -316,10 +316,10 @@ export const products = [
       'Durable PLA construction built to handle everyday use',
     ],
     images: [
-      '/Product Photos/Shotgun Keychain/Shotgun1.jpeg',
-      '/Product Photos/Shotgun Keychain/Shotgun2.jpeg',
-      '/Product Photos/Shotgun Keychain/Shotgun3.jpeg',
-      '/Product Photos/Shotgun Keychain/Shotgun4.jpeg',
+      '/Product Photos/Shotgun Keychain/Shotgun1_result.webp',
+      '/Product Photos/Shotgun Keychain/Shotgun2_result.webp',
+      '/Product Photos/Shotgun Keychain/Shotgun3_result.webp',
+      '/Product Photos/Shotgun Keychain/Shotgun4_result.webp',
     ],
     specs: {
       'Dimensions': '60 x 30 x 30 mm',
@@ -338,7 +338,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Accessories',
     material: 'PLA',
-    image: '/Product Photos/Name Keychain/Name Keychain.png?v=2',
+    image: '/Product Photos/Name Keychain/Name Keychain_result.webp',
     description: 'A personalized 3D-printed name keychain. Just send us the name you want and we will print it for you — a simple, thoughtful accessory for keys, bags, or as a small gift.',
     highlights: [
       'Personalized with the name of your choice',
@@ -347,7 +347,7 @@ export const products = [
       'Makes a great low-cost personalized gift'
     ],
     images: [
-      '/Product Photos/Name Keychain/Name Keychain.png?v=2'
+      '/Product Photos/Name Keychain/Name Keychain_result.webp'
     ],
     specs: {
       'Dimensions': '20 x 20 x 20 mm',
@@ -364,7 +364,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
-    image: '/Product Photos/Infinity Cube/Infinity-cube-1.png',
+    image: '/Product Photos/Infinity Cube/Infinity-cube-1_result.webp',
     description: 'A satisfying 3D-printed infinity cube — fold it endlessly in your hand for a smooth, stress-melting fidget. Compact, quiet, and the perfect everyday-carry desk toy or thoughtful little gift.',
     highlights: [
       'Endless folding motion for calming, repetitive fidgeting',
@@ -373,8 +373,8 @@ export const products = [
       'Made to order in your choice of colour',
     ],
     images: [
-      '/Product Photos/Infinity Cube/Infinity-cube-1.png',
-      '/Product Photos/Infinity Cube/infinity-cube-2.png',
+      '/Product Photos/Infinity Cube/Infinity-cube-1_result.webp',
+      '/Product Photos/Infinity Cube/infinity-cube-2_result.webp',
       '/Product Photos/Infinity Cube/infinity-cube-3.mp4',
     ],
     specs: {

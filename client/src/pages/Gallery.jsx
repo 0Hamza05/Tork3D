@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ZoomIn } from 'lucide-react';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { dedupeGlobModules } from '../lib/dedupeGlobModules';
 
 // Automatically load all images from the src/assets/gallery folder
 const imageModules = import.meta.glob('../assets/gallery/*.{jpg,jpeg,png,webp,gif}', { eager: true });
-const GALLERY = Object.values(imageModules).map(module => module.default);
+const GALLERY = dedupeGlobModules(imageModules);
 
 export default function Gallery() {
   const [selectedImg, setSelectedImg] = useState(null);

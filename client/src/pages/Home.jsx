@@ -6,10 +6,11 @@ import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { ProductCard } from '../components/ui/ProductCard';
 import { products } from '../data/products';
+import { dedupeGlobModules } from '../lib/dedupeGlobModules';
 
 // Pull in all gallery images + every product image for the hero carousel
 const galleryModules = import.meta.glob('../assets/gallery/**/*.{jpg,jpeg,png,webp,gif,JPG,JPEG,PNG,WEBP}', { eager: true });
-const GALLERY_IMGS = Object.values(galleryModules).map(m => m.default).filter(Boolean);
+const GALLERY_IMGS = dedupeGlobModules(galleryModules);
 const PRODUCT_IMGS = products
   .map(p => p.image)
   .filter(src => src && /\.(jpe?g|png|webp|gif)$/i.test(src));
