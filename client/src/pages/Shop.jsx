@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Search, Filter, ChevronRight } from 'lucide-react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Search, Filter, ChevronRight, X } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { ProductCard } from '../components/ui/ProductCard';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
@@ -13,10 +13,19 @@ const SORTS = ['Newest', 'Price: Low to High', 'Price: High to Low'];
 export default function Shop() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSort, setActiveSort] = useState('Newest');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeCategory = searchParams.get('category');
+
+  const clearCategory = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete('category');
+    setSearchParams(next);
+  };
 
   const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
+    const matchesCategory = !activeCategory || p.category.toLowerCase() === activeCategory.toLowerCase();
+    return matchesSearch && matchesCategory;
   }).sort((a, b) => {
     if (activeSort === 'Price: Low to High') return a.price - b.price;
     if (activeSort === 'Price: High to Low') return b.price - a.price;
@@ -36,6 +45,15 @@ export default function Shop() {
         <motion.div variants={fadeIn} className="mb-12">
           <h1 className="text-5xl font-bold mb-4 text-slate-900 dark:text-white">Tork3D Shop</h1>
           <p className="text-xl text-slate-600 dark:text-slate-300">High-quality 3D printed parts, ready to ship.</p>
+          {activeCategory && (
+            <button
+              onClick={clearCategory}
+              className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent-blue/10 text-accent-blue text-sm font-medium hover:bg-accent-blue/20 transition-colors"
+            >
+              Category: {activeCategory}
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </motion.div>
 
         {/* Search & Sort Toolbar */}
@@ -79,7 +97,11 @@ export default function Shop() {
         
         {filteredProducts.length === 0 && (
           <div className="text-center py-20">
-            <h3 className="text-xl text-slate-500 dark:text-slate-400">No products found matching "{searchQuery}"</h3>
+            <h3 className="text-xl text-slate-500 dark:text-slate-400">
+              {searchQuery
+                ? `No products found matching "${searchQuery}"`
+                : `No products found in "${activeCategory}"`}
+            </h3>
           </div>
         )}
 

@@ -56,7 +56,7 @@ export default function CustomOrder() {
 
     } catch (error) {
       console.error(error);
-      toast.error('Your quote request was saved locally, but we couldn\'t reach the server. Please contact us directly at tork3d.design@gmail.com.');
+      toast.error('Could not submit your request. Please try again, or contact us directly at tork3d.design@gmail.com.');
     }
   };
 

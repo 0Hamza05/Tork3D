@@ -1011,6 +1011,15 @@ app.post('/api/validate-coupon', shippingLimiter, async (req, res) => {
 app.post('/api/create-quote', orderLimiter, async (req, res) => {
   try {
     const quoteData = req.body;
+    const specs = quoteData.specs || {};
+
+    if (!quoteData.customerName || !quoteData.customerEmail) {
+      return res.status(400).json({ success: false, message: 'Name and email are required.' });
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(quoteData.customerEmail)) {
+      return res.status(400).json({ success: false, message: 'Please provide a valid email address.' });
+    }
+
     console.log('New Quote Request Received:', quoteData);
 
     // Save to Supabase
@@ -1020,7 +1029,7 @@ app.post('/api/create-quote', orderLimiter, async (req, res) => {
         customer_name: quoteData.customerName,
         customer_email: quoteData.customerEmail,
         order_type: 'Quote Request',
-        order_details: quoteData.specs,
+        order_details: specs,
         status: 'lead_pending'
       }]);
 
@@ -1030,23 +1039,23 @@ app.post('/api/create-quote', orderLimiter, async (req, res) => {
 
     // Send email via Resend
     const { data, error: resendError } = await resend.emails.send({
-      from: `Tork3D <${SENDER_EMAIL}>`, 
+      from: `Tork3D <${SENDER_EMAIL}>`,
       to: [process.env.CONTACT_EMAIL || 'tork3d.design@gmail.com'],
-      subject: `🚨 NEW QUOTE REQUEST: ${quoteData.customerName}`,
+      subject: `🚨 NEW QUOTE REQUEST: ${escHtml(quoteData.customerName)}`,
       html: `
         <div style="font-family: sans-serif; padding: 20px; color: #333;">
           <h2 style="color: #F97316;">New Custom Order Request</h2>
-          <p><strong>Customer:</strong> ${quoteData.customerName}</p>
-          <p><strong>Email:</strong> ${quoteData.customerEmail}</p>
+          <p><strong>Customer:</strong> ${escHtml(quoteData.customerName)}</p>
+          <p><strong>Email:</strong> ${escHtml(quoteData.customerEmail)}</p>
           <hr style="border: 1px solid #eee;" />
           <h3>Specifications:</h3>
           <ul>
-            <li><strong>Material:</strong> ${quoteData.specs.material}</li>
-            <li><strong>Color:</strong> ${quoteData.specs.color}</li>
-            <li><strong>Infill:</strong> ${quoteData.specs.infill}%</li>
-            <li><strong>Quantity:</strong> ${quoteData.specs.quantity}</li>
+            <li><strong>Material:</strong> ${escHtml(specs.material)}</li>
+            <li><strong>Color:</strong> ${escHtml(specs.color)}</li>
+            <li><strong>Infill:</strong> ${escHtml(specs.infill)}%</li>
+            <li><strong>Quantity:</strong> ${escHtml(specs.quantity)}</li>
           </ul>
-          <p><strong>Notes:</strong> ${quoteData.specs.description || 'None provided'}</p>
+          <p><strong>Notes:</strong> ${specs.description ? escHtml(specs.description) : 'None provided'}</p>
           <p><em>Customer will send 3D model files via WhatsApp.</em></p>
           <br />
           <p style="font-size: 12px; color: #999;">This email was sent automatically from the Tork3D website.</p>

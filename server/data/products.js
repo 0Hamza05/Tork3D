@@ -94,7 +94,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
-    image: '/Product Photos/Pokedex Fidget/Pokedex fidget - 1_result.webp',
+    image: '/Product Photos/Fidgets/Pokedex Fidget/WhatsApp Image 2026-07-11 at 19.48.27_result.webp',
     description: 'Satisfy your fidgeting needs with this Pokédex-themed magnetic fidget slider. Featuring smooth sliding feedback, tactile clicks, and strong neodymium magnets, it is the ultimate EDC pocket toy for Pokémon fans and fidget lovers alike.',
     highlights: [
       'Highly tactile magnetic sliding mechanism',
@@ -103,10 +103,10 @@ export const products = [
       'Premium quality construction with strong neodymium magnets',
     ],
     images: [
-      '/Product Photos/Pokedex Fidget/Pokedex fidget - 1_result.webp',
-      '/Product Photos/Pokedex Fidget/Pokedex fidget - 2_result.webp',
-      '/Product Photos/Pokedex Fidget/Pokedex fidget - 3_result.webp',
-      '/Product Photos/Pokedex Fidget/Pokedex fidget - 4_result.webp',
+      '/Product Photos/Fidgets/Pokedex Fidget/WhatsApp Image 2026-07-11 at 19.48.27_result.webp',
+      '/Product Photos/Fidgets/Pokedex Fidget/WhatsApp Image 2026-07-11 at 19.48.26_result.webp',
+      '/Product Photos/Fidgets/Pokedex Fidget/WhatsApp Image 2026-07-11 at 19.48.26 (1)_result.webp',
+      '/Product Photos/Fidgets/Pokedex Fidget/WhatsApp Video 2026-07-11 at 19.48.10.mp4',
     ],
     specs: {
       'Dimensions': '45 x 35 x 15 mm',
@@ -124,7 +124,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
-    image: '/Product Photos/Batman Fidget/Batman fidget - 1_result.webp',
+    image: '/Product Photos/Fidgets/Batman Fidget/WhatsApp Image 2026-07-11 at 19.48.24_result.webp',
     description: 'Channel your inner dark knight with this Batman-themed magnetic fidget toy. Designed with a sleek bat logo shape, this tactile magnetic slider provides deeply satisfying haptic feedback to keep your hands busy and mind focused.',
     highlights: [
       'Sleek Dark Knight Bat-themed aesthetic',
@@ -133,10 +133,10 @@ export const products = [
       'Great stress-relieving tool for work or study',
     ],
     images: [
-      '/Product Photos/Batman Fidget/Batman fidget - 1_result.webp',
-      '/Product Photos/Batman Fidget/Batman fidget - 2_result.webp',
-      '/Product Photos/Batman Fidget/Batman fidget - 3_result.webp',
-      '/Product Photos/Batman Fidget/Batman fidget - 4.mp4',
+      '/Product Photos/Fidgets/Batman Fidget/WhatsApp Image 2026-07-11 at 19.48.24_result.webp',
+      '/Product Photos/Fidgets/Batman Fidget/WhatsApp Image 2026-07-11 at 19.48.22 (2)_result.webp',
+      '/Product Photos/Fidgets/Batman Fidget/WhatsApp Image 2026-07-11 at 19.48.23_result.webp',
+      '/Product Photos/Fidgets/Batman Fidget/WhatsApp Video 2026-07-11 at 19.48.21.mp4',
     ],
     specs: {
       'Dimensions': '45 x 35 x 15 mm',
@@ -213,7 +213,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
-    image: '/Product Photos/Spiderman Fidget/Spiderman fidget - 1_result.webp',
+    image: '/Product Photos/Fidgets/Spiderman Fidget/WhatsApp Image 2026-07-11 at 19.48.22 (1)_result.webp',
     description: 'Bring the web-slinger along on your daily routine with this Spiderman-themed magnetic fidget slider. Combining a sleek web-patterned red and black design with deeply tactile and responsive magnetic clicks, this is the perfect desk toy.',
     highlights: [
       'Spiderman web-patterned red and black styling',
@@ -222,10 +222,10 @@ export const products = [
       'Includes premium neodymium magnets for strong haptic feel',
     ],
     images: [
-      '/Product Photos/Spiderman Fidget/Spiderman fidget - 1_result.webp',
-      '/Product Photos/Spiderman Fidget/Spiderman fidget - 2_result.webp',
-      '/Product Photos/Spiderman Fidget/Spiderman fidget - 3_result.webp',
-      '/Product Photos/Spiderman Fidget/Spiderman fidget - 4.mp4',
+      '/Product Photos/Fidgets/Spiderman Fidget/WhatsApp Image 2026-07-11 at 19.48.22 (1)_result.webp',
+      '/Product Photos/Fidgets/Spiderman Fidget/WhatsApp Image 2026-07-11 at 19.48.21_result.webp',
+      '/Product Photos/Fidgets/Spiderman Fidget/WhatsApp Image 2026-07-11 at 19.48.22_result.webp',
+      '/Product Photos/Fidgets/Spiderman Fidget/WhatsApp Video 2026-07-11 at 19.48.21 (1).mp4',
     ],
     specs: {
       'Dimensions': '45 x 35 x 15 mm',
@@ -395,6 +395,66 @@ export const products = [
       { id: 'lavender', name: 'Lavender', hex: '#C4B5FD' },
       { id: 'dark-green', name: 'Dark Green', hex: '#166534' },
     ],
+  },
+  {
+    id: 13,
+    name: 'Superman Magnetic Fidget',
+    price: 399,
+    weight: 25,                         // dead weight in grams
+    packageType: 'flyer',                 // 'box' | 'flyer'
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
+    category: 'Fidgets',
+    material: 'PLA',
+    image: '/Product Photos/Fidgets/Superman Fidget/WhatsApp Image 2026-07-11 at 19.48.25 (1)_result.webp',
+    description: 'Suit up with this Superman-themed magnetic fidget slider. Featuring the iconic red, blue, and yellow S-shield design, this tactile magnetic slider delivers deeply satisfying haptic clicks to keep your hands busy and your focus sharp.',
+    highlights: [
+      'Iconic Man of Steel S-shield styling',
+      'Tactile haptic clicks and smooth slide action',
+      'Durable PLA design with secure magnet placement',
+      'Great stress-relieving tool for work or study',
+    ],
+    images: [
+      '/Product Photos/Fidgets/Superman Fidget/WhatsApp Image 2026-07-11 at 19.48.25 (1)_result.webp',
+      '/Product Photos/Fidgets/Superman Fidget/WhatsApp Image 2026-07-11 at 19.48.24 (1)_result.webp',
+      '/Product Photos/Fidgets/Superman Fidget/WhatsApp Image 2026-07-11 at 19.48.25_result.webp',
+      '/Product Photos/Fidgets/Superman Fidget/WhatsApp Video 2026-07-11 at 19.48.12.mp4',
+    ],
+    specs: {
+      'Dimensions': '45 x 35 x 15 mm',
+      'Weight': '25 g',
+      'Material': 'PLA, Neodymium Magnets',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
+    }
+  },
+  {
+    id: 14,
+    name: 'Superhero Fidgets Pack',
+    price: 999,
+    weight: 75,                          // dead weight in grams (3 fidgets)
+    packageType: 'box',                    // 'box' | 'flyer'
+    packageDimensions: { l: 15, w: 15, h: 8 }, // packed dims in cm
+    category: 'Fidgets',
+    material: 'PLA',
+    image: '/Product Photos/Fidgets/Superhero Fidgets Pack/WhatsApp Image 2026-07-11 at 19.48.00_result.webp',
+    description: 'The ultimate trio — get the Batman, Spiderman, and Superman magnetic fidget sliders together in one combo pack, at a price better than buying them separately. Same tactile magnetic clicks and durable PLA build across all three, now in one satisfying bundle.',
+    highlights: [
+      'Includes Batman, Spiderman, and Superman magnetic fidgets',
+      'Save over buying all three individually',
+      'Same deeply tactile magnetic haptic feedback on every piece',
+      'Makes a great gift set for fidget and superhero fans alike',
+    ],
+    images: [
+      '/Product Photos/Fidgets/Superhero Fidgets Pack/WhatsApp Image 2026-07-11 at 19.48.00_result.webp',
+      '/Product Photos/Fidgets/Superhero Fidgets Pack/WhatsApp Image 2026-07-11 at 19.48.01_result.webp',
+      '/Product Photos/Fidgets/Superhero Fidgets Pack/WhatsApp Image 2026-07-11 at 19.48.02_result.webp',
+    ],
+    specs: {
+      'Dimensions': '45 x 35 x 15 mm (each)',
+      'Weight': '75 g (set of 3)',
+      'Included': '1 Batman, 1 Spiderman, 1 Superman Fidget',
+      'Material': 'PLA, Neodymium Magnets',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
+    }
   }
 ];
 
