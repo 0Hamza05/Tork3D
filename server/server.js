@@ -1047,6 +1047,7 @@ app.post('/api/create-quote', orderLimiter, async (req, res) => {
           <h2 style="color: #F97316;">New Custom Order Request</h2>
           <p><strong>Customer:</strong> ${escHtml(quoteData.customerName)}</p>
           <p><strong>Email:</strong> ${escHtml(quoteData.customerEmail)}</p>
+          <p><strong>Phone:</strong> ${specs.phone ? escHtml(specs.phone) : '—'}</p>
           <hr style="border: 1px solid #eee;" />
           <h3>Specifications:</h3>
           <ul>
