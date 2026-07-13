@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { UploadCloud, CheckCircle2, Factory, Printer, Truck, ChevronDown, ChevronRight } from 'lucide-react';
+import { UploadCloud, CheckCircle2, Factory, Printer, Truck, ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { API_BASE_URL } from '../config';
@@ -18,9 +18,11 @@ export default function CustomOrder() {
     name: '', email: '', phone: '', material: 'PLA', color: 'Black', quantity: 1, infill: 20, description: '', deadline: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return; // guard against double-click / double-submit firing two requests
     if (!formData.name || !formData.email || !formData.phone) {
       toast.error("Please fill in your name, email, and phone number.");
       return;
@@ -31,6 +33,7 @@ export default function CustomOrder() {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       const quoteData = {
         type: 'quote_request',
@@ -57,6 +60,8 @@ export default function CustomOrder() {
     } catch (error) {
       console.error(error);
       toast.error('Could not submit your request. Please try again, or contact us directly at tork3d.design@gmail.com.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -179,7 +184,13 @@ export default function CustomOrder() {
                 </div>
 
                 <div className="pt-4 flex justify-end">
-                  <Button type="submit" size="lg" className="w-full md:w-auto">Submit Details</Button>
+                  <Button type="submit" size="lg" className="w-full md:w-auto" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <Loader2 className="w-4 h-4 animate-spin" /> Submitting…
+                      </span>
+                    ) : 'Submit Details'}
+                  </Button>
                 </div>
               </form>
             )}
