@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Check, Truck, Shield, MessageCircle, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, Truck, Shield, MessageCircle, ArrowLeft, ChevronLeft, ChevronRight, Gift } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { ProductCard } from '../components/ui/ProductCard';
@@ -60,6 +60,15 @@ export default function ProductDetail() {
     : product;
 
   const cartItem = cart.find(item => item.id === displayProduct?.id);
+
+  // Cross-sell: if this product is part of a combo (e.g. a Superhero Fidget is
+  // part of the Superhero Fidgets Pack), show the pack + the savings vs.
+  // buying the pieces separately. Savings is computed from real catalog
+  // prices, not hardcoded, so it can't drift if prices change.
+  const comboProduct = product?.comboId ? products.find(p => p.id === product.comboId) : null;
+  const comboSavings = comboProduct?.components
+    ? comboProduct.components.reduce((sum, cid) => sum + (products.find(p => p.id === cid)?.price || 0), 0) - comboProduct.price
+    : 0;
 
   React.useEffect(() => {
     setIsLoaded(false);
@@ -280,6 +289,25 @@ export default function ProductDetail() {
                 <Shield className="w-5 h-5 text-slate-500 dark:text-slate-400" /> Quality Guarantee
               </div>
             </div>
+
+            {comboProduct && (
+              <Link
+                to={`/product/${comboProduct.id}`}
+                className="group flex items-center gap-3 mb-8 p-4 rounded-xl border-2 border-accent-orange/40 bg-accent-orange/5 hover:bg-accent-orange/10 transition-colors"
+              >
+                <div className="w-10 h-10 rounded-lg bg-accent-orange/15 flex items-center justify-center shrink-0">
+                  <Gift className="w-5 h-5 text-accent-orange" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-slate-900 dark:text-white">
+                    Get all 3 for ₹{comboProduct.price}
+                    {comboSavings > 0 && <span className="text-green-600 dark:text-green-400"> — save ₹{comboSavings}</span>}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{comboProduct.name} · Batman, Spiderman &amp; Superman</p>
+                </div>
+                <ChevronRight className="w-5 h-5 text-accent-orange shrink-0 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            )}
 
             {cartItem ? (
               <div className="space-y-4 mb-12">
