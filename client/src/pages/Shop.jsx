@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Search, Filter, ChevronRight, X } from 'lucide-react';
+import { Search, Filter, ChevronRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { ProductCard } from '../components/ui/ProductCard';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
@@ -9,6 +9,9 @@ import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { products } from '../data/products';
 
 const SORTS = ['Newest', 'Price: Low to High', 'Price: High to Low'];
+// Derived from the catalog itself, not hardcoded, so it stays correct as
+// products/categories are added or removed.
+const CATEGORIES = [...new Set(products.map(p => p.category))].sort();
 
 export default function Shop() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,6 +22,12 @@ export default function Shop() {
   const clearCategory = () => {
     const next = new URLSearchParams(searchParams);
     next.delete('category');
+    setSearchParams(next);
+  };
+
+  const selectCategory = (category) => {
+    const next = new URLSearchParams(searchParams);
+    next.set('category', category);
     setSearchParams(next);
   };
 
@@ -42,19 +51,35 @@ export default function Shop() {
           <span className="text-slate-900 dark:text-white">Shop</span>
         </div>
 
-        <motion.div variants={fadeIn} className="mb-12">
+        <motion.div variants={fadeIn} className="mb-8">
           <h1 className="text-5xl font-bold mb-4 text-slate-900 dark:text-white">Tork3D Shop</h1>
           <p className="text-xl text-slate-600 dark:text-slate-300">High-quality 3D printed parts, ready to ship.</p>
-          {activeCategory && (
-            <button
-              onClick={clearCategory}
-              className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent-blue/10 text-accent-blue text-sm font-medium hover:bg-accent-blue/20 transition-colors"
-            >
-              Category: {activeCategory}
-              <X className="w-3.5 h-3.5" />
-            </button>
-          )}
         </motion.div>
+
+        {/* Category Chips */}
+        <div className="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filter by category">
+          <button
+            onClick={clearCategory}
+            aria-pressed={!activeCategory}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${!activeCategory ? 'bg-accent-blue text-white' : 'bg-secondary dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700'}`}
+          >
+            All ({products.length})
+          </button>
+          {CATEGORIES.map(category => {
+            const isActive = activeCategory?.toLowerCase() === category.toLowerCase();
+            const count = products.filter(p => p.category === category).length;
+            return (
+              <button
+                key={category}
+                onClick={() => selectCategory(category)}
+                aria-pressed={isActive}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'bg-accent-blue text-white' : 'bg-secondary dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700'}`}
+              >
+                {category} ({count})
+              </button>
+            );
+          })}
+        </div>
 
         {/* Search & Sort Toolbar */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-12">
