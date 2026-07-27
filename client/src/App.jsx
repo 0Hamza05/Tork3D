@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 
@@ -50,6 +51,7 @@ function App() {
             <Route path="/early-access" element={<EarlyAccess />} />
             <Route path="*" element={<ComingSoon />} />
           </Routes>
+          <Analytics />
         </Router>
       </ThemeProvider>
     );
@@ -91,6 +93,7 @@ function App() {
           <WhatsAppWidget />
           <Footer />
         </div>
+        <Analytics />
       </Router>
       </CartProvider>
     </ThemeProvider>
