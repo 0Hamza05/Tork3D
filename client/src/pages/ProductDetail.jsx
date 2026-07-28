@@ -205,7 +205,15 @@ export default function ProductDetail() {
             <div className="text-sm text-accent-blue font-medium mb-2 uppercase tracking-wider">{product.category}</div>
             <h1 className="text-4xl font-bold mb-4 text-slate-900 dark:text-white">{product.name}</h1>
             <div className="flex items-baseline gap-3 mb-6">
+              {product.compareAtPrice && (
+                <span className="text-lg text-slate-400 line-through">₹{product.compareAtPrice}</span>
+              )}
               <span className="text-3xl font-light text-slate-900 dark:text-white">₹{product.price}</span>
+              {product.compareAtPrice && (
+                <span className="text-xs font-bold uppercase tracking-wide bg-red-600/15 text-red-600 dark:text-red-400 px-2 py-1 rounded">
+                  {Math.round((product.compareAtPrice - product.price) / product.compareAtPrice * 100)}% OFF
+                </span>
+              )}
               {product.bundle && (
                 <span className="text-xs font-bold uppercase tracking-wide bg-accent-orange/15 text-accent-orange px-2 py-1 rounded">{product.bundle.qty} for ₹{product.bundle.price}</span>
               )}

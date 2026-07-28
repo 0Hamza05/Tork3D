@@ -208,7 +208,8 @@ export const products = [
   {
     id: 6,
     name: 'Spiderman Magnetic Fidget',
-    price: 399,
+    price: 349,
+    compareAtPrice: 399,                  // was ₹399 — shown as a strikethrough + discount badge
     comboId: 14,                          // cross-sell: part of the Superhero Fidgets Pack
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
@@ -267,10 +268,10 @@ export const products = [
       {
         id: 'double-roof',
         name: 'Double Roof',
-        image: '/Product Photos/Pagoda/Type 1/Pagoda 1_result.webp',
+        image: '/Product Photos/Pagoda/Type 1/Pagoda 2_result.webp',
         images: [
-          '/Product Photos/Pagoda/Type 1/Pagoda 1_result.webp',
           '/Product Photos/Pagoda/Type 1/Pagoda 2_result.webp',
+          '/Product Photos/Pagoda/Type 1/Pagoda 1_result.webp',
         ],
       },
       {

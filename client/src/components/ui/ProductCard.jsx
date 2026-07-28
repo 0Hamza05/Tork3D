@@ -12,6 +12,11 @@ export function ProductCard({ product }) {
   const cartItem = cart.find(item => item.id === product.id);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const needsConfig = !!(product.styles?.length || product.colorOptions?.length);
+  // Discount % is computed from the real prices, not hardcoded, so it can't
+  // drift out of sync if either price changes later.
+  const discountPercent = product.compareAtPrice
+    ? Math.round((product.compareAtPrice - product.price) / product.compareAtPrice * 100)
+    : 0;
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -32,6 +37,11 @@ export function ProductCard({ product }) {
         className="glass-card group overflow-hidden flex flex-col cursor-pointer"
       >
         <div className="relative aspect-square overflow-hidden bg-slate-50 dark:bg-slate-800">
+          {discountPercent > 0 && (
+            <span className="absolute top-3 left-3 z-10 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
+              {discountPercent}% OFF
+            </span>
+          )}
           {cartItem && (
             <span className="absolute top-3 right-3 z-10 bg-green-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 backdrop-blur-sm bg-green-600/95">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
@@ -101,6 +111,9 @@ export function ProductCard({ product }) {
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">{product.name}</h3>
           <div className="mt-auto flex items-center justify-between">
             <div className="flex items-baseline gap-2">
+              {product.compareAtPrice && (
+                <span className="text-sm text-slate-400 line-through">₹{product.compareAtPrice}</span>
+              )}
               <span className="text-xl font-bold text-slate-900 dark:text-white">₹{product.price}</span>
               {product.bundle && (
                 <span className="text-[10px] font-bold uppercase tracking-wide bg-accent-orange/15 text-accent-orange px-1.5 py-0.5 rounded">{product.bundle.qty} for ₹{product.bundle.price}</span>
