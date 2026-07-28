@@ -12,6 +12,10 @@ server/.env
 dist/
 client/dist/
 
+# Auto-generated at build time (see client/scripts/generate-sitemap.mjs) —
+# always regenerated fresh from the live product catalog, never hand-edited.
+client/public/sitemap.xml
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
