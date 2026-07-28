@@ -61,7 +61,7 @@ export const products = [
   {
     id: 3,
     name: 'Spiderman Hueforge',
-    price: 299,
+    price: 399,
     weight: 30,                         // dead weight in grams
     packageType: 'box',                   // 'box' | 'flyer'
     packageDimensions: { l: 25, w: 25, h: 5 }, // packed dims in cm
@@ -246,7 +246,7 @@ export const products = [
     packageDimensions: { l: 11, w: 11, h: 15 }, // packed dims in cm
     category: 'Decor',
     material: 'PLA',
-    image: '/Product Photos/Pagoda/Type 1/Pagoda 1_result.webp',
+    image: '/Product Photos/Pagoda/Type 1/Pagoda 2_result.webp',
     description: 'A beautifully detailed Japanese-style pagoda lantern with a built-in warm-glow LED light. Its intricately latticed windows cast a soft, cozy glow, making it a striking centerpiece for any desk, shelf, or bedside table.',
     highlights: [
       'Includes a built-in warm-white LED light',
@@ -255,8 +255,8 @@ export const products = [
       'Durable PLA construction, perfect as a gift or decor piece',
     ],
     images: [
-      '/Product Photos/Pagoda/Type 1/Pagoda 1_result.webp',
       '/Product Photos/Pagoda/Type 1/Pagoda 2_result.webp',
+      '/Product Photos/Pagoda/Type 1/Pagoda 1_result.webp',
     ],
     specs: {
       'Dimensions': '90 x 90 x 110 mm',
