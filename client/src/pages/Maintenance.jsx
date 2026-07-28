@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { Wrench, MessageCircle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper } from '../components/layout/SectionWrapper';
+import { SEO } from '../components/SEO';
 
 export default function Maintenance() {
   return (
     <div className="pt-24 min-h-screen flex items-center">
+      <SEO title="Under Maintenance" noindex />
       <SectionWrapper>
         <div className="flex flex-col items-center justify-center text-center space-y-6 py-20 max-w-lg mx-auto">
           <div className="w-20 h-20 bg-accent-orange/10 rounded-full flex items-center justify-center">

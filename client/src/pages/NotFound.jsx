@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { SEO } from '../components/SEO';
 
 export default function NotFound() {
   return (
     <div className="pt-32 pb-24 min-h-screen flex items-center justify-center">
+      <SEO title="Page Not Found" noindex />
       <SectionWrapper className="w-full">
         <motion.div 
           variants={fadeIn} 

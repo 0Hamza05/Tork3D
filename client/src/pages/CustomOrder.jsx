@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { UploadCloud, CheckCircle2, Factory, Printer, Truck, ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { SEO } from '../components/SEO';
 import { API_BASE_URL } from '../config';
 import toast from 'react-hot-toast';
 
@@ -69,6 +70,11 @@ export default function CustomOrder() {
 
   return (
     <div className="pt-24 min-h-screen">
+      <SEO
+        title="Custom 3D Print Order"
+        description="Get an instant quote for your custom 3D printing project. Choose your material, color, and quantity — we'll print it and ship it to you."
+        path="/custom"
+      />
       <SectionWrapper>
         <div className="flex items-center justify-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6 font-medium">
           <Link to="/" className="hover:text-accent-blue transition-colors">Home</Link>

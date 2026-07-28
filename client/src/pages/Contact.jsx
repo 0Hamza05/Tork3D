@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Mail, Phone, MessageCircle, Instagram, Loader2, CheckCircle2 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { SEO } from '../components/SEO';
 import { API_BASE_URL } from '../config';
 
 export default function Contact() {
@@ -51,6 +52,11 @@ export default function Contact() {
 
   return (
     <div className="pt-24 min-h-screen">
+      <SEO
+        title="Contact Us"
+        description="Get in touch with Tork3D for questions, bulk orders, or custom 3D printing project inquiries."
+        path="/contact"
+      />
       <SectionWrapper>
         <motion.div variants={fadeIn} className="mb-12 text-center max-w-3xl mx-auto">
           <h1 className="text-5xl font-bold mb-4 text-slate-900 dark:text-white">Get in Touch</h1>

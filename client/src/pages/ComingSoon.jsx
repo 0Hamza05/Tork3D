@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Gift, Coffee } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { SEO } from '../components/SEO';
 import { LAUNCH_DATE } from '../config';
 
 function getTimeLeft() {
@@ -42,6 +43,7 @@ export default function ComingSoon() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-canvas dark:bg-canvas-dark px-4 py-20">
+      <SEO title="We'll Be Back Soon" description="Tork3D is taking a short break. We'll be back soon with custom 3D printing and engineering solutions." path="/" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

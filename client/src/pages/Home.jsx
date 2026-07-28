@@ -7,6 +7,7 @@ import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { ProductCard } from '../components/ui/ProductCard';
 import { products } from '../data/products';
 import { dedupeGlobModules } from '../lib/dedupeGlobModules';
+import { SEO } from '../components/SEO';
 
 // Pull in all gallery images + every product image for the hero carousel
 const galleryModules = import.meta.glob('../assets/gallery/**/*.{jpg,jpeg,png,webp,gif,JPG,JPEG,PNG,WEBP}', { eager: true });
@@ -121,6 +122,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col w-full">
+      <SEO path="/" />
 
       {/* ── Coupon promo banner ──────────────────────────────────── */}
       <Link

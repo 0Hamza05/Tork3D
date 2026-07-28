@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ZoomIn } from 'lucide-react';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { dedupeGlobModules } from '../lib/dedupeGlobModules';
+import { SEO } from '../components/SEO';
 
 // Automatically load all images from the src/assets/gallery folder
 const imageModules = import.meta.glob('../assets/gallery/*.{jpg,jpeg,png,webp,gif}', { eager: true });
@@ -13,6 +14,11 @@ export default function Gallery() {
 
   return (
     <div className="pt-24 min-h-screen">
+      <SEO
+        title="Gallery"
+        description="A showcase of custom 3D printed parts, prototypes, and finished prints made by Tork3D."
+        path="/gallery"
+      />
       <SectionWrapper>
         <motion.div variants={fadeIn} className="mb-12 text-center max-w-3xl mx-auto">
           <h1 className="text-5xl font-bold mb-4 text-slate-900 dark:text-white">Our Work</h1>

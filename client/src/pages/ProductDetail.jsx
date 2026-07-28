@@ -7,6 +7,7 @@ import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { ProductCard } from '../components/ui/ProductCard';
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
+import { SEO } from '../components/SEO';
 import toast from 'react-hot-toast';
 
 export default function ProductDetail() {
@@ -91,6 +92,7 @@ export default function ProductDetail() {
   if (!product) {
     return (
       <div className="pt-32 min-h-screen text-center">
+        <SEO title="Product Not Found" noindex />
         <h1 className="text-3xl font-bold mb-4">Product Not Found</h1>
         <Link to="/shop" className="text-accent-blue hover:underline">Return to Shop</Link>
       </div>
@@ -107,8 +109,20 @@ export default function ProductDetail() {
     navigate('/cart');
   };
 
+  // Meta descriptions should stay short — trim long product descriptions
+  // rather than letting Google truncate them mid-sentence in search results.
+  const metaDescription = product.description.length > 160
+    ? `${product.description.slice(0, 157)}...`
+    : product.description;
+
   return (
     <div className="pt-24 min-h-screen">
+      <SEO
+        title={`${product.name} — ₹${product.price}`}
+        description={metaDescription}
+        image={product.image}
+        path={`/product/${product.id}`}
+      />
       <SectionWrapper className="pb-0">
         {/* Breadcrumbs Navigation */}
         <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-8 font-medium flex-wrap">

@@ -5,6 +5,7 @@ import { Search, Filter, ChevronRight } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { ProductCard } from '../components/ui/ProductCard';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { SEO } from '../components/SEO';
 
 import { products } from '../data/products';
 
@@ -43,6 +44,11 @@ export default function Shop() {
 
   return (
     <div className="pt-24 min-h-screen">
+      <SEO
+        title="Shop"
+        description="Browse Tork3D's catalog of high-quality 3D printed parts — fidgets, keychains, decor, and novelty items, ready to ship across India."
+        path="/shop"
+      />
       <SectionWrapper>
         {/* Breadcrumbs Navigation */}
         <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6 font-medium">

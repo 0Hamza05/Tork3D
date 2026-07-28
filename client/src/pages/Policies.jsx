@@ -1,10 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { SEO } from '../components/SEO';
 
 export default function Policies() {
   return (
     <div className="pt-24 min-h-screen">
+      <SEO
+        title="Store Policies"
+        description="Terms & conditions and the return & refund policy for Tork3D orders."
+        path="/policies"
+      />
       <SectionWrapper>
         <motion.div variants={fadeIn} className="max-w-4xl mx-auto">
           <div className="text-center mb-16">

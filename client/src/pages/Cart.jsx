@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
+import { SEO } from '../components/SEO';
 import { API_BASE_URL } from '../config';
 import { products, lineTotal } from '../data/products';
 import { loadRazorpayScript } from '../lib/loadRazorpay';
@@ -299,6 +300,7 @@ const getCookie = (name) => {
   if (codSuccess) {
     return (
       <div className="pt-32 min-h-screen">
+        <SEO title="Order Placed" noindex path="/cart" />
         <SectionWrapper>
           <div className="flex flex-col items-center justify-center py-20 text-center space-y-6 max-w-md mx-auto">
             <CheckCircle2 className="w-20 h-20 text-green-500" />
@@ -315,6 +317,7 @@ const getCookie = (name) => {
   if (cart.length === 0) {
     return (
       <div className="pt-32 min-h-screen text-center">
+        <SEO title="Your Cart" noindex path="/cart" />
         <SectionWrapper>
           <div className="flex flex-col items-center justify-center space-y-6 py-20">
             <div className="w-20 h-20 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center">
@@ -331,6 +334,7 @@ const getCookie = (name) => {
 
   return (
     <div className="pt-24 min-h-screen">
+      <SEO title="Your Cart" noindex path="/cart" />
 
       {/* Checkout Modal */}
       {showModal && (

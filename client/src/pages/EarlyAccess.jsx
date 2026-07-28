@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Gift, Tag, Calendar, ArrowLeft, Loader2, CheckCircle2, Copy } from 'lucide-react';
 import { Button } from '../components/ui/Button';
+import { SEO } from '../components/SEO';
 import { API_BASE_URL } from '../config';
 import toast from 'react-hot-toast';
 
@@ -44,6 +45,7 @@ export default function EarlyAccess() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-canvas dark:bg-canvas-dark px-4 py-20">
+      <SEO title="Early Access Coupon" description="Sign up for Tork3D early access and reserve your launch coupon — 10% off plus a free name keychain." path="/early-access" />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
