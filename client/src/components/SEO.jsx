@@ -10,7 +10,14 @@ const DEFAULT_IMAGE = `${SITE_URL}/favicon.png`;
 // Graph/Twitter tags. Without this every route shared the exact same static
 // tags from index.html, so Google (and link previews) couldn't tell a
 // product page apart from the homepage.
-export function SEO({ title, description = DEFAULT_DESCRIPTION, image, path = '', noindex = false }) {
+//
+// Pass `product` (a raw catalog product) on product pages to also emit
+// schema.org Product/Offer JSON-LD, making the page eligible for Google's
+// price rich snippets. Deliberately omits aggregateRating/review — the site
+// has no real review system, and fabricating rating data is the kind of
+// structured-data spam Google actively penalizes. Add it for real once
+// there's an actual review system to back it.
+export function SEO({ title, description = DEFAULT_DESCRIPTION, image, path = '', noindex = false, product = null }) {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : DEFAULT_TITLE;
   const url = encodeURI(`${SITE_URL}${path}`);
   // Product image paths can contain spaces (e.g. "/Product Photos/...") —
@@ -19,6 +26,24 @@ export function SEO({ title, description = DEFAULT_DESCRIPTION, image, path = ''
   const resolvedImage = encodeURI(
     image ? (image.startsWith('http') ? image : `${SITE_URL}${image}`) : DEFAULT_IMAGE
   );
+
+  const productSchema = product ? {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.name,
+    image: [resolvedImage],
+    description,
+    sku: String(product.id),
+    brand: { '@type': 'Brand', name: SITE_NAME },
+    offers: {
+      '@type': 'Offer',
+      url,
+      priceCurrency: 'INR',
+      price: String(product.price),
+      availability: 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition',
+    },
+  } : null;
 
   return (
     <Helmet>
@@ -38,6 +63,10 @@ export function SEO({ title, description = DEFAULT_DESCRIPTION, image, path = ''
       <meta property="twitter:title" content={fullTitle} />
       <meta property="twitter:description" content={description} />
       <meta property="twitter:image" content={resolvedImage} />
+
+      {productSchema && (
+        <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
+      )}
     </Helmet>
   );
 }

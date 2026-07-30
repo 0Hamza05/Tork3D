@@ -5,16 +5,19 @@ import { Check, Truck, Shield, MessageCircle, ArrowLeft, ChevronLeft, ChevronRig
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { ProductCard } from '../components/ui/ProductCard';
-import { products } from '../data/products';
+import { products, productSlug, productUrl } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { SEO } from '../components/SEO';
 import toast from 'react-hot-toast';
 
 export default function ProductDetail() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
-  const product = products.find(p => p.id === parseInt(id));
+  // parseInt reads the leading digits off the slug, so both the old bare
+  // numeric URL ("5") and the new keyword-rich one ("5-batman-magnetic-fidget")
+  // resolve to the same product.
+  const product = products.find(p => p.id === parseInt(slug, 10));
   const hasStyles = !!product?.styles?.length;
   const hasColors = !!product?.colorOptions?.length;
   // Colors are configured via named "slots": a product can expose one picker
@@ -71,6 +74,16 @@ export default function ProductDetail() {
     ? comboProduct.components.reduce((sum, cid) => sum + (products.find(p => p.id === cid)?.price || 0), 0) - comboProduct.price
     : 0;
 
+  // Old bare-numeric links (e.g. /product/5) and stale slugs (if a product is
+  // ever renamed) redirect to the current canonical slug URL — keeps exactly
+  // one indexable URL per product instead of splitting SEO value across
+  // variants that all resolve to the same page.
+  React.useEffect(() => {
+    if (product && slug !== productSlug(product)) {
+      navigate(productUrl(product), { replace: true });
+    }
+  }, [product, slug, navigate]);
+
   React.useEffect(() => {
     setIsLoaded(false);
   }, [activeImg]);
@@ -121,7 +134,8 @@ export default function ProductDetail() {
         title={`${product.name} — ₹${product.price}`}
         description={metaDescription}
         image={product.image}
-        path={`/product/${product.id}`}
+        path={productUrl(product)}
+        product={product}
       />
       <SectionWrapper className="pb-0">
         {/* Breadcrumbs Navigation */}
@@ -314,7 +328,7 @@ export default function ProductDetail() {
 
             {comboProduct && (
               <Link
-                to={`/product/${comboProduct.id}`}
+                to={productUrl(comboProduct)}
                 className="group flex items-center gap-3 mb-8 p-4 rounded-xl border-2 border-accent-orange/40 bg-accent-orange/5 hover:bg-accent-orange/10 transition-colors"
               >
                 <div className="w-10 h-10 rounded-lg bg-accent-orange/15 flex items-center justify-center shrink-0">

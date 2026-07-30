@@ -6,7 +6,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { products } from '../src/data/products.js';
+import { products, productUrl } from '../src/data/products.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SITE_URL = 'https://tork3d.in';
@@ -23,7 +23,7 @@ const staticPages = [
 ];
 
 const productPages = products.map((p) => ({
-  path: `/product/${p.id}`,
+  path: productUrl(p),
   changefreq: 'weekly',
   priority: '0.8',
 }));

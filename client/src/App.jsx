@@ -79,7 +79,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={MAINTENANCE_MODE ? <Maintenance /> : <Shop />} />
-              <Route path="/product/:id" element={MAINTENANCE_MODE ? <Maintenance /> : <ProductDetail />} />
+              <Route path="/product/:slug" element={MAINTENANCE_MODE ? <Maintenance /> : <ProductDetail />} />
               <Route path="/cart" element={MAINTENANCE_MODE ? <Maintenance /> : <Cart />} />
               <Route path="/custom" element={MAINTENANCE_MODE ? <Maintenance /> : <CustomOrder />} />
               <Route path="/gallery" element={<Gallery />} />

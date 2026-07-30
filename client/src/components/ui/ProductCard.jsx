@@ -5,6 +5,7 @@ import { ShoppingCart } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Button } from './Button';
 import { useCart } from '../../context/CartContext';
+import { productUrl } from '../../data/products';
 
 export function ProductCard({ product }) {
   const { cart, addToCart, updateQuantity, removeFromCart } = useCart();
@@ -23,7 +24,7 @@ export function ProductCard({ product }) {
     e.stopPropagation();
     if (needsConfig) {
       // This product has style/color options — send to product page to configure
-      navigate(`/product/${product.id}`);
+      navigate(productUrl(product));
       return;
     }
     addToCart(product);
@@ -31,7 +32,7 @@ export function ProductCard({ product }) {
   };
 
   return (
-    <Link to={`/product/${product.id}`} className="block">
+    <Link to={productUrl(product)} className="block">
       <motion.div 
         whileHover={{ y: -5 }}
         className="glass-card group overflow-hidden flex flex-col cursor-pointer"

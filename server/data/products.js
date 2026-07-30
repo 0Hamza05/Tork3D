@@ -489,3 +489,21 @@ export const lineTotal = (product, quantity = 1) => {
   }
   return (product ? product.price : 0) * quantity;
 };
+
+/**
+ * Builds a keyword-rich product URL, e.g. "/product/5-batman-magnetic-fidget".
+ * The numeric id prefix stays the single source of truth for lookups — the
+ * descriptive suffix is for humans/search engines and is ignored when a URL
+ * is resolved back to a product (see ProductDetail.jsx), so old bare-numeric
+ * links and renamed products never 404.
+ */
+export const productSlug = (product) => {
+  const slug = product.name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return `${product.id}-${slug}`;
+};
+
+export const productUrl = (product) => `/product/${productSlug(product)}`;
