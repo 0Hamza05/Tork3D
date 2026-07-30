@@ -16,7 +16,7 @@ export default function Cart() {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({
-    name: '', email: '', phone: '', address1: '', city: '', state: '', pincode: ''
+    firstName: '', lastName: '', email: '', phone: '', address1: '', city: '', state: '', pincode: ''
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [codSuccess, setCodSuccess] = useState(false);
@@ -169,12 +169,17 @@ const getCookie = (name) => {
     return () => clearTimeout(debounceRef.current);
   }, [customerInfo.pincode, totalWeightGrams, fulfillment, subtotal]);
 
+  // First/last name are separate, required fields in the form (see below),
+  // but every downstream consumer — Supabase, Razorpay, order emails — only
+  // ever needs a single combined name, so it's joined once here.
+  const customerFullName = `${customerInfo.firstName} ${customerInfo.lastName}`.trim();
+
   const buildOrderData = () => ({
     type: 'cart',
     items: cart.map(item => ({ id: item.id, name: item.name, price: item.price, quantity: item.quantity, ...(item.engravable ? { engraveName: (engraveNames[item.id] || '').trim() } : {}) })),
     shippingCost,
     shippingMode: fulfillment === 'pickup' ? 'pickup' : selectedMode,
-    customerName: customerInfo.name,
+    customerName: customerFullName,
     customerEmail: customerInfo.email,
     customerPhone: customerInfo.phone,
     referredBy: getCookie('tork3d_ref'),
@@ -189,8 +194,8 @@ const getCookie = (name) => {
   });
 
   const validateForm = () => {
-    if (!customerInfo.name || !customerInfo.email || !customerInfo.phone) {
-      toast.error('Please fill in your name, email and phone.'); return false;
+    if (!customerInfo.firstName || !customerInfo.lastName || !customerInfo.email || !customerInfo.phone) {
+      toast.error('Please fill in your first name, last name, email and phone.'); return false;
     }
     if (fulfillment === 'delivery' && (!customerInfo.address1 || !customerInfo.city || !customerInfo.state || !customerInfo.pincode)) {
       toast.error('Please fill in your delivery address.'); return false;
@@ -252,7 +257,7 @@ const getCookie = (name) => {
         name: 'Tork3D Fabrication',
         description: `Order of ${cart.length} items`,
         order_id: data.order.id,
-        prefill: { name: customerInfo.name, email: customerInfo.email, contact: customerInfo.phone },
+        prefill: { name: customerFullName, email: customerInfo.email, contact: customerInfo.phone },
         handler: async function (response) {
           try {
             const verifyRes = await fetch(`${API_BASE_URL}/api/verify-payment`, {
@@ -346,11 +351,19 @@ const getCookie = (name) => {
 
             <div className="space-y-4">
               {/* Contact */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Full Name *</label>
-                <input required type="text" placeholder="Your Name"
-                  className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white"
-                  value={customerInfo.name} onChange={e => setCustomerInfo({...customerInfo, name: e.target.value})} />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">First Name *</label>
+                  <input required type="text" placeholder="First Name"
+                    className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white"
+                    value={customerInfo.firstName} onChange={e => setCustomerInfo({...customerInfo, firstName: e.target.value})} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Last Name *</label>
+                  <input required type="text" placeholder="Last Name"
+                    className="w-full bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:border-accent-blue placeholder-slate-400 text-slate-900 dark:text-white"
+                    value={customerInfo.lastName} onChange={e => setCustomerInfo({...customerInfo, lastName: e.target.value})} />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">Email Address *</label>
@@ -619,7 +632,7 @@ const getCookie = (name) => {
         name: 'Tork3D Fabrication',
         description: 'COD Prepayment ₹99',
         order_id: prepayData.order.id,
-        prefill: { name: customerInfo.name, email: customerInfo.email, contact: customerInfo.phone },
+        prefill: { name: customerFullName, email: customerInfo.email, contact: customerInfo.phone },
         handler: async function (response) {
           try {
             const verifyRes = await fetch(`${API_BASE_URL}/api/verify-payment`, {
