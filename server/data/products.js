@@ -433,7 +433,7 @@ export const products = [
   {
     id: 14,
     name: 'Superhero Fidgets Pack',
-    price: 999,
+    price: 949,
     components: [5, 6, 13],               // Batman, Spiderman, Superman — used to compute the "save ₹X" cross-sell
     weight: 75,                          // dead weight in grams (3 fidgets)
     packageType: 'box',                    // 'box' | 'flyer'
