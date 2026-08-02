@@ -88,7 +88,8 @@ export const products = [
   {
     id: 4,
     name: 'Pokedex Magnetic Fidget',
-    price: 349,
+    price: 299,
+    compareAtPrice: 349, // discounted from original price
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
@@ -118,7 +119,8 @@ export const products = [
   {
     id: 5,
     name: 'Batman Magnetic Fidget',
-    price: 399,
+    price: 329,
+    compareAtPrice: 399, // discounted from original price
     comboId: 14,                          // cross-sell: part of the Superhero Fidgets Pack
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
@@ -181,7 +183,7 @@ export const products = [
     id: 6,
     name: 'Spiderman Magnetic Fidget',
     price: 349,
-    compareAtPrice: 399,                  // was ₹399 — shown as a strikethrough + discount badge
+    compareAtPrice: 399, // discounted from original price
     comboId: 14,                          // cross-sell: part of the Superhero Fidgets Pack
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
@@ -405,7 +407,8 @@ export const products = [
   {
     id: 13,
     name: 'Superman Magnetic Fidget',
-    price: 399,
+    price: 329,
+    compareAtPrice: 399, // discounted from original price
     comboId: 14,                          // cross-sell: part of the Superhero Fidgets Pack
     weight: 25,                         // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
