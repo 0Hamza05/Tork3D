@@ -13,7 +13,7 @@ export default function Gallery() {
   const [selectedImg, setSelectedImg] = useState(null);
 
   return (
-    <div className="pt-24 min-h-screen">
+    <div className="min-h-screen">
       <SEO
         title="Gallery"
         description="A showcase of custom 3D printed parts, prototypes, and finished prints made by Tork3D."

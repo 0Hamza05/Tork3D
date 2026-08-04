@@ -5,7 +5,7 @@ import { SEO } from '../components/SEO';
 
 export default function Policies() {
   return (
-    <div className="pt-24 min-h-screen">
+    <div className="min-h-screen">
       <SEO
         title="Store Policies"
         description="Terms & conditions and the return & refund policy for Tork3D orders."
@@ -57,7 +57,7 @@ export default function Policies() {
                 <li><strong>An unboxing video is mandatory</strong> for any return, refund, replacement, or missing item claim. The video must clearly show the sealed package being opened from the beginning without cuts or edits.</li>
                 <li>Claims raised without an unboxing video will not be accepted.</li>
                 <li>Any issue must be reported within 48 hours of delivery.</li>
-                <li>To request a return, refund, or replacement, contact us at <a href="mailto:tork3d.design@gmail.com" className="text-accent-blue hover:underline">tork3d.design@gmail.com</a> with:
+                <li>To request a return, refund, or replacement, contact us at <a href="mailto:sales@tork3d.in" className="text-accent-blue hover:underline">sales@tork3d.in</a> with:
                   <ul className="list-circle pl-5 mt-2 space-y-1">
                     <li>Order ID</li>
                     <li>Description of the issue</li>

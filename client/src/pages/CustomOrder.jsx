@@ -60,7 +60,7 @@ export default function CustomOrder() {
 
     } catch (error) {
       console.error(error);
-      toast.error('Could not submit your request. Please try again, or contact us directly at tork3d.design@gmail.com.');
+      toast.error('Could not submit your request. Please try again, or contact us directly at sales@tork3d.in.');
     } finally {
       setIsSubmitting(false);
     }
@@ -69,7 +69,7 @@ export default function CustomOrder() {
 
 
   return (
-    <div className="pt-24 min-h-screen">
+    <div className="min-h-screen">
       <SEO
         title="Custom 3D Print Order"
         description="Get an instant quote for your custom 3D printing project. Choose your material, color, and quantity — we'll print it and ship it to you."

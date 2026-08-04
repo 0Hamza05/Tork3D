@@ -304,7 +304,7 @@ const getCookie = (name) => {
 
   if (codSuccess) {
     return (
-      <div className="pt-32 min-h-screen">
+      <div className="min-h-screen">
         <SEO title="Order Placed" noindex path="/cart" />
         <SectionWrapper>
           <div className="flex flex-col items-center justify-center py-20 text-center space-y-6 max-w-md mx-auto">
@@ -321,7 +321,7 @@ const getCookie = (name) => {
 
   if (cart.length === 0) {
     return (
-      <div className="pt-32 min-h-screen text-center">
+      <div className="min-h-screen text-center">
         <SEO title="Your Cart" noindex path="/cart" />
         <SectionWrapper>
           <div className="flex flex-col items-center justify-center space-y-6 py-20">
@@ -338,7 +338,7 @@ const getCookie = (name) => {
   }
 
   return (
-    <div className="pt-24 min-h-screen">
+    <div className="min-h-screen">
       <SEO title="Your Cart" noindex path="/cart" />
 
       {/* Checkout Modal */}

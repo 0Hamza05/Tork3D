@@ -43,7 +43,7 @@ export default function Shop() {
   });
 
   return (
-    <div className="pt-24 min-h-screen">
+    <div className="min-h-screen">
       <SEO
         title="Shop"
         description="Browse Tork3D's catalog of high-quality 3D printed parts — fidgets, keychains, decor, and novelty items, ready to ship across India."

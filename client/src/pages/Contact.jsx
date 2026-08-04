@@ -51,7 +51,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="pt-24 min-h-screen">
+    <div className="min-h-screen">
       <SEO
         title="Contact Us"
         description="Get in touch with Tork3D for questions, bulk orders, or custom 3D printing project inquiries."
@@ -86,7 +86,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="text-xl font-bold mb-1 text-slate-900 dark:text-white">Email Us</h3>
-                  <p className="text-slate-600 dark:text-slate-300">tork3d.design@gmail.com</p>
+                  <p className="text-slate-600 dark:text-slate-300">sales@tork3d.in</p>
                   <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">We typically reply within a few hours</p>
                 </div>
               </div>

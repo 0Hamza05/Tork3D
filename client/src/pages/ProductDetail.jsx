@@ -129,7 +129,7 @@ export default function ProductDetail() {
     : product.description;
 
   return (
-    <div className="pt-24 min-h-screen">
+    <div className="min-h-screen">
       <SEO
         title={`${product.name} — ₹${product.price}`}
         description={metaDescription}
