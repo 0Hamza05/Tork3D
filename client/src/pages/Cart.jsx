@@ -83,7 +83,7 @@ const getCookie = (name) => {
       });
       const data = await res.json();
       if (data.success && data.valid) {
-        setCouponStatus({ valid: true, discount: data.discount, code: data.code, message: data.message });
+        setCouponStatus({ valid: true, discount: data.discount, code: data.code, freeKeychain: data.freeKeychain, message: data.message });
         toast.success(data.message);
       } else {
         setCouponStatus({ valid: false, message: data.message || 'Invalid coupon.' });
@@ -118,7 +118,7 @@ const getCookie = (name) => {
         const data = await res.json();
         if (cancelled) return;
         if (data.success && data.valid) {
-          setCouponStatus({ valid: true, discount: data.discount, code: data.code, message: data.message });
+          setCouponStatus({ valid: true, discount: data.discount, code: data.code, freeKeychain: data.freeKeychain, message: data.message });
         } else {
           setCouponStatus({ valid: false, message: data.message || 'Coupon no longer applies.' });
         }
@@ -184,7 +184,7 @@ const getCookie = (name) => {
     customerPhone: customerInfo.phone,
     referredBy: getCookie('tork3d_ref'),
     couponCode: couponStatus?.valid ? couponStatus.code : undefined,
-    keychainName: couponStatus?.valid ? keychainName.trim() : undefined,
+    keychainName: couponStatus?.valid && couponStatus?.freeKeychain ? keychainName.trim() : undefined,
     shippingAddress: fulfillment === 'pickup' ? null : {
       address1: customerInfo.address1,
       city: customerInfo.city,
@@ -203,7 +203,7 @@ const getCookie = (name) => {
     if (fulfillment === 'delivery' && !selectedMode) {
       toast.error('Please wait for shipping rates to load.'); return false;
     }
-    if (couponStatus?.valid && !keychainName.trim()) {
+    if (couponStatus?.valid && couponStatus?.freeKeychain && !keychainName.trim()) {
       toast.error('Please enter the name for your free keychain.'); return false;
     }
     const missingEngrave = cart.find(item => item.engravable && !(engraveNames[item.id] || '').trim());
@@ -733,7 +733,7 @@ const getCookie = (name) => {
             ))}
 
             {/* Free name keychain — bundled with a valid coupon */}
-            {couponStatus?.valid && freeKeychainProduct && (
+            {couponStatus?.valid && couponStatus?.freeKeychain && freeKeychainProduct && (
               <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                 className="glass-card p-6 flex flex-col sm:flex-row gap-6 border-2 border-accent-orange/40 relative">
                 <span className="absolute top-3 right-3 text-[10px] font-bold uppercase tracking-wider bg-accent-orange text-white px-2 py-1 rounded-full">Free Gift</span>
@@ -800,7 +800,7 @@ const getCookie = (name) => {
                   <div className="flex items-center justify-between gap-2 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
                     <div className="flex items-center gap-2 text-sm font-semibold text-green-600 dark:text-green-400">
                       <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-                      <span>{couponStatus.code} applied · 🎁 free keychain added</span>
+                      <span>{couponStatus.code} applied{couponStatus.freeKeychain ? ' · 🎁 free keychain added' : ''}</span>
                     </div>
                     <button onClick={removeCoupon} className="text-xs text-slate-500 dark:text-slate-400 hover:text-red-500 font-medium">
                       Remove
@@ -842,7 +842,7 @@ const getCookie = (name) => {
                     <span>−₹{couponDiscount}</span>
                   </div>
                 )}
-                {couponStatus?.valid && freeKeychainProduct && (
+                {couponStatus?.valid && couponStatus?.freeKeychain && freeKeychainProduct && (
                   <div className="flex justify-between text-slate-600 dark:text-slate-300">
                     <span>{freeKeychainProduct.name} (gift)</span>
                     <span className="text-green-600 dark:text-green-400 font-medium">FREE</span>

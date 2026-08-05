@@ -262,10 +262,39 @@ const computeCartSubtotal = (items) => (Array.isArray(items) ? items : []).reduc
 const COUPON_MIN_SUBTOTAL = 350;   // discount only applies on orders above this
 const COUPON_DISCOUNT_RATE = 0.10; // 10% off
 
-// Validates an early-access coupon against the DB. Returns { valid, discount, code, reason }.
+// ── General discount coupon ───────────────────────────────────────────────
+// A single, publicly-shared code — unlike early-access codes it is NOT
+// single-use and isn't tied to a Supabase row: everyone can use it, as many
+// times as they like, with no minimum order value and no free keychain.
+// Kept as its own independent rate constant (deliberately not reusing
+// COUPON_DISCOUNT_RATE below) so changing one coupon's rate can never
+// silently change the other's.
+// Active by default; set GENERAL_COUPON_ACTIVE=false in the environment to
+// switch it off (e.g. after the ~1 month promo window) with no code change
+// or redeploy needed.
+const GENERAL_COUPON_CODE = 'TORK3D10';
+const GENERAL_COUPON_DISCOUNT_RATE = 0.10; // 10% off
+const isGeneralCouponActive = () => process.env.GENERAL_COUPON_ACTIVE !== 'false';
+
+// Validates a coupon — either the general reusable code above, or an
+// early-access code (single-use, tied to a signup, also grants a free
+// keychain). Returns { valid, discount, code, freeKeychain, reason }.
 const resolveCoupon = async (code, subtotal) => {
   if (!code) return { valid: false, discount: 0 };
   const normalized = String(code).trim().toUpperCase();
+
+  if (normalized === GENERAL_COUPON_CODE) {
+    if (!isGeneralCouponActive()) {
+      return { valid: false, discount: 0, reason: 'This coupon is no longer active.' };
+    }
+    return {
+      valid: true,
+      discount: Math.round(subtotal * GENERAL_COUPON_DISCOUNT_RATE),
+      code: GENERAL_COUPON_CODE,
+      freeKeychain: false,
+    };
+  }
+
   const { data } = await supabase
     .from('tork3d_early_access')
     .select('id, coupon_code, used')
@@ -276,12 +305,13 @@ const resolveCoupon = async (code, subtotal) => {
   if (subtotal < COUPON_MIN_SUBTOTAL) {
     return { valid: false, discount: 0, reason: `Coupon valid only on orders above ₹${COUPON_MIN_SUBTOTAL}.` };
   }
-  return { valid: true, discount: Math.round(subtotal * COUPON_DISCOUNT_RATE), code: normalized };
+  return { valid: true, discount: Math.round(subtotal * COUPON_DISCOUNT_RATE), code: normalized, freeKeychain: true };
 };
 
 // Marks a coupon as used (idempotent — only flips an unused code). orderRef links it to the order.
+// No-ops for the general coupon, which has no Supabase row and is never "used up".
 const markCouponUsed = async (couponCode, orderRef) => {
-  if (!couponCode) return;
+  if (!couponCode || couponCode === GENERAL_COUPON_CODE) return;
   const { error } = await supabase
     .from('tork3d_early_access')
     .update({ used: true, used_order_id: orderRef != null ? String(orderRef) : null })
@@ -317,13 +347,14 @@ app.post('/api/create-order', orderLimiter, async (req, res) => {
   try {
     const { orderData } = req.body;
 
-    // Validate & apply the early-access coupon (prepaid cart orders only)
+    // Validate & apply a coupon (prepaid cart orders only)
     let discount = 0;
     let couponApplied = null;
+    let couponFreeKeychain = false;
     if (orderData.type === 'cart' && orderData.couponCode) {
       const subtotal = computeCartSubtotal(orderData.items);
       const coupon = await resolveCoupon(orderData.couponCode, subtotal);
-      if (coupon.valid) { discount = coupon.discount; couponApplied = coupon.code; }
+      if (coupon.valid) { discount = coupon.discount; couponApplied = coupon.code; couponFreeKeychain = !!coupon.freeKeychain; }
     }
 
     // Calculate actual price securely on backend
@@ -351,7 +382,7 @@ app.post('/api/create-order', orderLimiter, async (req, res) => {
         customer_email: orderData.customerEmail,
         total_amount: amountInPaise / 100, // convert back to INR
         order_type: orderData.type,
-        order_details: (orderData.type === 'cart' || orderData.type === 'cod-prepay') ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy, couponCode: couponApplied || undefined, couponDiscount: discount || undefined, freeKeychain: couponApplied ? true : undefined, keychainName: couponApplied ? orderData.keychainName : undefined } : (orderData.specs || {}),
+        order_details: (orderData.type === 'cart' || orderData.type === 'cod-prepay') ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy, couponCode: couponApplied || undefined, couponDiscount: discount || undefined, freeKeychain: couponFreeKeychain || undefined, keychainName: couponFreeKeychain ? orderData.keychainName : undefined } : (orderData.specs || {}),
         status: 'payment_pending'
       }]);
 
@@ -653,12 +684,13 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
     const rawShipping = Math.min(parseFloat(orderData.shippingCost) || 0, 500);
     const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : rawShipping;
 
-    // Validate & apply the early-access coupon
+    // Validate & apply a coupon
     let discount = 0;
     let couponApplied = null;
+    let couponFreeKeychain = false;
     if (orderData.couponCode) {
       const coupon = await resolveCoupon(orderData.couponCode, subtotal);
-      if (coupon.valid) { discount = coupon.discount; couponApplied = coupon.code; }
+      if (coupon.valid) { discount = coupon.discount; couponApplied = coupon.code; couponFreeKeychain = !!coupon.freeKeychain; }
     }
 
     const totalAmount = Math.max(0, subtotal - discount) + shippingCost;
@@ -682,8 +714,8 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
               referredBy: orderData.referredBy,
               couponCode: couponApplied || undefined,
               couponDiscount: discount || undefined,
-              freeKeychain: couponApplied ? true : undefined,
-              keychainName: couponApplied ? orderData.keychainName : undefined
+              freeKeychain: couponFreeKeychain || undefined,
+              keychainName: couponFreeKeychain ? orderData.keychainName : undefined
             },
             status: 'cod_pending'
           }
@@ -761,7 +793,7 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
               </div>
             </div>
 
-            ${couponApplied ? `<div style="background:#1a1a1a;border:1px solid #F97316;border-radius:8px;padding:14px;margin-bottom:16px;text-align:center;">
+            ${couponFreeKeychain ? `<div style="background:#1a1a1a;border:1px solid #F97316;border-radius:8px;padding:14px;margin-bottom:16px;text-align:center;">
               <span style="color:#F97316;font-size:14px;font-weight:700;">🎁 PACK A FREE NAME KEYCHAIN with this order</span>
               ${orderData.keychainName ? `<br/><span style="color:#fff;font-size:15px;">Engrave: <strong>${escHtml(orderData.keychainName)}</strong></span>` : ''}
             </div>` : ''}
@@ -790,8 +822,8 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
             codRemaining: totalAmount - 99,
             discount: discount || undefined,
             couponCode: couponApplied || undefined,
-            freeKeychain: couponApplied ? true : undefined,
-            keychainName: couponApplied ? orderData.keychainName : undefined
+            freeKeychain: couponFreeKeychain || undefined,
+            keychainName: couponFreeKeychain ? orderData.keychainName : undefined
           })
         });
         console.log('✅ Order confirmation email sent to customer.');
@@ -999,7 +1031,10 @@ app.post('/api/validate-coupon', shippingLimiter, async (req, res) => {
       valid: true,
       discount: coupon.discount,
       code: coupon.code,
-      message: `Coupon applied! ₹${coupon.discount} off + a free name keychain.`
+      freeKeychain: !!coupon.freeKeychain,
+      message: coupon.freeKeychain
+        ? `Coupon applied! ₹${coupon.discount} off + a free name keychain.`
+        : `Coupon applied! ₹${coupon.discount} off.`
     });
   } catch (error) {
     console.error('Coupon validation error:', error);
