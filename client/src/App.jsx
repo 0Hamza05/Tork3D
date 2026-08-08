@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 
@@ -24,6 +24,55 @@ import Cart from './pages/Cart';
 import { MAINTENANCE_MODE, LAUNCH_LOCK } from './config';
 // InteractiveBackground removed — replaced by CSS grid texture in hero
 
+// Code-split — this is internal tooling, never needed by a customer, so it
+// shouldn't add a single byte to the storefront's downloaded bundle.
+const AdminOrders = lazy(() => import('./pages/AdminOrders'));
+
+// The customer-facing site — everything that was previously the whole of
+// App(). Extracted so /admin can sit outside the LAUNCH_LOCK / MAINTENANCE_MODE
+// gates below: those flags hide the storefront, not the admin dashboard, and
+// you need to be able to check orders regardless of the site's public state.
+function Storefront() {
+  // Full-site lockout — show only the Coming Soon countdown + the coupon signup.
+  if (LAUNCH_LOCK) {
+    return (
+      <Routes>
+        <Route path="/early-access" element={<EarlyAccess />} />
+        <Route path="*" element={<ComingSoon />} />
+      </Routes>
+    );
+  }
+
+  return (
+    <CartProvider>
+      <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent-orange focus:text-white focus:rounded-lg focus:font-semibold focus:shadow-lg"
+        >
+          Skip to content
+        </a>
+        <Navbar />
+        <main id="main-content" className="flex-grow pt-16">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/shop" element={MAINTENANCE_MODE ? <Maintenance /> : <Shop />} />
+            <Route path="/product/:slug" element={MAINTENANCE_MODE ? <Maintenance /> : <ProductDetail />} />
+            <Route path="/cart" element={MAINTENANCE_MODE ? <Maintenance /> : <Cart />} />
+            <Route path="/custom" element={MAINTENANCE_MODE ? <Maintenance /> : <CustomOrder />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/policies" element={<Policies />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <WhatsAppWidget />
+        <Footer />
+      </div>
+    </CartProvider>
+  );
+}
+
 function App() {
   // Referral handling: parse ref param and store in cookie
   useEffect(() => {
@@ -36,63 +85,29 @@ function App() {
     }
   }, []);
 
-  // Full-site lockout — show only the Coming Soon countdown + the coupon signup.
-  if (LAUNCH_LOCK) {
-    return (
-      <ThemeProvider>
-        <Router>
-          <ScrollToTop />
-          <Toaster
-            position="bottom-right"
-            toastOptions={{ className: 'dark:bg-slate-800 dark:text-white', duration: 3000 }}
-          />
-          <Routes>
-            <Route path="/early-access" element={<EarlyAccess />} />
-            <Route path="*" element={<ComingSoon />} />
-          </Routes>
-        </Router>
-      </ThemeProvider>
-    );
-  }
-
   return (
     <ThemeProvider>
-      <CartProvider>
-        <Router>
-          <ScrollToTop />
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              className: 'dark:bg-slate-800 dark:text-white',
-              duration: 3000,
-            }}
+      <Router>
+        <ScrollToTop />
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            className: 'dark:bg-slate-800 dark:text-white',
+            duration: 3000,
+          }}
+        />
+        <Routes>
+          <Route
+            path="/admin/*"
+            element={
+              <Suspense fallback={null}>
+                <AdminOrders />
+              </Suspense>
+            }
           />
-          <div className="flex flex-col min-h-screen bg-slate-50 dark:bg-slate-900 transition-colors duration-200">
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent-orange focus:text-white focus:rounded-lg focus:font-semibold focus:shadow-lg"
-          >
-            Skip to content
-          </a>
-          <Navbar />
-          <main id="main-content" className="flex-grow pt-16">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/shop" element={MAINTENANCE_MODE ? <Maintenance /> : <Shop />} />
-              <Route path="/product/:slug" element={MAINTENANCE_MODE ? <Maintenance /> : <ProductDetail />} />
-              <Route path="/cart" element={MAINTENANCE_MODE ? <Maintenance /> : <Cart />} />
-              <Route path="/custom" element={MAINTENANCE_MODE ? <Maintenance /> : <CustomOrder />} />
-              <Route path="/gallery" element={<Gallery />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/policies" element={<Policies />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <WhatsAppWidget />
-          <Footer />
-        </div>
+          <Route path="*" element={<Storefront />} />
+        </Routes>
       </Router>
-      </CartProvider>
     </ThemeProvider>
   );
 }

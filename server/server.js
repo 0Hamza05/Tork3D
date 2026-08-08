@@ -15,7 +15,7 @@ dotenv.config();
 const REQUIRED_VARS = [
   'RAZORPAY_KEY_ID', 'RAZORPAY_KEY_SECRET', 'RAZORPAY_WEBHOOK_SECRET',
   'SUPABASE_URL', 'SUPABASE_SERVICE_KEY',
-  'RESEND_API_KEY', 'DELHIVERY_TOKEN', 'CONTACT_EMAIL'
+  'RESEND_API_KEY', 'DELHIVERY_TOKEN', 'CONTACT_EMAIL', 'ADMIN_PASSWORD'
 ];
 REQUIRED_VARS.forEach(v => {
   if (!process.env[v] || process.env[v].startsWith('your_')) {
@@ -45,6 +45,53 @@ const generateCouponCode = () => {
 const orderLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { success: false, message: 'Too many requests. Please try again later.' } });
 const shippingLimiter = rateLimit({ windowMs: 1 * 60 * 1000, max: 20, message: { success: false, message: 'Too many requests. Please try again later.' } });
 const contactLimiter = rateLimit({ windowMs: 60 * 60 * 1000, max: 5, message: { success: false, message: 'Too many messages sent. Please try again later.' } });
+// Tight limit on admin login attempts specifically — this is the one endpoint
+// someone could try to brute-force a password against.
+const adminLoginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, message: { success: false, message: 'Too many login attempts. Please try again later.' } });
+
+// ── Admin dashboard auth ──────────────────────────────────────────────────────
+// A single shared password (ADMIN_PASSWORD env var) — proportionate for a
+// one-person operation. No user accounts, no session storage on the server:
+// a successful login gets a signed, expiring token (HMAC'd with the password
+// itself) that the client sends back on every /api/admin/* request. Nothing
+// stateful to lose on a server restart.
+const ADMIN_TOKEN_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
+const timingSafeStringEqual = (a, b) => {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+};
+
+const signAdminToken = () => {
+  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + ADMIN_TOKEN_TTL_MS })).toString('base64url');
+  const sig = crypto.createHmac('sha256', process.env.ADMIN_PASSWORD || '').update(payload).digest('hex');
+  return `${payload}.${sig}`;
+};
+
+const verifyAdminToken = (token) => {
+  if (!token || !process.env.ADMIN_PASSWORD) return false;
+  const [payload, sig] = String(token).split('.');
+  if (!payload || !sig) return false;
+  const expectedSig = crypto.createHmac('sha256', process.env.ADMIN_PASSWORD).update(payload).digest('hex');
+  if (!timingSafeStringEqual(sig, expectedSig)) return false;
+  try {
+    const { exp } = JSON.parse(Buffer.from(payload, 'base64url').toString());
+    return typeof exp === 'number' && exp > Date.now();
+  } catch {
+    return false;
+  }
+};
+
+const requireAdmin = (req, res, next) => {
+  const authHeader = req.headers.authorization || '';
+  const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+  if (!verifyAdminToken(token)) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+  next();
+};
 
 const app = express();
 
@@ -1110,6 +1157,48 @@ app.post('/api/create-quote', orderLimiter, async (req, res) => {
   } catch (error) {
     console.error('Quote submission error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// 8. Admin — orders dashboard ─────────────────────────────────────────────────
+app.post('/api/admin/login', adminLoginLimiter, (req, res) => {
+  if (!process.env.ADMIN_PASSWORD) {
+    return res.status(500).json({ success: false, message: 'Admin login is not configured.' });
+  }
+  const { password } = req.body;
+  if (!password || !timingSafeStringEqual(password, process.env.ADMIN_PASSWORD)) {
+    return res.status(401).json({ success: false, message: 'Incorrect password.' });
+  }
+  res.json({ success: true, token: signAdminToken() });
+});
+
+app.get('/api/admin/orders', requireAdmin, async (req, res) => {
+  try {
+    const { status, search, page = '1', limit = '25' } = req.query;
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const limitNum = Math.min(100, Math.max(1, parseInt(limit, 10) || 25));
+    const from = (pageNum - 1) * limitNum;
+    const to = from + limitNum - 1;
+
+    let query = supabase
+      .from('tork3d_orders')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (status) query = query.eq('status', status);
+    if (search) {
+      const term = `%${search}%`;
+      query = query.or(`customer_name.ilike.${term},customer_email.ilike.${term}`);
+    }
+
+    const { data, error, count } = await query;
+    if (error) throw error;
+
+    res.json({ success: true, orders: data, total: count, page: pageNum, limit: limitNum });
+  } catch (error) {
+    console.error('Admin orders fetch error:', error);
+    res.status(500).json({ success: false, message: 'Could not fetch orders.' });
   }
 });
 
