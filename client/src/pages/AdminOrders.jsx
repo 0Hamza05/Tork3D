@@ -327,16 +327,43 @@ function OrdersDashboard({ onLogout }) {
 }
 
 // ── Entry point ───────────────────────────────────────────────────────────
+// A token merely existing in localStorage proves nothing — it could be
+// stale, expired, or tampered with. The dashboard never renders until the
+// server has actually confirmed it's valid; until then this shows nothing
+// (not even the login-vs-dashboard decision is made client-side alone).
 export default function AdminOrders() {
-  const [loggedIn, setLoggedIn] = useState(() => !!localStorage.getItem(TOKEN_KEY));
+  const [authState, setAuthState] = useState('checking'); // 'checking' | 'authed' | 'unauthed'
+
+  useEffect(() => {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (!token) {
+      setAuthState('unauthed');
+      return;
+    }
+    fetch(`${API_BASE_URL}/api/admin/orders?limit=1`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => {
+        if (res.status === 401) {
+          localStorage.removeItem(TOKEN_KEY);
+          setAuthState('unauthed');
+        } else {
+          setAuthState('authed');
+        }
+      })
+      .catch(() => setAuthState('unauthed'));
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem(TOKEN_KEY);
-    setLoggedIn(false);
+    setAuthState('unauthed');
   };
 
-  if (!loggedIn) {
-    return <AdminLogin onLoggedIn={() => setLoggedIn(true)} />;
+  if (authState === 'checking') {
+    return <div className="min-h-screen bg-slate-950" />;
+  }
+  if (authState === 'unauthed') {
+    return <AdminLogin onLoggedIn={() => setAuthState('authed')} />;
   }
   return <OrdersDashboard onLogout={handleLogout} />;
 }
