@@ -7,7 +7,7 @@ const TOKEN_KEY = 'tork3d_admin_token';
 const PAGE_SIZE = 25;
 
 const STATUS_OPTIONS = [
-  { value: '', label: 'All statuses' },
+  { value: '', label: 'Completed orders (default)' },
   { value: 'paid', label: 'Paid' },
   { value: 'cod_pending', label: 'COD pending' },
   { value: 'payment_pending', label: 'Payment pending' },

@@ -1183,10 +1183,29 @@ app.get('/api/admin/orders', requireAdmin, async (req, res) => {
     let query = supabase
       .from('tork3d_orders')
       .select('*', { count: 'exact' })
+      // The COD flow creates a second, internal row per order — a
+      // "cod-prepay" charge for the ₹99 booking fee, separate from the real
+      // order (status 'cod_pending'). It's never a meaningful order to show
+      // on its own, so it's excluded regardless of any status filter below.
+      .neq('order_type', 'cod-prepay')
       .order('created_at', { ascending: false })
       .range(from, to);
 
-    if (status) query = query.eq('status', status);
+    if (status) {
+      // An explicit filter (e.g. "Payment pending" or "Quote request") is
+      // always honored — nothing is permanently hidden, just not shown by
+      // default (see below).
+      query = query.eq('status', status);
+    } else {
+      // Default view: only orders where payment actually completed.
+      // "payment_pending" rows are created the instant a customer opens
+      // Razorpay's checkout, before they've paid anything — if they close
+      // the tab or the payment fails, that row just sits there forever, so
+      // it's excluded here rather than checked via a raw payment_id column
+      // (which COD orders never have on their own row — only "paid" /
+      // "cod_pending" reliably mean the payment step actually happened).
+      query = query.in('status', ['paid', 'cod_pending']);
+    }
     if (search) {
       const term = `%${search}%`;
       query = query.or(`customer_name.ilike.${term},customer_email.ilike.${term}`);
