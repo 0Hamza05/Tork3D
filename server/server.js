@@ -1177,6 +1177,22 @@ app.post('/api/admin/login', adminLoginLimiter, (req, res) => {
   res.json({ success: true, token: signAdminToken() });
 });
 
+// Statuses that mean a payment actually completed — i.e. a "real" order,
+// as opposed to a quote request (lead_pending), an abandoned checkout
+// (payment_pending), or the internal cod-prepay booking-fee row (which
+// isn't filtered out by status at all — see excludeInternalRows below).
+const REAL_ORDER_STATUSES = ['paid', 'cod_pending'];
+
+// The COD flow creates a second, internal row per order — a "cod-prepay"
+// charge for the ₹99 booking fee, separate from the real order. It goes
+// through the same payment-verification path as a normal order, so it
+// ends up with status 'paid' too — it's never a meaningful order on its
+// own, so every query against tork3d_orders must exclude it via this one
+// shared helper. (Duplicating this filter inline is exactly how the
+// order-numbering query previously drifted out of sync with the list
+// query and double-counted every COD order.)
+const excludeInternalRows = (query) => query.neq('order_type', 'cod-prepay');
+
 app.get('/api/admin/orders', requireAdmin, async (req, res) => {
   try {
     const { status, search, page = '1', limit = '25' } = req.query;
@@ -1185,14 +1201,9 @@ app.get('/api/admin/orders', requireAdmin, async (req, res) => {
     const from = (pageNum - 1) * limitNum;
     const to = from + limitNum - 1;
 
-    let query = supabase
-      .from('tork3d_orders')
-      .select('*', { count: 'exact' })
-      // The COD flow creates a second, internal row per order — a
-      // "cod-prepay" charge for the ₹99 booking fee, separate from the real
-      // order (status 'cod_pending'). It's never a meaningful order to show
-      // on its own, so it's excluded regardless of any status filter below.
-      .neq('order_type', 'cod-prepay')
+    let query = excludeInternalRows(
+      supabase.from('tork3d_orders').select('*', { count: 'exact' })
+    )
       .order('created_at', { ascending: false })
       .range(from, to);
 
@@ -1209,7 +1220,7 @@ app.get('/api/admin/orders', requireAdmin, async (req, res) => {
       // it's excluded here rather than checked via a raw payment_id column
       // (which COD orders never have on their own row — only "paid" /
       // "cod_pending" reliably mean the payment step actually happened).
-      query = query.in('status', ['paid', 'cod_pending']);
+      query = query.in('status', REAL_ORDER_STATUSES);
     }
     if (search) {
       const term = `%${search}%`;
@@ -1226,10 +1237,10 @@ app.get('/api/admin/orders', requireAdmin, async (req, res) => {
     // number. Computed fresh from the full table each request (not stored
     // on the row) so it stays correct no matter which filter/page is being
     // viewed — a given order's number never changes.
-    const { data: numberingRows, error: numberingError } = await supabase
-      .from('tork3d_orders')
-      .select('id, created_at')
-      .in('status', ['paid', 'cod_pending'])
+    const { data: numberingRows, error: numberingError } = await excludeInternalRows(
+      supabase.from('tork3d_orders').select('id, created_at')
+    )
+      .in('status', REAL_ORDER_STATUSES)
       .order('created_at', { ascending: true });
 
     const orderNumberById = new Map();
