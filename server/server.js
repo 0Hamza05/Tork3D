@@ -1219,7 +1219,26 @@ app.get('/api/admin/orders', requireAdmin, async (req, res) => {
     const { data, error, count } = await query;
     if (error) throw error;
 
-    res.json({ success: true, orders: data, total: count, page: pageNum, limit: limitNum });
+    // Order numbers: a display-only sequence over *real* orders only (paid
+    // or cod_pending — never quote requests, abandoned payment_pending
+    // rows, or the internal cod-prepay row). Oldest real order is #1, each
+    // later one increments, so the most recent always has the highest
+    // number. Computed fresh from the full table each request (not stored
+    // on the row) so it stays correct no matter which filter/page is being
+    // viewed — a given order's number never changes.
+    const { data: numberingRows, error: numberingError } = await supabase
+      .from('tork3d_orders')
+      .select('id, created_at')
+      .in('status', ['paid', 'cod_pending'])
+      .order('created_at', { ascending: true });
+
+    const orderNumberById = new Map();
+    if (!numberingError && numberingRows) {
+      numberingRows.forEach((row, idx) => orderNumberById.set(row.id, idx + 1));
+    }
+    const orders = (data || []).map((o) => ({ ...o, order_number: orderNumberById.get(o.id) || null }));
+
+    res.json({ success: true, orders, total: count, page: pageNum, limit: limitNum });
   } catch (error) {
     console.error('Admin orders fetch error:', error);
     res.status(500).json({ success: false, message: 'Could not fetch orders.' });

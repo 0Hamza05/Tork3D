@@ -250,6 +250,7 @@ function OrdersDashboard({ onLogout }) {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-slate-800 text-left text-xs uppercase tracking-wide text-slate-500">
+                  <th className="px-6 py-3 font-medium">Order #</th>
                   <th className="px-6 py-3 font-medium">Date</th>
                   <th className="px-6 py-3 font-medium">Customer</th>
                   <th className="px-6 py-3 font-medium">Type</th>
@@ -260,17 +261,18 @@ function OrdersDashboard({ onLogout }) {
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                  <tr><td colSpan={7} className="px-6 py-12 text-center text-slate-500">
                     <Loader2 className="w-5 h-5 animate-spin inline-block" />
                   </td></tr>
                 ) : orders.length === 0 ? (
-                  <tr><td colSpan={6} className="px-6 py-12 text-center text-slate-500">No orders found.</td></tr>
+                  <tr><td colSpan={7} className="px-6 py-12 text-center text-slate-500">No orders found.</td></tr>
                 ) : orders.map(order => (
                   <React.Fragment key={order.id}>
                     <tr
                       onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
                       className="border-b border-slate-800 last:border-0 hover:bg-slate-800/40 cursor-pointer transition-colors"
                     >
+                      <td className="px-6 py-4 text-slate-500 font-mono">{order.order_number ? `#${order.order_number}` : '—'}</td>
                       <td className="px-6 py-4 text-slate-400 whitespace-nowrap">{formatDate(order.created_at)}</td>
                       <td className="px-6 py-4">
                         <div className="text-white font-medium">{order.customer_name}</div>
@@ -289,7 +291,7 @@ function OrdersDashboard({ onLogout }) {
                     </tr>
                     {expandedId === order.id && (
                       <tr>
-                        <td colSpan={6} className="p-0"><OrderDetail order={order} /></td>
+                        <td colSpan={7} className="p-0"><OrderDetail order={order} /></td>
                       </tr>
                     )}
                   </React.Fragment>
