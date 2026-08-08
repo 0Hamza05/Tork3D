@@ -118,7 +118,11 @@ function OrderDetail({ order }) {
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">Email</p>
+          <p className="text-slate-300 break-all">{order.customer_email || '—'}</p>
+        </div>
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">Phone</p>
           <p className="text-slate-300">{details.customerPhone || '—'}</p>

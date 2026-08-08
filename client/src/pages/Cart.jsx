@@ -213,13 +213,17 @@ const getCookie = (name) => {
     return true;
   };
 
-  const executeCodCheckout = async () => {
+  // prepayPaymentId is the Razorpay payment ID from the ₹99 booking-fee
+  // charge — passing it through here so the real COD order row carries proof
+  // of that payment, instead of only the internal cod-prepay row (which the
+  // admin dashboard doesn't show, since it's not a meaningful order on its own).
+  const executeCodCheckout = async (prepayPaymentId) => {
     setIsProcessing(true);
     try {
       const res = await fetch(`${API_BASE_URL}/api/create-cod-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderData: buildOrderData() })
+        body: JSON.stringify({ orderData: buildOrderData(), prepayPaymentId })
       });
       const data = await res.json();
       if (data.success) {
@@ -647,7 +651,7 @@ const getCookie = (name) => {
             });
             const verifyData = await verifyRes.json();
             if (!verifyData.success) { toast.error('Prepayment verification failed.'); return; }
-            await executeCodCheckout();
+            await executeCodCheckout(response.razorpay_payment_id);
           } catch { toast.error('Could not verify prepayment.'); }
         },
         theme: { color: '#F97316' }

@@ -723,7 +723,7 @@ app.get('/api/shipping-rate', shippingLimiter, async (req, res) => {
 // 5. COD Order Endpoint
 app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
   try {
-    const { orderData } = req.body;
+    const { orderData, prepayPaymentId } = req.body;
 
     // Calculate subtotal server-side
     const subtotal = computeCartSubtotal(orderData.items);
@@ -751,6 +751,11 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
             customer_email: orderData.customerEmail,
             total_amount: totalAmount,
             order_type: orderData.type,
+            // The real COD order row itself never goes through Razorpay — the
+            // ₹99 booking fee is a separate "cod-prepay" row. Recording that
+            // payment's ID here means the admin dashboard can show proof the
+            // booking fee was actually paid, right on the order that matters.
+            payment_id: prepayPaymentId || null,
             order_details: {
               items: orderData.items,
               shippingMode: orderData.shippingMode,
