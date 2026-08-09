@@ -429,7 +429,14 @@ app.post('/api/create-order', orderLimiter, async (req, res) => {
         customer_email: orderData.customerEmail,
         total_amount: amountInPaise / 100, // convert back to INR
         order_type: orderData.type,
-        order_details: (orderData.type === 'cart' || orderData.type === 'cod-prepay') ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy, couponCode: couponApplied || undefined, couponDiscount: discount || undefined, freeKeychain: couponFreeKeychain || undefined, keychainName: couponFreeKeychain ? orderData.keychainName : undefined } : (orderData.specs || {}),
+        // cod-prepay rows store the raw client-supplied coupon code (not the
+        // resolved/validated "couponApplied", which is only ever computed
+        // for type === 'cart' above) — this row doubles as the recovery
+        // source if the webhook ever has to reconstruct the real COD order
+        // itself (see the payment.captured handler below), and that
+        // reconstruction re-validates the coupon independently via
+        // resolveCoupon(), same as the normal /api/create-cod-order flow.
+        order_details: (orderData.type === 'cart' || orderData.type === 'cod-prepay') ? { items: orderData.items, shippingMode: orderData.shippingMode, shippingCost: orderData.shippingCost, shippingAddress: orderData.shippingAddress, customerPhone: orderData.customerPhone, referredBy: orderData.referredBy, couponCode: orderData.type === 'cod-prepay' ? (orderData.couponCode || undefined) : (couponApplied || undefined), couponDiscount: discount || undefined, freeKeychain: couponFreeKeychain || undefined, keychainName: couponFreeKeychain ? orderData.keychainName : undefined } : (orderData.specs || {}),
         status: 'payment_pending'
       }]);
 
@@ -591,6 +598,49 @@ app.post('/api/webhook', async (req, res) => {
           if (orderRecord.order_details?.couponCode) {
             await markCouponUsed(orderRecord.order_details.couponCode, orderRecord.id);
           }
+        } else if (orderRecord.order_type === 'cod-prepay') {
+          // The real COD order is normally created by the client the moment
+          // this same ₹99 payment succeeds (POST /api/create-cod-order) —
+          // but that only happens if the browser is still around to make
+          // the call. If it never arrives (tab closed, network dropped,
+          // etc.), the booking fee is still genuinely captured with no
+          // order and no email to show for it. Recover it here: if nothing
+          // already references this payment, build the real order from the
+          // details already stored on this cod-prepay row.
+          //
+          // This can theoretically race the client's own request (both
+          // checking "does it exist yet" at nearly the same moment) and
+          // create a rare duplicate — accepted on purpose, since an
+          // occasional duplicate is far easier to notice and merge than a
+          // paid order that silently never existed.
+          const { data: existingRealOrder } = await supabase
+            .from('tork3d_orders')
+            .select('id')
+            .eq('payment_id', razorpay_payment_id)
+            .neq('order_type', 'cod-prepay')
+            .limit(1);
+
+          if (!existingRealOrder || existingRealOrder.length === 0) {
+            const d = orderRecord.order_details || {};
+            try {
+              await createCodOrder({
+                type: 'cart',
+                items: d.items,
+                shippingMode: d.shippingMode,
+                shippingCost: d.shippingCost,
+                shippingAddress: d.shippingAddress,
+                customerName: orderRecord.customer_name,
+                customerEmail: orderRecord.customer_email,
+                customerPhone: d.customerPhone,
+                referredBy: d.referredBy,
+                couponCode: d.couponCode,
+                keychainName: d.keychainName,
+              }, razorpay_payment_id);
+              console.log(`✅ Recovered missing COD order for payment ${razorpay_payment_id} via webhook.`);
+            } catch (recoverErr) {
+              console.error('⚠️ Failed to recover missing COD order via webhook:', recoverErr);
+            }
+          }
         }
 
         // Waybills are now generated manually from the Supabase dashboard.
@@ -720,11 +770,14 @@ app.get('/api/shipping-rate', shippingLimiter, async (req, res) => {
 });
 
 
-// 5. COD Order Endpoint
-app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
-  try {
-    const { orderData, prepayPaymentId } = req.body;
-
+// Builds the real COD order row (items, address, status 'cod_pending') and
+// sends both notification emails. Shared by two callers: the normal
+// client-triggered path (POST /api/create-cod-order, right after the ₹99
+// booking fee succeeds) and the webhook's payment.captured fallback below,
+// which calls this itself if the client never made it here — e.g. the
+// browser was closed or lost network right after paying the booking fee.
+// Throws on failure; callers decide how to respond to that.
+const createCodOrder = async (orderData, prepayPaymentId) => {
     // Calculate subtotal server-side
     const subtotal = computeCartSubtotal(orderData.items);
     const FREE_SHIPPING_THRESHOLD = 699;
@@ -776,6 +829,23 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
 
 
     if (dbError) {
+      if (dbError.code === '23505') {
+        // Hit the tork3d_orders_unique_real_payment_id constraint — the
+        // client's own request and the webhook's recovery fallback raced
+        // each other for the same payment, and the other one won by a
+        // hair. The order genuinely exists; nothing was lost. Look it up
+        // and report success instead of surfacing a scary duplicate-key
+        // error to whichever caller lost the race.
+        console.warn('COD order insert raced a concurrent insert for the same payment — order already exists, reporting success.');
+        const { data: existing } = await supabase
+          .from('tork3d_orders')
+          .select('total_amount')
+          .eq('payment_id', prepayPaymentId)
+          .neq('order_type', 'cod-prepay')
+          .limit(1)
+          .maybeSingle();
+        return { totalAmount: existing ? existing.total_amount : totalAmount };
+      }
       console.error('COD order Supabase error:', dbError);
       throw dbError;
     }
@@ -884,6 +954,14 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
       console.error('⚠️ COD email failed:', emailErr);
     }
 
+    return { totalAmount };
+};
+
+// 5. COD Order Endpoint
+app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
+  try {
+    const { orderData, prepayPaymentId } = req.body;
+    const { totalAmount } = await createCodOrder(orderData, prepayPaymentId);
     res.json({ success: true, totalAmount });
   } catch (error) {
     console.error('COD order error:', error);
