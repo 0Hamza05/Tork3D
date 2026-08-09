@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Settings, Clock, Layers, ShieldCheck, PenTool, Cpu, Circle, Gift } from 'lucide-react';
+import { ArrowRight, Settings, Clock, Layers, ShieldCheck, PenTool, Cpu, Circle } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { ProductCard } from '../components/ui/ProductCard';
@@ -123,33 +123,6 @@ export default function Home() {
   return (
     <div className="flex flex-col w-full">
       <SEO path="/" />
-
-      {/* ── Coupon promo banner ──────────────────────────────────── */}
-      <Link
-        to="/shop"
-        aria-label="Coupons are live for 48 hours — 10% off plus a free name keychain. Shop now."
-        className="promo-banner group block"
-      >
-        <div className="relative z-10 promo-marquee py-2.5" aria-hidden="true">
-          {[...Array(2)].map((_, pass) => (
-            <div key={pass} className="flex items-center shrink-0">
-              {[...Array(4)].map((_, i) => (
-                <React.Fragment key={i}>
-                  <span className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-white whitespace-nowrap px-6">
-                    <Gift className="w-4 h-4 shrink-0" />
-                    <span className="font-bold">Coupons are live — 48 hours only!</span>
-                    <span className="opacity-90">10% off + a free name keychain</span>
-                    <span className="inline-flex items-center gap-1 font-bold group-hover:underline underline-offset-2">
-                      Shop now <ArrowRight className="w-3.5 h-3.5" />
-                    </span>
-                  </span>
-                  <span className="text-white/60 text-xs" aria-hidden="true">◆</span>
-                </React.Fragment>
-              ))}
-            </div>
-          ))}
-        </div>
-      </Link>
 
       {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center overflow-hidden bg-canvas dark:bg-canvas-dark">
