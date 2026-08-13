@@ -462,6 +462,57 @@ export const products = [
       'Material': 'PLA, Neodymium Magnets',
       'Preparation Time (before dispatch)': '2–4 Business Days',
     }
+  },
+  {
+    id: 15,
+    name: 'Coca-Cola Inspired Rakhi',
+    price: 151,
+    compareAtPrice: 200,                  // was ₹200 — shown as a strikethrough + discount badge
+    weight: 10,                          // dead weight in grams
+    packageType: 'flyer',                 // 'box' | 'flyer'
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm (same as fidgets)
+    category: 'Accessories',
+    material: 'PLA',
+    image: '/Product Photos/Coke Rakhis/Diet Coke Rakhi/Diet_coke_rakhi_1_result.webp',
+    description: 'A playful Raksha Bandhan rakhi inspired by classic Coca-Cola branding, available in the original Coca-Cola design or the Diet Coke design. A fun, nostalgic twist on a traditional rakhi — perfect for a sibling who loves fizzy drinks as much as festive tradition.',
+    highlights: [
+      'Inspired by classic Coca-Cola and Diet Coke branding',
+      'Choose between the Coca-Cola or Diet Coke design',
+      'Lightweight and comfortable for all-day wear',
+      'A fun, unique twist on a traditional Rakhi',
+    ],
+    images: [
+      '/Product Photos/Coke Rakhis/Diet Coke Rakhi/Diet_coke_rakhi_1_result.webp',
+      '/Product Photos/Coke Rakhis/Diet Coke Rakhi/Diet_coke_rakhi_2_result.webp',
+    ],
+    specs: {
+      'Dimensions': '35 x 10 x 3 mm',
+      'Weight': '10 g',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
+    },
+    // Style — each design has its own reference photos. Diet Coke listed
+    // first so it's also the default-selected style on the product page,
+    // matching the main listing image above.
+    styles: [
+      {
+        id: 'diet-coke',
+        name: 'Diet Coke',
+        image: '/Product Photos/Coke Rakhis/Diet Coke Rakhi/Diet_coke_rakhi_1_result.webp',
+        images: [
+          '/Product Photos/Coke Rakhis/Diet Coke Rakhi/Diet_coke_rakhi_1_result.webp',
+          '/Product Photos/Coke Rakhis/Diet Coke Rakhi/Diet_coke_rakhi_2_result.webp',
+        ],
+      },
+      {
+        id: 'coca-cola',
+        name: 'Coca-Cola',
+        image: '/Product Photos/Coke Rakhis/Coca-cola Rakhi/Coca_cola_rakhi_1_result.webp',
+        images: [
+          '/Product Photos/Coke Rakhis/Coca-cola Rakhi/Coca_cola_rakhi_1_result.webp',
+          '/Product Photos/Coke Rakhis/Coca-cola Rakhi/Coca_cola_rakhi_2_result.webp',
+        ],
+      },
+    ],
   }
 ];
 
