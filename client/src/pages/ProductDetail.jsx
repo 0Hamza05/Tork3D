@@ -247,10 +247,6 @@ export default function ProductDetail() {
               )}
             </div>
 
-            <p className="text-slate-600 dark:text-slate-300 text-lg mb-8 leading-relaxed">
-              {product.description}
-            </p>
-
             {hasStyles && (
               <div className="mb-6">
                 <div className="text-sm font-semibold text-slate-900 dark:text-white mb-3">
@@ -275,6 +271,10 @@ export default function ProductDetail() {
                 </div>
               </div>
             )}
+
+            <p className="text-slate-600 dark:text-slate-300 text-lg mb-8 leading-relaxed">
+              {product.description}
+            </p>
 
             {hasColors && (
               <div className="mb-8 space-y-6">
