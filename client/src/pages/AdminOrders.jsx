@@ -350,13 +350,63 @@ function OrdersDashboard({ onLogout }) {
   );
 }
 
+// Shown while the auth check is in flight — and, after it's clearly taking
+// longer than a normal request should, explains why (the backend runs on a
+// free tier that spins down when idle, so the first request after a while
+// has to wake it back up first) instead of just sitting there blank, which
+// looks indistinguishable from broken.
+function CheckingScreen({ slow }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
+      {slow && (
+        <div className="flex flex-col items-center gap-3 text-center">
+          <Loader2 className="w-6 h-6 animate-spin text-slate-400 dark:text-slate-500" />
+          <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xs">
+            Waking up the server — this can take up to a minute if it's been idle.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Shown when the auth check couldn't complete at all (not a 401 — a real
+// network failure or timeout). Deliberately doesn't force a logout here:
+// a slow/unreachable server says nothing about whether the saved token is
+// actually valid, so silently discarding it would be wrong.
+function UnreachableScreen({ onRetry }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
+      <div className="w-full max-w-sm text-center space-y-4">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          Could not reach the server. It may still be waking up — try again in a moment.
+        </p>
+        <button
+          onClick={onRetry}
+          className="px-4 py-2 rounded-lg bg-accent-orange text-white text-sm font-semibold hover:bg-accent-orange/90 transition-colors"
+        >
+          Retry
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Entry point ───────────────────────────────────────────────────────────
 // A token merely existing in localStorage proves nothing — it could be
 // stale, expired, or tampered with. The dashboard never renders until the
 // server has actually confirmed it's valid; until then this shows nothing
-// (not even the login-vs-dashboard decision is made client-side alone).
+// definitive (not even the login-vs-dashboard decision is made client-side
+// alone) — but "nothing definitive" still has to give the person some
+// feedback once it's taking a while, rather than leaving a blank screen
+// that's indistinguishable from the page just being broken.
+const AUTH_CHECK_TIMEOUT_MS = 90_000; // generous — Render free-tier cold starts can take a while
+const SLOW_HINT_DELAY_MS = 4_000;
+
 export default function AdminOrders() {
-  const [authState, setAuthState] = useState('checking'); // 'checking' | 'authed' | 'unauthed'
+  const [authState, setAuthState] = useState('checking'); // 'checking' | 'authed' | 'unauthed' | 'unreachable'
+  const [slow, setSlow] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_KEY);
@@ -364,8 +414,16 @@ export default function AdminOrders() {
       setAuthState('unauthed');
       return;
     }
+
+    setAuthState('checking');
+    setSlow(false);
+    const slowTimer = setTimeout(() => setSlow(true), SLOW_HINT_DELAY_MS);
+    const controller = new AbortController();
+    const hardTimeout = setTimeout(() => controller.abort(), AUTH_CHECK_TIMEOUT_MS);
+
     fetch(`${API_BASE_URL}/api/admin/orders?limit=1`, {
       headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal,
     })
       .then((res) => {
         if (res.status === 401) {
@@ -375,8 +433,18 @@ export default function AdminOrders() {
           setAuthState('authed');
         }
       })
-      .catch(() => setAuthState('unauthed'));
-  }, []);
+      .catch(() => setAuthState('unreachable'))
+      .finally(() => {
+        clearTimeout(slowTimer);
+        clearTimeout(hardTimeout);
+      });
+
+    return () => {
+      clearTimeout(slowTimer);
+      clearTimeout(hardTimeout);
+      controller.abort();
+    };
+  }, [retryCount]);
 
   const handleLogout = () => {
     localStorage.removeItem(TOKEN_KEY);
@@ -384,7 +452,10 @@ export default function AdminOrders() {
   };
 
   if (authState === 'checking') {
-    return <div className="min-h-screen bg-slate-50 dark:bg-slate-950" />;
+    return <CheckingScreen slow={slow} />;
+  }
+  if (authState === 'unreachable') {
+    return <UnreachableScreen onRetry={() => setRetryCount(c => c + 1)} />;
   }
   if (authState === 'unauthed') {
     return <AdminLogin onLoggedIn={() => setAuthState('authed')} />;
