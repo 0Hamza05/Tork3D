@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Loader2, LogOut, Search, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Lock } from 'lucide-react';
+import { Loader2, LogOut, Search, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Lock, Sun, Moon } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import { SEO } from '../components/SEO';
+import { useTheme } from '../context/ThemeContext';
 
 const TOKEN_KEY = 'tork3d_admin_token';
 const PAGE_SIZE = 25;
@@ -24,6 +25,21 @@ const STATUS_STYLES = {
 const formatDate = (iso) => new Date(iso).toLocaleString('en-IN', {
   day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
 });
+
+// Small icon button — reused on both the login screen and the dashboard
+// header, since either one might be the first thing rendered.
+function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme();
+  return (
+    <button
+      onClick={toggleTheme}
+      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+    >
+      {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+    </button>
+  );
+}
 
 // ── Login gate ────────────────────────────────────────────────────────────
 function AdminLogin({ onLoggedIn }) {
@@ -56,15 +72,18 @@ function AdminLogin({ onLoggedIn }) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4 relative">
       <SEO title="Admin" noindex />
-      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-5">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 space-y-5">
         <div className="flex flex-col items-center text-center gap-3 mb-2">
           <div className="w-12 h-12 rounded-xl bg-accent-orange/10 flex items-center justify-center">
             <Lock className="w-6 h-6 text-accent-orange" />
           </div>
-          <h1 className="text-xl font-bold text-white">Tork3D Admin</h1>
-          <p className="text-sm text-slate-400">Sign in to view orders.</p>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-white">Tork3D Admin</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Sign in to view orders.</p>
         </div>
         <input
           type="password"
@@ -72,9 +91,9 @@ function AdminLogin({ onLoggedIn }) {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-accent-orange"
+          className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-3 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-accent-orange"
         />
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
         <button
           type="submit"
           disabled={loading || !password}
@@ -94,13 +113,13 @@ function OrderDetail({ order }) {
   const addr = details.shippingAddress;
 
   return (
-    <div className="bg-slate-950/60 border-t border-slate-800 px-6 py-5 space-y-4 text-sm">
+    <div className="bg-slate-100/60 dark:bg-slate-950/60 border-t border-slate-200 dark:border-slate-800 px-6 py-5 space-y-4 text-sm">
       {items ? (
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">Items</p>
           <ul className="space-y-1">
             {items.map((item, i) => (
-              <li key={i} className="flex justify-between text-slate-300">
+              <li key={i} className="flex justify-between text-slate-700 dark:text-slate-300">
                 <span>{item.quantity}x {item.name}{item.engraveName ? ` — Engrave: ${item.engraveName}` : ''}</span>
                 <span className="text-slate-500">₹{item.price}</span>
               </li>
@@ -110,7 +129,7 @@ function OrderDetail({ order }) {
       ) : (
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500 mb-2">Details</p>
-          <ul className="space-y-1 text-slate-300">
+          <ul className="space-y-1 text-slate-700 dark:text-slate-300">
             {Object.entries(details).filter(([k]) => !['shippingAddress'].includes(k)).map(([k, v]) => (
               <li key={k}><span className="text-slate-500">{k}:</span> {String(v)}</li>
             ))}
@@ -121,22 +140,22 @@ function OrderDetail({ order }) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">Email</p>
-          <p className="text-slate-300 break-all">{order.customer_email || '—'}</p>
+          <p className="text-slate-700 dark:text-slate-300 break-all">{order.customer_email || '—'}</p>
         </div>
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">Phone</p>
-          <p className="text-slate-300">{details.customerPhone || '—'}</p>
+          <p className="text-slate-700 dark:text-slate-300">{details.customerPhone || '—'}</p>
         </div>
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">Payment ID</p>
-          <p className="text-slate-300 break-all">{order.payment_id || '—'}</p>
+          <p className="text-slate-700 dark:text-slate-300 break-all">{order.payment_id || '—'}</p>
         </div>
       </div>
 
       {addr && (
         <div>
           <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">Shipping Address</p>
-          <p className="text-slate-300">{addr.address1}{addr.address2 ? `, ${addr.address2}` : ''}, {addr.city} - {addr.pincode}, {addr.state}</p>
+          <p className="text-slate-700 dark:text-slate-300">{addr.address1}{addr.address2 ? `, ${addr.address2}` : ''}, {addr.city} - {addr.pincode}, {addr.state}</p>
         </div>
       )}
 
@@ -145,13 +164,13 @@ function OrderDetail({ order }) {
           {details.couponCode && (
             <div>
               <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">Coupon</p>
-              <p className="text-slate-300">{details.couponCode} (−₹{details.couponDiscount || 0}){details.freeKeychain ? ' · 🎁 free keychain' : ''}</p>
+              <p className="text-slate-700 dark:text-slate-300">{details.couponCode} (−₹{details.couponDiscount || 0}){details.freeKeychain ? ' · 🎁 free keychain' : ''}</p>
             </div>
           )}
           {details.referredBy && (
             <div>
               <p className="text-xs uppercase tracking-wide text-slate-500 mb-1">Referral</p>
-              <p className="text-slate-300">{details.referredBy}</p>
+              <p className="text-slate-700 dark:text-slate-300">{details.referredBy}</p>
             </div>
           )}
         </div>
@@ -211,14 +230,17 @@ function OrdersDashboard({ onLogout }) {
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white">
       <SEO title="Admin" noindex />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Orders</h1>
-          <button onClick={onLogout} className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors">
-            <LogOut className="w-4 h-4" /> Log out
-          </button>
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
+            <button onClick={onLogout} className="flex items-center gap-2 px-2 py-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+              <LogOut className="w-4 h-4" /> Log out
+            </button>
+          </div>
         </div>
 
         {/* Filters */}
@@ -230,26 +252,26 @@ function OrdersDashboard({ onLogout }) {
               placeholder="Search name or email…"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-accent-orange"
+              className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-accent-orange"
             />
           </form>
           <select
             value={status}
             onChange={(e) => { setPage(1); setStatus(e.target.value); }}
-            className="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-accent-orange"
+            className="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg px-4 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-accent-orange"
           >
             {STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
           </select>
         </div>
 
-        {error && <p className="text-sm text-red-400 mb-4">{error}</p>}
+        {error && <p className="text-sm text-red-600 dark:text-red-400 mb-4">{error}</p>}
 
         {/* Table */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-slate-800 text-left text-xs uppercase tracking-wide text-slate-500">
+                <tr className="border-b border-slate-200 dark:border-slate-800 text-left text-xs uppercase tracking-wide text-slate-500">
                   <th className="px-6 py-3 font-medium">Order #</th>
                   <th className="px-6 py-3 font-medium">Date</th>
                   <th className="px-6 py-3 font-medium">Customer</th>
@@ -270,18 +292,18 @@ function OrdersDashboard({ onLogout }) {
                   <React.Fragment key={order.id}>
                     <tr
                       onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
-                      className="border-b border-slate-800 last:border-0 hover:bg-slate-800/40 cursor-pointer transition-colors"
+                      className="border-b border-slate-200 dark:border-slate-800 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer transition-colors"
                     >
                       <td className="px-6 py-4 text-slate-500 font-mono">{order.order_number ? `#${order.order_number}` : '—'}</td>
-                      <td className="px-6 py-4 text-slate-400 whitespace-nowrap">{formatDate(order.created_at)}</td>
+                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400 whitespace-nowrap">{formatDate(order.created_at)}</td>
                       <td className="px-6 py-4">
-                        <div className="text-white font-medium">{order.customer_name}</div>
+                        <div className="text-slate-900 dark:text-white font-medium">{order.customer_name}</div>
                         <div className="text-slate-500 text-xs">{order.customer_email}</div>
                       </td>
-                      <td className="px-6 py-4 text-slate-400">{order.order_type}</td>
-                      <td className="px-6 py-4 text-right text-white font-medium">₹{order.total_amount}</td>
+                      <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{order.order_type}</td>
+                      <td className="px-6 py-4 text-right text-slate-900 dark:text-white font-medium">₹{order.total_amount}</td>
                       <td className="px-6 py-4">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_STYLES[order.status] || 'bg-slate-500/10 text-slate-400'}`}>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_STYLES[order.status] || 'bg-slate-500/10 text-slate-500 dark:text-slate-400'}`}>
                           {order.status}
                         </span>
                       </td>
@@ -303,20 +325,20 @@ function OrdersDashboard({ onLogout }) {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-4 text-sm text-slate-400">
+          <div className="flex items-center justify-between mt-4 text-sm text-slate-500 dark:text-slate-400">
             <span>Page {page} of {totalPages} · {total} orders</span>
             <div className="flex gap-2">
               <button
                 onClick={() => setPage(p => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="p-2 rounded-lg border border-slate-800 hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none"
+                className="p-2 rounded-lg border border-slate-300 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="p-2 rounded-lg border border-slate-800 hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none"
+                className="p-2 rounded-lg border border-slate-300 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none"
               >
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -362,7 +384,7 @@ export default function AdminOrders() {
   };
 
   if (authState === 'checking') {
-    return <div className="min-h-screen bg-slate-950" />;
+    return <div className="min-h-screen bg-slate-50 dark:bg-slate-950" />;
   }
   if (authState === 'unauthed') {
     return <AdminLogin onLoggedIn={() => setAuthState('authed')} />;
