@@ -11,6 +11,14 @@ import { products, lineTotal } from '../data/products';
 import { loadRazorpayScript } from '../lib/loadRazorpay';
 import toast from 'react-hot-toast';
 
+// Engraved names go straight into an OpenSCAD text() call downstream — only
+// plain keyboard characters render reliably there, and a single word keeps
+// it a fixed, predictable length on the physical keychain. Rather than
+// silently stripping bad characters as the customer types, this flags the
+// field as invalid so they see exactly what's wrong and retype it themselves.
+const ENGRAVE_NAME_REGEX = /^[A-Za-z0-9]+$/;
+const isValidEngraveName = (value) => ENGRAVE_NAME_REGEX.test(value);
+
 export default function Cart() {
   const { cart, removeFromCart, updateQuantity, subtotal, clearCart } = useCart();
   const navigate = useNavigate();
@@ -206,9 +214,16 @@ const getCookie = (name) => {
     if (couponStatus?.valid && couponStatus?.freeKeychain && !keychainName.trim()) {
       toast.error('Please enter the name for your free keychain.'); return false;
     }
+    if (couponStatus?.valid && couponStatus?.freeKeychain && !isValidEngraveName(keychainName)) {
+      toast.error('The name for your free keychain has to be one word, letters and numbers only — please fix it.'); return false;
+    }
     const missingEngrave = cart.find(item => item.engravable && !(engraveNames[item.id] || '').trim());
     if (missingEngrave) {
       toast.error(`Please enter the name to engrave for "${missingEngrave.name}".`); return false;
+    }
+    const invalidEngrave = cart.find(item => item.engravable && !isValidEngraveName(engraveNames[item.id] || ''));
+    if (invalidEngrave) {
+      toast.error(`The name to engrave for "${invalidEngrave.name}" has to be one word, letters and numbers only — please fix it.`); return false;
     }
     return true;
   };
@@ -714,8 +729,18 @@ const getCookie = (name) => {
                           onChange={e => setEngraveNames(prev => ({ ...prev, [item.id]: e.target.value }))}
                           maxLength={20}
                           placeholder="e.g. Arya"
-                          className="w-full max-w-xs bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white"
+                          aria-invalid={!!engraveNames[item.id] && !isValidEngraveName(engraveNames[item.id])}
+                          className={`w-full max-w-xs bg-secondary dark:bg-slate-800 border rounded-lg px-3 py-2 text-sm focus:outline-none text-slate-900 dark:text-white ${
+                            engraveNames[item.id] && !isValidEngraveName(engraveNames[item.id])
+                              ? 'border-red-500 focus:border-red-500'
+                              : 'border-slate-300 dark:border-slate-700 focus:border-accent-blue'
+                          }`}
                         />
+                        {engraveNames[item.id] && !isValidEngraveName(engraveNames[item.id]) ? (
+                          <p className="mt-1 text-xs text-red-600 dark:text-red-400">One word, letters and numbers only — no spaces or special characters. Please retype.</p>
+                        ) : (
+                          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">One word, letters and numbers only — no spaces or special characters.</p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -756,9 +781,18 @@ const getCookie = (name) => {
                         onChange={e => setKeychainName(e.target.value)}
                         maxLength={20}
                         placeholder="e.g. Arya"
-                        className="w-full max-w-xs bg-secondary dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-accent-blue text-slate-900 dark:text-white"
+                        aria-invalid={!!keychainName && !isValidEngraveName(keychainName)}
+                        className={`w-full max-w-xs bg-secondary dark:bg-slate-800 border rounded-lg px-3 py-2.5 text-sm focus:outline-none text-slate-900 dark:text-white ${
+                          keychainName && !isValidEngraveName(keychainName)
+                            ? 'border-red-500 focus:border-red-500'
+                            : 'border-slate-300 dark:border-slate-700 focus:border-accent-blue'
+                        }`}
                       />
-                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">This name will be engraved on your free keychain.</p>
+                      {keychainName && !isValidEngraveName(keychainName) ? (
+                        <p className="mt-1 text-xs text-red-600 dark:text-red-400">One word, letters and numbers only — no spaces or special characters. Please retype.</p>
+                      ) : (
+                        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">One word, letters and numbers only — no spaces or special characters.</p>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center justify-end gap-2 mt-4">

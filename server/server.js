@@ -31,6 +31,18 @@ const escHtml = (str) => String(str ?? '')
   .replace(/"/g, '&quot;')
   .replace(/'/g, '&#039;');
 
+// Engraved names (Name Keychain, free coupon keychain) end up in an OpenSCAD
+// text() call downstream — only plain keyboard characters render reliably
+// there, and a single word keeps it a fixed, predictable engraving length.
+// The client already blocks invalid input with an inline error asking the
+// customer to retype it, but that's UI only — this is the actual
+// zero-trust enforcement, same reasoning as never trusting a client-sent
+// price. Rejects the request outright rather than silently rewriting it,
+// so a bypassed frontend gets the same "fix it and try again" outcome a
+// real customer would have seen.
+const ENGRAVE_NAME_REGEX = /^[A-Za-z0-9]{1,20}$/;
+const isValidEngraveName = (name) => ENGRAVE_NAME_REGEX.test(String(name ?? ''));
+
 // ── Coupon code generator ────────────────────────────────────────────────────
 // Excludes ambiguous chars (0/O/1/I) so codes are easy to read & type.
 const COUPON_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -393,6 +405,18 @@ const calculatePrice = (orderData, discount = 0) => {
 app.post('/api/create-order', orderLimiter, async (req, res) => {
   try {
     const { orderData } = req.body;
+
+    // Never trust client-validated engraving text — same reasoning as never
+    // trusting a client-sent price.
+    const badEngraveItem = Array.isArray(orderData.items)
+      ? orderData.items.find((item) => item.engraveName !== undefined && !isValidEngraveName(item.engraveName))
+      : null;
+    if (badEngraveItem) {
+      return res.status(400).json({ success: false, message: `Invalid name to engrave for "${badEngraveItem.name}" — use one word, letters and numbers only.` });
+    }
+    if (orderData.keychainName && !isValidEngraveName(orderData.keychainName)) {
+      return res.status(400).json({ success: false, message: 'Invalid name for the free keychain — use one word, letters and numbers only.' });
+    }
 
     // Validate & apply a coupon (prepaid cart orders only)
     let discount = 0;
@@ -778,6 +802,21 @@ app.get('/api/shipping-rate', shippingLimiter, async (req, res) => {
 // browser was closed or lost network right after paying the booking fee.
 // Throws on failure; callers decide how to respond to that.
 const createCodOrder = async (orderData, prepayPaymentId) => {
+    // Never trust client-validated engraving text — same reasoning as never
+    // trusting a client-sent price. (When this is called from the webhook
+    // recovery path there's no client waiting on a response, so this just
+    // fails the recovery attempt — which is already the outcome for any
+    // error there — rather than silently rewriting the customer's name.)
+    const badEngraveItem = Array.isArray(orderData.items)
+      ? orderData.items.find((item) => item.engraveName !== undefined && !isValidEngraveName(item.engraveName))
+      : null;
+    if (badEngraveItem) {
+      throw Object.assign(new Error(`Invalid name to engrave for "${badEngraveItem.name}" — use one word, letters and numbers only.`), { isValidationError: true });
+    }
+    if (orderData.keychainName && !isValidEngraveName(orderData.keychainName)) {
+      throw Object.assign(new Error('Invalid name for the free keychain — use one word, letters and numbers only.'), { isValidationError: true });
+    }
+
     // Calculate subtotal server-side
     const subtotal = computeCartSubtotal(orderData.items);
     const FREE_SHIPPING_THRESHOLD = 699;
@@ -964,6 +1003,9 @@ app.post('/api/create-cod-order', orderLimiter, async (req, res) => {
     const { totalAmount } = await createCodOrder(orderData, prepayPaymentId);
     res.json({ success: true, totalAmount });
   } catch (error) {
+    if (error.isValidationError) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
     console.error('COD order error:', error);
     res.status(500).json({ success: false, message: 'Failed to place COD order.' });
   }
