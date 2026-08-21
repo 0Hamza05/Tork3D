@@ -471,6 +471,7 @@ export const products = [
     name: 'Coca-Cola Inspired Rakhi',
     price: 151,
     compareAtPrice: 200,                  // was ₹200 — shown as a strikethrough + discount badge
+    inStock: false,                       // absent/true = in stock; set false to mark sold out everywhere
     weight: 10,                          // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm (same as fidgets)
@@ -518,6 +519,17 @@ export const products = [
     ],
   }
 ];
+
+/**
+ * Resolves a cart item's id (which may carry a style/color suffix, e.g.
+ * "9-red") back to its live catalog entry — the current source of truth,
+ * since a cart line is just a snapshot taken at add-to-cart time and can
+ * go stale (a price or stock change afterward won't be reflected on it).
+ */
+export const resolveProduct = (itemId) => {
+  const baseId = typeof itemId === 'string' ? parseInt(itemId.split('-')[0], 10) : itemId;
+  return products.find(p => p.id === baseId);
+};
 
 /**
  * Calculate chargeable weight for a product (grams).

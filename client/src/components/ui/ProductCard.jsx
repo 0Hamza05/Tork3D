@@ -13,6 +13,7 @@ export function ProductCard({ product }) {
   const cartItem = cart.find(item => item.id === product.id);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const needsConfig = !!(product.styles?.length || product.colorOptions?.length);
+  const outOfStock = product.inStock === false;
   // Discount % is computed from the real prices, not hardcoded, so it can't
   // drift out of sync if either price changes later.
   const discountPercent = product.compareAtPrice
@@ -22,6 +23,7 @@ export function ProductCard({ product }) {
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    if (outOfStock) return;
     if (needsConfig) {
       // This product has style/color options — send to product page to configure
       navigate(productUrl(product));
@@ -43,7 +45,11 @@ export function ProductCard({ product }) {
               {discountPercent}% OFF
             </span>
           )}
-          {cartItem && (
+          {outOfStock ? (
+            <span className="absolute top-3 right-3 z-10 bg-slate-700 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
+              Out of Stock
+            </span>
+          ) : cartItem && (
             <span className="absolute top-3 right-3 z-10 bg-green-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg flex items-center gap-1 backdrop-blur-sm bg-green-600/95">
               <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               {cartItem.quantity} In Cart
@@ -57,10 +63,10 @@ export function ProductCard({ product }) {
             alt={product.name}
             loading="lazy"
             onLoad={() => setIsLoaded(true)}
-            className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${isLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-md'}`}
+            className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${isLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-md'} ${outOfStock ? 'grayscale opacity-60' : ''}`}
           />
           <div className="absolute inset-0 bg-slate-900/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-2">
-            {cartItem ? (
+            {outOfStock ? null : cartItem ? (
               <>
                 <Button 
                   variant="primary" 

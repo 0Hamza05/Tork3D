@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { Check, Truck, Shield, MessageCircle, ArrowLeft, ChevronLeft, ChevronRight, Gift } from 'lucide-react';
+import { Check, Truck, Shield, MessageCircle, ArrowLeft, ChevronLeft, ChevronRight, Gift, X } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { ProductCard } from '../components/ui/ProductCard';
@@ -20,6 +20,7 @@ export default function ProductDetail() {
   const product = products.find(p => p.id === parseInt(slug, 10));
   const hasStyles = !!product?.styles?.length;
   const hasColors = !!product?.colorOptions?.length;
+  const outOfStock = product?.inStock === false;
   // Colors are configured via named "slots": a product can expose one picker
   // (the default) or several (e.g. the Pagoda's stand + net). Falls back to a
   // single "Color" slot when the product doesn't define its own.
@@ -315,9 +316,15 @@ export default function ProductDetail() {
             )}
 
             <div className="space-y-4 mb-8">
-              <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
-                <Check className="w-5 h-5 text-green-600" /> In stock (Made to order)
-              </div>
+              {outOfStock ? (
+                <div className="flex items-center gap-3 text-sm font-semibold text-red-600 dark:text-red-400">
+                  <X className="w-5 h-5" /> Out of Stock
+                </div>
+              ) : (
+                <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
+                  <Check className="w-5 h-5 text-green-600" /> In stock (Made to order)
+                </div>
+              )}
               <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
                 <Truck className="w-5 h-5 text-slate-500 dark:text-slate-400" /> Ships via Delhivery across India
               </div>
@@ -345,12 +352,28 @@ export default function ProductDetail() {
               </Link>
             )}
 
-            {cartItem ? (
+            {outOfStock ? (
+              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+                <Button size="lg" className="flex-1" disabled>Out of Stock</Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  asChild
+                  className="flex-1 sm:flex-none flex items-center justify-center gap-2"
+                  href="https://wa.me/+917073085538"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <MessageCircle className="w-5 h-5 text-whatsapp" />
+                  Ask on WhatsApp
+                </Button>
+              </div>
+            ) : cartItem ? (
               <div className="space-y-4 mb-12">
                 <div className="flex items-center gap-4 bg-secondary dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-5 py-3 w-fit">
                   <span className="text-slate-600 dark:text-slate-300 text-sm font-semibold">Quantity in Cart:</span>
                   <div className="flex items-center gap-3">
-                    <button 
+                    <button
                       onClick={() => {
                         if (cartItem.quantity > 1) {
                           updateQuantity(displayProduct.id, cartItem.quantity - 1);
@@ -381,18 +404,18 @@ export default function ProductDetail() {
                     Remove
                   </button>
                 </div>
-                
+
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button size="lg" className="flex-1" onClick={() => navigate('/cart')}>
                     Go to Cart
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="lg" 
-                    asChild 
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    asChild
                     className="flex-1 sm:flex-none flex items-center justify-center gap-2"
-                    href="https://wa.me/+917073085538" 
-                    target="_blank" 
+                    href="https://wa.me/+917073085538"
+                    target="_blank"
                     rel="noreferrer"
                   >
                     <MessageCircle className="w-5 h-5 text-whatsapp" />
@@ -404,13 +427,13 @@ export default function ProductDetail() {
               <div className="flex flex-col sm:flex-row gap-4 mb-12">
                 <Button size="lg" className="flex-1" onClick={handleBuyNow}>Buy Now</Button>
                 <Button size="lg" variant="secondary" className="flex-1" onClick={handleAddToCart}>Add to Cart</Button>
-                <Button 
-                  variant="outline" 
-                  size="lg" 
+                <Button
+                  variant="outline"
+                  size="lg"
                   asChild
                   className="flex-1 sm:flex-none flex items-center justify-center gap-2"
-                  href="https://wa.me/+917073085538" 
-                  target="_blank" 
+                  href="https://wa.me/+917073085538"
+                  target="_blank"
                   rel="noreferrer"
                 >
                   <MessageCircle className="w-5 h-5 text-whatsapp" />

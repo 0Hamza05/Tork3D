@@ -418,6 +418,15 @@ app.post('/api/create-order', orderLimiter, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid name for the free keychain — use one word, letters and numbers only.' });
     }
 
+    // Never trust the client's idea of what's in stock either — a stale
+    // page or a bypassed frontend could still try to order a sold-out item.
+    const outOfStockItem = Array.isArray(orderData.items)
+      ? orderData.items.find((item) => resolveDbProduct(item.id)?.inStock === false)
+      : null;
+    if (outOfStockItem) {
+      return res.status(400).json({ success: false, message: `"${outOfStockItem.name}" is out of stock.` });
+    }
+
     // Validate & apply a coupon (prepaid cart orders only)
     let discount = 0;
     let couponApplied = null;
@@ -815,6 +824,15 @@ const createCodOrder = async (orderData, prepayPaymentId) => {
     }
     if (orderData.keychainName && !isValidEngraveName(orderData.keychainName)) {
       throw Object.assign(new Error('Invalid name for the free keychain — use one word, letters and numbers only.'), { isValidationError: true });
+    }
+
+    // Never trust the client's idea of what's in stock either — a stale
+    // page or a bypassed frontend could still try to order a sold-out item.
+    const outOfStockItem = Array.isArray(orderData.items)
+      ? orderData.items.find((item) => resolveDbProduct(item.id)?.inStock === false)
+      : null;
+    if (outOfStockItem) {
+      throw Object.assign(new Error(`"${outOfStockItem.name}" is out of stock.`), { isValidationError: true });
     }
 
     // Calculate subtotal server-side

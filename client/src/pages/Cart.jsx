@@ -7,7 +7,7 @@ import { Button } from '../components/ui/Button';
 import { SectionWrapper, fadeIn } from '../components/layout/SectionWrapper';
 import { SEO } from '../components/SEO';
 import { API_BASE_URL } from '../config';
-import { products, lineTotal } from '../data/products';
+import { products, lineTotal, resolveProduct } from '../data/products';
 import { loadRazorpayScript } from '../lib/loadRazorpay';
 import toast from 'react-hot-toast';
 
@@ -202,6 +202,10 @@ const getCookie = (name) => {
   });
 
   const validateForm = () => {
+    const outOfStockItem = cart.find(item => resolveProduct(item.id)?.inStock === false);
+    if (outOfStockItem) {
+      toast.error(`"${outOfStockItem.name}" is out of stock — please remove it to check out.`); return false;
+    }
     if (!customerInfo.firstName || !customerInfo.lastName || !customerInfo.email || !customerInfo.phone) {
       toast.error('Please fill in your first name, last name, email and phone.'); return false;
     }
@@ -705,11 +709,16 @@ const getCookie = (name) => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-6">
-            {cart.map((item) => (
+            {cart.map((item) => {
+              // Cart lines are a snapshot from add-to-cart time — re-check the
+              // live catalog rather than trusting item.inStock, since that
+              // snapshot won't reflect a stock change made afterward.
+              const itemOutOfStock = resolveProduct(item.id)?.inStock === false;
+              return (
               <motion.div layout initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} key={item.id}
-                className="glass-card p-6 flex flex-col sm:flex-row gap-6">
+                className={`glass-card p-6 flex flex-col sm:flex-row gap-6 ${itemOutOfStock ? 'border-2 border-red-500/40' : ''}`}>
                 <div className="w-full sm:w-32 h-32 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 flex-shrink-0">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                  <img src={item.image} alt={item.name} className={`w-full h-full object-cover ${itemOutOfStock ? 'grayscale opacity-60' : ''}`} />
                 </div>
                 <div className="flex-grow flex flex-col justify-between py-1">
                   <div>
@@ -719,6 +728,9 @@ const getCookie = (name) => {
                         <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
+                    {itemOutOfStock && (
+                      <p className="text-sm font-semibold text-red-600 dark:text-red-400 mb-2">Out of Stock — please remove to check out.</p>
+                    )}
                     <p className="text-slate-600 dark:text-slate-300 text-sm mb-4">{item.material} • {item.category}</p>
                     {item.engravable && (
                       <div className="mb-2">
@@ -759,7 +771,8 @@ const getCookie = (name) => {
                   </div>
                 </div>
               </motion.div>
-            ))}
+              );
+            })}
 
             {/* Free name keychain — bundled with a valid coupon */}
             {couponStatus?.valid && couponStatus?.freeKeychain && freeKeychainProduct && (

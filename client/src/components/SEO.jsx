@@ -89,7 +89,7 @@ export function SEO({ title, description = DEFAULT_DESCRIPTION, image, path = ''
           url,
           priceCurrency: 'INR',
           price: String(product.price),
-          availability: 'https://schema.org/InStock',
+          availability: product.inStock === false ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
           itemCondition: 'https://schema.org/NewCondition',
         },
       };

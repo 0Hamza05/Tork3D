@@ -468,6 +468,7 @@ export const products = [
     name: 'Coca-Cola Inspired Rakhi',
     price: 151,
     compareAtPrice: 200,                  // was ₹200 — shown as a strikethrough + discount badge
+    inStock: false,                       // absent/true = in stock; set false to mark sold out everywhere
     weight: 10,                          // dead weight in grams
     packageType: 'flyer',                 // 'box' | 'flyer'
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm (same as fidgets)
