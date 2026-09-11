@@ -436,6 +436,38 @@ export const products = [
     }
   },
   {
+    id: 16,
+    name: 'Ironman Magnetic Fidget',
+    price: 349,
+    compareAtPrice: 399, // discounted from original price
+    weight: 25,                         // dead weight in grams
+    packageType: 'flyer',                 // 'box' | 'flyer'
+    packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
+    category: 'Fidgets',
+    material: 'PLA',
+    image: '/Product Photos/Fidgets/Ironman Fidget/WhatsApp Image 2026-09-11 at 20.09.38_result.webp',
+    description: 'Suit up and fidget in style with this Ironman-themed magnetic fidget slider. Featuring the iconic red and gold color scheme, this tactile magnetic slider delivers deeply satisfying haptic clicks — the perfect desk companion for every Marvel fan.',
+    highlights: [
+      'Iconic Iron Man red and gold color scheme',
+      'Tactile haptic clicks and smooth slide action',
+      'Durable PLA design with secure magnet placement',
+      'Great stress-relieving tool for work or study',
+    ],
+    images: [
+      '/Product Photos/Fidgets/Ironman Fidget/WhatsApp Image 2026-09-11 at 20.09.38_result.webp',
+      '/Product Photos/Fidgets/Ironman Fidget/WhatsApp Image 2026-09-11 at 20.09.37_result.webp',
+      '/Product Photos/Fidgets/Ironman Fidget/WhatsApp Image 2026-09-11 at 20.09.37 (1)_result.webp',
+      '/Product Photos/Fidgets/Ironman Fidget/WhatsApp Image 2026-09-11 at 20.09.37 (2)_result.webp',
+      '/Product Photos/Fidgets/Ironman Fidget/WhatsApp Video 2026-09-11 at 20.09.36.mp4',
+    ],
+    specs: {
+      'Dimensions': '45 x 35 x 15 mm',
+      'Weight': '25 g',
+      'Material': 'PLA, Neodymium Magnets',
+      'Preparation Time (before dispatch)': '2–4 Business Days',
+    }
+  },
+  {
     id: 14,
     name: 'Superhero Fidgets Pack',
     price: 999,
