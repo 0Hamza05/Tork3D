@@ -155,13 +155,13 @@ export const products = [
       {
         id: 'mask-logo',
         name: 'Mask + Logo',
-        image: '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_1_result.webp',
+        image: '/Product Photos/Fidgets/Batman Fidget/Mask-Logo/Batman_Mask_Fidget_1_result.webp',
         images: [
-          '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_1_result.webp',
-          '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_2_result.webp',
-          '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_3_result.webp',
-          '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_4_result.webp',
-          '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_Vid.mp4',
+          '/Product Photos/Fidgets/Batman Fidget/Mask-Logo/Batman_Mask_Fidget_1_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Mask-Logo/Batman_Mask_Fidget_2_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Mask-Logo/Batman_Mask_Fidget_3_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Mask-Logo/Batman_Mask_Fidget_4_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Mask-Logo/Batman_Mask_Fidget_Vid.mp4',
         ],
       },
     ],
@@ -537,7 +537,7 @@ export const products = [
     bundleCount: 3,
     bundleOptions: [
       { id: 'batman-logo', name: 'Batman (Logo)', image: '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Image 2026-07-11 at 19.48.24_result.webp' },
-      { id: 'batman-mask', name: 'Batman (Mask + Logo)', image: '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_1_result.webp' },
+      { id: 'batman-mask', name: 'Batman (Mask + Logo)', image: '/Product Photos/Fidgets/Batman Fidget/Mask-Logo/Batman_Mask_Fidget_1_result.webp' },
       { id: 'spiderman', name: 'Spiderman', image: '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Image 2026-07-11 at 19.48.22 (1)_result.webp' },
       { id: 'spidergwen', name: 'Spidergwen', image: '/Product Photos/Fidgets/Spiderman Fidget/Spidergwen/Spidergwen_fidget_1_result.webp' },
       { id: 'superman', name: 'Superman', image: '/Product Photos/Fidgets/Superman Fidget/WhatsApp Image 2026-07-11 at 19.48.25 (1)_result.webp' },
