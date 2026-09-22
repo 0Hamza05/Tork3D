@@ -20,6 +20,7 @@ export default function ProductDetail() {
   const product = products.find(p => p.id === parseInt(slug, 10));
   const hasStyles = !!product?.styles?.length;
   const hasColors = !!product?.colorOptions?.length;
+  const hasBundleOptions = !!(product?.bundleOptions?.length && product?.bundleCount > 0);
   const outOfStock = product?.inStock === false;
   // Colors are configured via named "slots": a product can expose one picker
   // (the default) or several (e.g. the Pagoda's stand + net). Falls back to a
@@ -28,8 +29,15 @@ export default function ProductDetail() {
     ? (product.colorSlots?.length ? product.colorSlots : [{ key: 'color', label: 'Color' }])
     : [];
   const defaultColors = () => Object.fromEntries(colorSlots.map(s => [s.key, product.colorOptions[0]]));
+  const defaultBundleItems = () => (
+    product?.bundleOptions?.length
+      ? Array.from({ length: product.bundleCount }, (_, i) => product.bundleOptions[i % product.bundleOptions.length].id)
+      : []
+  );
+
   const [selectedStyle, setSelectedStyle] = React.useState(product?.styles?.[0] ?? null);
   const [selectedColors, setSelectedColors] = React.useState(hasColors ? defaultColors() : {});
+  const [selectedBundleItems, setSelectedBundleItems] = React.useState(hasBundleOptions ? defaultBundleItems() : []);
   const [activeImg, setActiveImg] = React.useState(0);
   const [isLoaded, setIsLoaded] = React.useState(false);
   const prefersReduced = useReducedMotion();
@@ -39,13 +47,18 @@ export default function ProductDetail() {
   React.useEffect(() => {
     setSelectedStyle(product?.styles?.[0] ?? null);
     setSelectedColors(hasColors ? defaultColors() : {});
+    setSelectedBundleItems(product?.bundleOptions?.length ? Array.from({ length: product.bundleCount }, (_, i) => product.bundleOptions[i % product.bundleOptions.length].id) : []);
     setActiveImg(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product?.id]);
 
-  // The "effective" product reflects the chosen style + colors — used for cart
+  // The "effective" product reflects the chosen style + colors + bundle items — used for cart
   // actions and display, so each configuration is tracked as its own cart line.
-  const hasConfig = hasStyles || hasColors;
+  const hasConfig = hasStyles || hasColors || hasBundleOptions;
+  const bundleSummary = hasBundleOptions && selectedBundleItems.length
+    ? selectedBundleItems.map(id => product.bundleOptions.find(o => o.id === id)?.name || id).join(', ')
+    : '';
+
   const displayProduct = hasConfig
     ? {
         ...product,
@@ -53,12 +66,15 @@ export default function ProductDetail() {
           product.id,
           selectedStyle?.id,
           ...colorSlots.map(s => selectedColors[s.key] && `${s.key}-${selectedColors[s.key].id}`),
+          hasBundleOptions && selectedBundleItems.slice().sort().join('_'),
         ].filter(Boolean).join('-'),
         name: [
           product.name,
           selectedStyle && `— ${selectedStyle.name}`,
           colorSlots.length > 0 && `(${colorSlots.map(s => `${s.label}: ${selectedColors[s.key]?.name ?? '—'}`).join(', ')})`,
+          hasBundleOptions && `(${bundleSummary})`,
         ].filter(Boolean).join(' '),
+        bundleItems: hasBundleOptions ? selectedBundleItems.map(id => product.bundleOptions.find(o => o.id === id)) : undefined,
         image: selectedStyle?.image ?? product.image,
         images: selectedStyle?.images ?? product.images,
       }
@@ -276,6 +292,68 @@ export default function ProductDetail() {
             <p className="text-slate-600 dark:text-slate-300 text-lg mb-8 leading-relaxed">
               {product.description}
             </p>
+
+            {hasBundleOptions && (
+              <div className="mb-8 p-5 rounded-2xl bg-secondary dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                      <span>Choose Your {product.bundleCount} Fidgets</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-accent-orange/15 text-accent-orange font-semibold">
+                        Bundle Pack
+                      </span>
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      Select any combination of 3 superhero fidgets below
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {Array.from({ length: product.bundleCount }, (_, slotIdx) => {
+                    const currentSelectedId = selectedBundleItems[slotIdx] || product.bundleOptions[0]?.id;
+                    const selectedOption = product.bundleOptions.find(o => o.id === currentSelectedId) || product.bundleOptions[0];
+
+                    return (
+                      <div key={slotIdx} className="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between gap-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold text-accent-blue uppercase tracking-wider">
+                            Item #{slotIdx + 1}
+                          </span>
+                          <span className="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate max-w-[120px]">
+                            {selectedOption?.name}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex-shrink-0">
+                            <img src={selectedOption?.image} alt={selectedOption?.name} className="w-full h-full object-cover" />
+                          </div>
+                          <select
+                            value={currentSelectedId}
+                            onChange={(e) => {
+                              const newId = e.target.value;
+                              setSelectedBundleItems(prev => {
+                                const next = [...prev];
+                                next[slotIdx] = newId;
+                                return next;
+                              });
+                            }}
+                            className="flex-1 min-w-0 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-accent-blue cursor-pointer"
+                          >
+                            {product.bundleOptions.map(option => (
+                              <option key={option.id} value={option.id}>
+                                {option.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {hasColors && (
               <div className="mb-8 space-y-6">

@@ -126,7 +126,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
-    image: '/Product Photos/Fidgets/Batman Fidget/WhatsApp Image 2026-07-11 at 19.48.24_result.webp',
+    image: '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Image 2026-07-11 at 19.48.24_result.webp',
     description: 'Channel your inner dark knight with this Batman-themed magnetic fidget toy. Designed with a sleek bat logo shape, this tactile magnetic slider provides deeply satisfying haptic feedback to keep your hands busy and mind focused.',
     highlights: [
       'Sleek Dark Knight Bat-themed aesthetic',
@@ -135,10 +135,35 @@ export const products = [
       'Great stress-relieving tool for work or study',
     ],
     images: [
-      '/Product Photos/Fidgets/Batman Fidget/WhatsApp Image 2026-07-11 at 19.48.24_result.webp',
-      '/Product Photos/Fidgets/Batman Fidget/WhatsApp Image 2026-07-11 at 19.48.22 (2)_result.webp',
-      '/Product Photos/Fidgets/Batman Fidget/WhatsApp Image 2026-07-11 at 19.48.23_result.webp',
-      '/Product Photos/Fidgets/Batman Fidget/WhatsApp Video 2026-07-11 at 19.48.21.mp4',
+      '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Image 2026-07-11 at 19.48.24_result.webp',
+      '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Image 2026-07-11 at 19.48.22 (2)_result.webp',
+      '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Image 2026-07-11 at 19.48.23_result.webp',
+      '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Video 2026-07-11 at 19.48.21.mp4',
+    ],
+    styles: [
+      {
+        id: 'logo',
+        name: 'Logo',
+        image: '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Image 2026-07-11 at 19.48.24_result.webp',
+        images: [
+          '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Image 2026-07-11 at 19.48.24_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Image 2026-07-11 at 19.48.22 (2)_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Image 2026-07-11 at 19.48.23_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Video 2026-07-11 at 19.48.21.mp4',
+        ],
+      },
+      {
+        id: 'mask-logo',
+        name: 'Mask + Logo',
+        image: '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_1_result.webp',
+        images: [
+          '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_1_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_2_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_3_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_4_result.webp',
+          '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_Vid.mp4',
+        ],
+      },
     ],
     specs: {
       'Dimensions': '45 x 35 x 15 mm',
@@ -217,7 +242,7 @@ export const products = [
     packageDimensions: { l: 13, w: 13, h: 8 }, // packed dims in cm
     category: 'Fidgets',
     material: 'PLA',
-    image: '/Product Photos/Fidgets/Spiderman Fidget/WhatsApp Image 2026-07-11 at 19.48.22 (1)_result.webp',
+    image: '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Image 2026-07-11 at 19.48.22 (1)_result.webp',
     description: 'Bring the web-slinger along on your daily routine with this Spiderman-themed magnetic fidget slider. Combining a sleek web-patterned red and black design with deeply tactile and responsive magnetic clicks, this is the perfect desk toy.',
     highlights: [
       'Spiderman web-patterned red and black styling',
@@ -226,10 +251,34 @@ export const products = [
       'Includes premium neodymium magnets for strong haptic feel',
     ],
     images: [
-      '/Product Photos/Fidgets/Spiderman Fidget/WhatsApp Image 2026-07-11 at 19.48.22 (1)_result.webp',
-      '/Product Photos/Fidgets/Spiderman Fidget/WhatsApp Image 2026-07-11 at 19.48.21_result.webp',
-      '/Product Photos/Fidgets/Spiderman Fidget/WhatsApp Image 2026-07-11 at 19.48.22_result.webp',
-      '/Product Photos/Fidgets/Spiderman Fidget/WhatsApp Video 2026-07-11 at 19.48.21 (1).mp4',
+      '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Image 2026-07-11 at 19.48.22 (1)_result.webp',
+      '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Image 2026-07-11 at 19.48.21_result.webp',
+      '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Image 2026-07-11 at 19.48.22_result.webp',
+      '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Video 2026-07-11 at 19.48.21 (1).mp4',
+    ],
+    styles: [
+      {
+        id: 'spiderman',
+        name: 'Spiderman',
+        image: '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Image 2026-07-11 at 19.48.22 (1)_result.webp',
+        images: [
+          '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Image 2026-07-11 at 19.48.22 (1)_result.webp',
+          '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Image 2026-07-11 at 19.48.21_result.webp',
+          '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Image 2026-07-11 at 19.48.22_result.webp',
+          '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Video 2026-07-11 at 19.48.21 (1).mp4',
+        ],
+      },
+      {
+        id: 'spidergwen',
+        name: 'Spidergwen',
+        image: '/Product Photos/Fidgets/Spiderman Fidget/Spidergwen/Spidergwen_fidget_1_result.webp',
+        images: [
+          '/Product Photos/Fidgets/Spiderman Fidget/Spidergwen/Spidergwen_fidget_1_result.webp',
+          '/Product Photos/Fidgets/Spiderman Fidget/Spidergwen/Spidergwen_fidget_2_result.webp',
+          '/Product Photos/Fidgets/Spiderman Fidget/Spidergwen/Spidergwen_fidget_3_result.webp',
+          '/Product Photos/Fidgets/Spiderman Fidget/Spidergwen/Spidergwen_fidget_vid.mp4',
+        ],
+      },
     ],
     specs: {
       'Dimensions': '45 x 35 x 15 mm',
@@ -474,12 +523,21 @@ export const products = [
     category: 'Fidgets',
     material: 'PLA',
     image: '/Product Photos/Fidgets/Superhero Fidgets Pack/WhatsApp Image 2026-07-11 at 19.48.00_result.webp',
-    description: 'The ultimate trio — get the Batman, Spiderman, and Superman magnetic fidget sliders together in one combo pack, at a price better than buying them separately. Same tactile magnetic clicks and durable PLA build across all three, now in one satisfying bundle.',
+    description: 'Build your dream trio! Choose any 3 superhero-themed magnetic fidget sliders at a special bundle price. Each slider delivers the same satisfying haptic feedback, tactile clicks, and durable PLA build.',
     highlights: [
-      'Includes Batman, Spiderman, and Superman magnetic fidgets',
+      'Choose any 3 superhero fidgets of your choice',
       'Save over buying all three individually',
       'Same deeply tactile magnetic haptic feedback on every piece',
       'Makes a great gift set for fidget and superhero fans alike',
+    ],
+    bundleCount: 3,
+    bundleOptions: [
+      { id: 'batman-logo', name: 'Batman (Logo)', image: '/Product Photos/Fidgets/Batman Fidget/Logo/WhatsApp Image 2026-07-11 at 19.48.24_result.webp' },
+      { id: 'batman-mask', name: 'Batman (Mask + Logo)', image: '/Product Photos/Fidgets/Batman Fidget/Mask+Logo/Batman_Mask_Fidget_1_result.webp' },
+      { id: 'spiderman', name: 'Spiderman', image: '/Product Photos/Fidgets/Spiderman Fidget/Spiderman/WhatsApp Image 2026-07-11 at 19.48.22 (1)_result.webp' },
+      { id: 'spidergwen', name: 'Spidergwen', image: '/Product Photos/Fidgets/Spiderman Fidget/Spidergwen/Spidergwen_fidget_1_result.webp' },
+      { id: 'superman', name: 'Superman', image: '/Product Photos/Fidgets/Superman Fidget/WhatsApp Image 2026-07-11 at 19.48.25 (1)_result.webp' },
+      { id: 'ironman', name: 'Ironman', image: '/Product Photos/Fidgets/Ironman Fidget/WhatsApp Image 2026-09-11 at 20.09.38_result.webp' },
     ],
     images: [
       '/Product Photos/Fidgets/Superhero Fidgets Pack/WhatsApp Image 2026-07-11 at 19.48.00_result.webp',
@@ -489,7 +547,7 @@ export const products = [
     specs: {
       'Dimensions': '45 x 35 x 15 mm (each)',
       'Weight': '75 g (set of 3)',
-      'Included': '1 Batman, 1 Spiderman, 1 Superman Fidget',
+      'Included': 'Any 3 Selected Superhero Fidgets',
       'Material': 'PLA, Neodymium Magnets',
       'Preparation Time (before dispatch)': '2–4 Business Days',
     }

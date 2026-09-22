@@ -12,7 +12,7 @@ export function ProductCard({ product }) {
   const navigate = useNavigate();
   const cartItem = cart.find(item => item.id === product.id);
   const [isLoaded, setIsLoaded] = React.useState(false);
-  const needsConfig = !!(product.styles?.length || product.colorOptions?.length);
+  const needsConfig = !!(product.styles?.length || product.colorOptions?.length || product.bundleOptions?.length);
   const outOfStock = product.inStock === false;
   // Discount % is computed from the real prices, not hardcoded, so it can't
   // drift out of sync if either price changes later.
